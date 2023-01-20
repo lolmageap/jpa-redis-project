@@ -22,20 +22,22 @@ public class Member extends BaseEntity {
     @Column(name = "member_id")
     private Long id;
 
-    private String name;
-    private String nickname;
-    @Email
+    @Column(unique = true)
+    private String user_id;
     @Column(unique = true)
     private String email;
+    @Column(unique = true)
+    private String name;
     private String password;
     private LocalDate birthday;
 
     @Builder
-    public Member(Long id, String name, String email, String password) {
-        this.id = id;
+    public Member(String user_id, String name, String email, String password, LocalDate birthday) {
+        this.user_id = user_id;
         this.name = name;
         this.email = email;
         this.password = password;
+        this.birthday = birthday;
     }
 
 }
