@@ -2,6 +2,7 @@ package cherhy.soloProject.application.domain.member.entity;
 
 import cherhy.soloProject.Util.BaseEntity;
 
+import cherhy.soloProject.Util.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +18,7 @@ import java.time.LocalDate;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member extends BaseEntity {
+public class Member extends BaseTimeEntity {
     @Id @GeneratedValue
     @Column(name = "member_id")
     private Long id;

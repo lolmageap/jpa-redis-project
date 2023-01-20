@@ -5,10 +5,9 @@ spring:
     password: wjd0322189
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
