@@ -5,9 +5,10 @@ spring:
     password: wjd0322189
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -21,5 +22,6 @@ logging:
     org.hibernate.sql: debug
 #    org.hibernate.type: trace
 
+
 server:
-  port: 8001
+  port: 8080
