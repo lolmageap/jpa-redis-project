@@ -1,14 +1,15 @@
 package cherhy.soloProject.application.controller;
 
-import cherhy.soloProject.application.domain.member.dto.MemberDto;
-import cherhy.soloProject.application.domain.member.service.MemberReadService;
-import cherhy.soloProject.application.domain.member.service.MemberWriteService;
+import cherhy.soloProject.application.domain.dto.MemberDto;
+import cherhy.soloProject.application.domain.dto.SignInDto;
+import cherhy.soloProject.application.service.memberService.MemberReadService;
+import cherhy.soloProject.application.service.memberService.MemberWriteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.NoSuchAlgorithmException;
+import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 @Tag(name = "회원정보")
 @RestController
@@ -19,29 +20,24 @@ public class MemberController {
     private final MemberReadService memberReadService;
     private final MemberWriteService memberWriteService;
 
-    @GetMapping
-    public String hello(){
-        return "hello";
-    }
-
+    @Operation(summary = "이메일 체크")
     @PostMapping("/check/{email}")
     public Boolean emailCheck(@PathVariable String email){
         Boolean aBoolean = memberReadService.emailCheck(email);
         return aBoolean;
     }
 
+    @Operation(summary = "회원가입")
     @PostMapping("/signUp")
-    public String signUp(MemberDto memberDto) throws NoSuchAlgorithmException {
+    public String signUp(@Valid MemberDto memberDto) {
         memberWriteService.signUp(memberDto);
         return "";
     }
 
+    @Operation(summary = "로그인")
     @PostMapping("/signIn")
-    public String signIn(MemberDto memberDto){
-//        memberWriteService.signIn(memberDto);
-        return "로그인 성공";
-    }
-
-
+    public String signIn(SignInDto signInDto, HttpSession session){
+        return memberWriteService.signIn(signInDto, session);
+    } 
 
 }

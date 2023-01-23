@@ -1,8 +1,8 @@
-package cherhy.soloProject.application.domain.member.repository.repositoryImpl;
+package cherhy.soloProject.application.repository.repositoryImpl;
 
-import cherhy.soloProject.application.domain.member.dto.MemberDto;
-import cherhy.soloProject.application.domain.member.entity.Member;
-import cherhy.soloProject.application.domain.member.repository.querydsl.MemberRepositoryCustom;
+import cherhy.soloProject.application.domain.dto.MemberDto;
+import cherhy.soloProject.application.domain.entity.Member;
+import cherhy.soloProject.application.repository.querydsl.MemberRepositoryCustom;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

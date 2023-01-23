@@ -1,4 +1,4 @@
-package cherhy.soloProject.application.domain.member.repository.mapper;
+package cherhy.soloProject.application.repository.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 

@@ -1,7 +1,7 @@
 package cherhy.soloProject.application.domain.member.service;
 
 
-import org.assertj.core.api.Assertions;
+import cherhy.soloProject.application.service.memberService.MemberReadService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

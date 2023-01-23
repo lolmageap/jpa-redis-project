@@ -1,7 +1,7 @@
-package cherhy.soloProject.application.domain.member.service;
+package cherhy.soloProject.application.service.memberService;
 
-import cherhy.soloProject.application.domain.member.entity.Member;
-import cherhy.soloProject.application.domain.member.repository.MemberRepository;
+import cherhy.soloProject.application.domain.entity.Member;
+import cherhy.soloProject.application.repository.jpa.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
