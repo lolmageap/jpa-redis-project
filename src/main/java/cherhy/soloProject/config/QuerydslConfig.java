@@ -10,7 +10,7 @@ import javax.persistence.PersistenceContext;
 
 @Configuration
 @RequiredArgsConstructor
-public class QueryDslConfig {
+public class QuerydslConfig {
 
     @PersistenceContext
     private final EntityManager em;

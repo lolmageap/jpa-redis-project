@@ -2,6 +2,7 @@ package cherhy.soloProject.application.domain.dto;
 
 
 import cherhy.soloProject.application.domain.entity.Photo;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class PostPhotoDto{
     private String content;
     private List<String> photos = new ArrayList<>();
 
+    @QueryProjection
     public PostPhotoDto(Long id, Long memberId, String title, String content, List<Photo> photos) {
         this.id = id;
         this.memberId = memberId;

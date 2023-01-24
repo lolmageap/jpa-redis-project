@@ -12,9 +12,11 @@ public class Photo {
     @Id @GeneratedValue
     @Column(name = "photo_id")
     private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
+
     private String photo; //사진 링크
 
     @Builder

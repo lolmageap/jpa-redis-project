@@ -29,13 +29,13 @@ public class MemberController {
 
     @Operation(summary = "회원가입")
     @PostMapping("/signUp")
-    public String signUp(@Valid MemberDto memberDto) {
+    public String signUp(MemberDto memberDto) {
         memberWriteService.signUp(memberDto);
         return "";
     }
 
     @Operation(summary = "로그인")
-    @PostMapping("/signIn")
+    @GetMapping("/signIn")
     public String signIn(SignInDto signInDto, HttpSession session){
         return memberWriteService.signIn(signInDto, session);
     } 

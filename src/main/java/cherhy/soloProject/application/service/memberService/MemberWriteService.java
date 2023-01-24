@@ -34,7 +34,7 @@ public class MemberWriteService {
 
     public String signIn(SignInDto signInDto, HttpSession session){
 
-        Member findMember = memberRepository.findByUserId(signInDto.user_Id());
+        Member findMember = memberRepository.findByUserId(signInDto.userId());
         if (findMember.getId() == null){
             //login exception
             return "Id 오류";
