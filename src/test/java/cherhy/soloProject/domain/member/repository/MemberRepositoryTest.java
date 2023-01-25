@@ -1,20 +1,20 @@
 package cherhy.soloProject.domain.member.repository;
 
 
-import cherhy.soloProject.application.domain.dto.MemberDto;
-import cherhy.soloProject.application.domain.entity.Member;
-import cherhy.soloProject.application.repository.jpa.MemberRepository;
-import cherhy.soloProject.application.service.memberService.MemberWriteService;
+import cherhy.soloProject.application.domain.member.dto.MemberDto;
+import cherhy.soloProject.application.domain.member.entity.Member;
+import cherhy.soloProject.application.domain.member.repository.jpa.MemberRepository;
+import cherhy.soloProject.application.domain.member.service.MemberWriteService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.time.LocalDate;
 
 @SpringBootTest
 @Transactional
@@ -36,6 +36,20 @@ class MemberRepositoryTest {
         //when
         memberWriteService.signUp(member);
         Member findMember = memberRepository.findById(1L).get();
+        //then
+        Assertions.assertThat(findMember.getName()).isEqualTo("홍길동");
+    }
+
+    @Test
+    public void testInsertMembers() throws Exception{
+        //given
+        for (int i = 0; i < 100; i++) {
+            MemberDto member = new MemberDto("aaaa" + i,"길동" + i,"abcd"+ i +"@naver.com" ,"abcd" + i);
+            memberWriteService.signUp(member);
+        }
+        //when
+        Member findMember = memberRepository.findById(1L).get();
+
         //then
         Assertions.assertThat(findMember.getName()).isEqualTo("홍길동");
     }

@@ -1,11 +1,11 @@
 package cherhy.soloProject.application.controller;
 
-import cherhy.soloProject.Util.CursorRequest;
-import cherhy.soloProject.Util.PageCursor;
-import cherhy.soloProject.application.domain.dto.PostDto;
-import cherhy.soloProject.application.domain.dto.PostPhotoDto;
-import cherhy.soloProject.application.service.postService.PostReadService;
-import cherhy.soloProject.application.service.postService.PostWriteService;
+import cherhy.soloProject.Util.PageScroll;
+import cherhy.soloProject.Util.ScrollRequest;
+import cherhy.soloProject.application.domain.post.dto.PostDto;
+import cherhy.soloProject.application.domain.post.dto.PostPhotoDto;
+import cherhy.soloProject.application.domain.post.service.PostReadService;
+import cherhy.soloProject.application.domain.post.service.PostWriteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +30,12 @@ public class PostController {
         postWriteService.save(postDto);
     }
 
+    @Operation(summary = "게시물 수정")
+    @PostMapping("/modify/{postId}")
+    public void modifyPost(@PathVariable Long postId, PostDto postDto){
+        postWriteService.modifyPost(postDto, postId);
+    }
+
     @Operation(summary = "사용자의 게시물 불러오기, 전체")
     @GetMapping("/{member_id}")
     public List<PostPhotoDto> getPost(@PathVariable Long member_id){
@@ -46,8 +52,8 @@ public class PostController {
 
     @Operation(summary = "사용자의 게시물 불러오기 , 무한 스크롤")
     @GetMapping("/{member_id}/scroll")
-    public PageCursor<PostPhotoDto> getPostScroll(@PathVariable Long member_id, CursorRequest cursorRequest){
-        PageCursor<PostPhotoDto> postByMemberId = postReadService.findPostByMemberIdCursor(member_id, cursorRequest);
+    public PageScroll<PostPhotoDto> getPostScroll(@PathVariable Long member_id, ScrollRequest scrollRequest){
+        PageScroll<PostPhotoDto> postByMemberId = postReadService.findPostByMemberIdCursor(member_id, scrollRequest);
         return postByMemberId;
     }
 
