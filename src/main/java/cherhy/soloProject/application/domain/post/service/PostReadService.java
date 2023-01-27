@@ -11,7 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,17 +33,10 @@ public class PostReadService {
     }
 
     public PageScroll<PostPhotoDto> findPostByMemberIdCursor(Long memberId, ScrollRequest scrollRequest) {
-        List<Post> findPosts = new ArrayList<>();
-        long nextKey = 0;
 
-        if (scrollRequest.hasKey()){
-            findPosts = postRepository.findByMemberIdPostIdDesc(memberId, scrollRequest);
-        }else {
-            findPosts = postRepository.findAllByMemberIdNoKey(memberId, scrollRequest);
-        }
+        List<Post> findPosts = postRepository.findByMemberIdPostIdDesc(memberId, scrollRequest);
         List<PostPhotoDto> postPhotoDtos = changePostPhotoDto(findPosts);
-
-        nextKey = getNextKey(postPhotoDtos);
+        long nextKey = getNextKey(postPhotoDtos);
         return new PageScroll<>(scrollRequest.next(nextKey) ,postPhotoDtos);
     }
 

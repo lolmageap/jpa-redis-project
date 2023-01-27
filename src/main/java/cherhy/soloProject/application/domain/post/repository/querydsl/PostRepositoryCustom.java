@@ -12,6 +12,5 @@ public interface PostRepositoryCustom {
 
     Page<PostPhotoDto> findAllByMemberId(Long memberId, Pageable pageable);
     List<Post> findByMemberIdPostIdDesc(Long memberId, ScrollRequest scrollRequest);
-    List<Post> findAllByMemberIdNoKey(Long memberId, ScrollRequest scrollRequest);
 
 }

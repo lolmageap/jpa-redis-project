@@ -3,6 +3,7 @@ package cherhy.soloProject.application.domain.post.entity;
 import cherhy.soloProject.Util.BaseEntity;
 import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.photo.entity.Photo;
+import cherhy.soloProject.application.domain.reply.entity.Reply;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,6 +29,8 @@ public class Post extends BaseEntity {
     private String content;
     @OneToMany(mappedBy = "post")
     private List<Photo> photos = new ArrayList<>();
+    @OneToMany(mappedBy = "post")
+    private List<Reply> replies = new ArrayList<>();
 
     @Builder
     public Post(Member member, String title, String content, List<Photo> photos) {

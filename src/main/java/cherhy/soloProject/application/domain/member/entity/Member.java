@@ -43,26 +43,10 @@ public class Member extends BaseTimeEntity {
 
     @Builder //회원가입
     public Member(String user_id, String name, String email, String password, LocalDate birthday) {
-        validUserId(user_id);
         this.user_id = requireNonNull(user_id);
-        validName(name);
         this.name = requireNonNull(name);
-        validPwd(name);
         this.password = requireNonNull(password);
         this.email = requireNonNull(email);
-    }
-
-    public void validName(String name) {
-        isTrue(name.length() <= 10, "이름은 10글자를 넘을 수 없습니다.");
-    }
-
-    public void validUserId(String user_id) {
-        System.out.println("user_id = " + user_id);
-        isTrue(user_id.length() >= 5, "아이디는 5글자 이상이어야합니다.");
-    }
-
-    public void validPwd(String password) {
-        isTrue(password.length() >= 5, "비밀번호는 5글자 이상입니다.");
     }
 
     public void changeName(String changeName) {

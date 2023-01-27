@@ -39,17 +39,12 @@ public class MemberWriteService {
 
     private Member modify(MemberDto memberDto, Member findMember) {
         if (!memberDto.user_id().isEmpty()){
-            findMember.validUserId(memberDto.user_id());
             findMember.changeUserId(memberDto.user_id());
         }
-
         if (!memberDto.name().isEmpty()){
-            findMember.validName(memberDto.name());
             findMember.changeName(memberDto.name());
         }
-
         if (!memberDto.password().isEmpty()){
-            findMember.validPwd(memberDto.password());
             findMember.changePassword(encoder.encode(memberDto.password()));
         }
         return findMember;

@@ -10,8 +10,9 @@
 
 //여기서부터 시작
 
-타임라인 = timeline_id, member_Id(N), post_id, basetime
+댓글 = reply_id, post_id(N), member_id(N), content, basetime
 
+타임라인 = timeline_id, member_Id(N), post_id, basetime
 
 좋아요 = like_id, post_id, member_id, basetime
 
@@ -23,13 +24,11 @@
 
 북마크 = bookmark_id, member_id, post_id, basetime
 
-댓글 = reply_id, post_id(N), member_id(N), content, basetime
-
 댓글 좋아요 = reply_like_id, reply_id , member_id
 
 태그 = tag_id , member_id, tag_member_id
 
-///나중에///
+//나중에//
 대댓글 = rereply_id, reply_id(N),
 대댓글 좋아요 =
-///나중에///
+//나중에 인덱스 생성 쿼리 작성//

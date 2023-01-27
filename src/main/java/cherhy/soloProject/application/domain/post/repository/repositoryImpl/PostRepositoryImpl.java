@@ -4,6 +4,7 @@ import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.application.domain.post.dto.PostPhotoDto;
 import cherhy.soloProject.application.domain.post.entity.Post;
 import cherhy.soloProject.application.domain.post.repository.querydsl.PostRepositoryCustom;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -32,10 +33,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         Long total = getTotal(memberId);
         return new PageImpl<>(content, pageable, total);
     }
-    @Override
-    public List<Post> findAllByMemberIdNoKey(Long memberId, ScrollRequest scrollRequest) {
-        return getPostsCursorNoKey(memberId, scrollRequest);
-    }
+
     @Override
     public List<Post> findByMemberIdPostIdDesc(Long memberId, ScrollRequest scrollRequest) {
         return getPostsCursor(memberId, scrollRequest);
@@ -65,28 +63,20 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         return collect;
     }
 
-    private List<Post> getPostsCursorNoKey(Long memberId, ScrollRequest scrollRequest) {
-        return queryFactory.select(post).distinct()
-                .from(post)
-                .leftJoin(photo1).on(photo1.post.eq(post))
-                .fetchJoin()
-                .where(post.member.id.eq(memberId))
-                .limit(scrollRequest.size())
-                .orderBy(post.id.desc())
-                .fetch();
-    }
-
     private List<Post> getPostsCursor(Long memberId, ScrollRequest scrollRequest) {
         return queryFactory.select(post).distinct()
                 .from(post)
                 .leftJoin(photo1).on(photo1.post.eq(post))
                 .fetchJoin()
-                .where(
-                        post.member.id.eq(memberId)
-                                .and(post.id.lt(scrollRequest.key())))
+                .where(post.member.id.eq(memberId),
+                        keyCheck(scrollRequest))
                 .limit(scrollRequest.size())
                 .orderBy(post.id.desc())
                 .fetch();
+    }
+
+    private BooleanExpression keyCheck(ScrollRequest scrollRequest) {
+        return scrollRequest.hasKey() ? post.id.lt(scrollRequest.key()) : null;
     }
 
     private List<PostPhotoDto> getPostPhotoDtos(List<Post> fetch) {
