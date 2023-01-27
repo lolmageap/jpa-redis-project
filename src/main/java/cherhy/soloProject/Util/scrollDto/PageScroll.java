@@ -1,4 +1,4 @@
-package cherhy.soloProject.Util;
+package cherhy.soloProject.Util.scrollDto;
 
 import java.util.List;
 

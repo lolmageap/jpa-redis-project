@@ -3,7 +3,7 @@ package cherhy.soloProject.application.domain.entity;
 import cherhy.soloProject.application.domain.member.repository.jpa.MemberRepository;
 import cherhy.soloProject.application.domain.member.service.MemberWriteService;
 import cherhy.soloProject.application.domain.photo.repository.jpa.PhotoRepository;
-import cherhy.soloProject.application.domain.post.dto.PostDto;
+import cherhy.soloProject.application.domain.post.dto.request.PostRequestDto;
 import cherhy.soloProject.application.domain.post.repository.jpa.PostRepository;
 import cherhy.soloProject.application.domain.post.service.PostReadService;
 import cherhy.soloProject.application.domain.post.service.PostWriteService;
@@ -54,8 +54,8 @@ class PostTest {
         photoList.add("test number two" + i);
         photoList.add("test number three" + i);
 
-        PostDto postDto = new PostDto(2L,i+i + "개",i+i  + "장", photoList);
-        postWriteService.save(postDto);
+        PostRequestDto postRequestDto = new PostRequestDto(2L,i+i + "개",i+i  + "장", photoList);
+        postWriteService.save(postRequestDto);
         }
 
 //        em.flush();

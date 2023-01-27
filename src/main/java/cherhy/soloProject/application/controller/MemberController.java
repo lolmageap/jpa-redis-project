@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 @Tag(name = "회원정보")
 @RestController
@@ -35,19 +36,19 @@ public class MemberController {
 
     @Operation(summary = "회원가입")
     @PostMapping("/signUp")
-    public String signUp(MemberDto memberDto) {
+    public String signUp(@RequestBody @Valid MemberDto memberDto) {
         return memberWriteService.signUp(memberDto);
     }
 
     @Operation(summary = "로그인")
     @GetMapping("/signIn")
-    public String signIn(SignInDto signInDto, HttpSession session){
+    public String signIn(@Valid SignInDto signInDto, HttpSession session){
         return memberReadService.signIn(signInDto, session);
     }
 
     @Operation(summary = "회원정보 수정")
     @PutMapping("/signUp/{memberId}")
-    public String modifyMember(@PathVariable Long memberId, MemberDto memberDto) {
+    public String modifyMember(@RequestBody @Valid MemberDto memberDto , @PathVariable Long memberId) {
         return memberWriteService.modifyMember(memberDto, memberId);
     }
 

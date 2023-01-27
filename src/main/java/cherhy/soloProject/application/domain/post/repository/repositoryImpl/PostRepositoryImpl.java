@@ -1,6 +1,6 @@
 package cherhy.soloProject.application.domain.post.repository.repositoryImpl;
 
-import cherhy.soloProject.Util.ScrollRequest;
+import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.application.domain.post.dto.PostPhotoDto;
 import cherhy.soloProject.application.domain.post.entity.Post;
 import cherhy.soloProject.application.domain.post.repository.querydsl.PostRepositoryCustom;
@@ -33,11 +33,11 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         return new PageImpl<>(content, pageable, total);
     }
     @Override
-    public List<PostPhotoDto> findAllByMemberIdNoKey(Long memberId, ScrollRequest scrollRequest) {
+    public List<Post> findAllByMemberIdNoKey(Long memberId, ScrollRequest scrollRequest) {
         return getPostsCursorNoKey(memberId, scrollRequest);
     }
     @Override
-    public List<PostPhotoDto> findByMemberIdPostIdDesc(Long memberId, ScrollRequest scrollRequest) {
+    public List<Post> findByMemberIdPostIdDesc(Long memberId, ScrollRequest scrollRequest) {
         return getPostsCursor(memberId, scrollRequest);
     }
 
@@ -65,8 +65,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         return collect;
     }
 
-    private List<PostPhotoDto> getPostsCursorNoKey(Long memberId, ScrollRequest scrollRequest) {
-        List<Post> fetch = queryFactory.select(post).distinct()
+    private List<Post> getPostsCursorNoKey(Long memberId, ScrollRequest scrollRequest) {
+        return queryFactory.select(post).distinct()
                 .from(post)
                 .leftJoin(photo1).on(photo1.post.eq(post))
                 .fetchJoin()
@@ -74,25 +74,19 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .limit(scrollRequest.size())
                 .orderBy(post.id.desc())
                 .fetch();
-
-        List<PostPhotoDto> collect = getPostPhotoDtos(fetch);
-        return collect;
     }
 
-    private List<PostPhotoDto> getPostsCursor(Long memberId, ScrollRequest scrollRequest) {
-        List<Post> fetch = queryFactory.select(post).distinct()
+    private List<Post> getPostsCursor(Long memberId, ScrollRequest scrollRequest) {
+        return queryFactory.select(post).distinct()
                 .from(post)
                 .leftJoin(photo1).on(photo1.post.eq(post))
                 .fetchJoin()
                 .where(
                         post.member.id.eq(memberId)
-                                .and(post.id.loe(scrollRequest.key())))
+                                .and(post.id.lt(scrollRequest.key())))
                 .limit(scrollRequest.size())
                 .orderBy(post.id.desc())
                 .fetch();
-
-        List<PostPhotoDto> collect = getPostPhotoDtos(fetch);
-        return collect;
     }
 
     private List<PostPhotoDto> getPostPhotoDtos(List<Post> fetch) {

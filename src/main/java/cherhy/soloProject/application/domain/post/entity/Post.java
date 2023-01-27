@@ -32,27 +32,19 @@ public class Post extends BaseEntity {
     @Builder
     public Post(Member member, String title, String content, List<Photo> photos) {
         this.member = member;
-        validTitle(title);
         this.title = title;
-        validContent(content);
         this.content = content;
         this.photos = photos;
-    }
-
-    public void validTitle(String title) {
-        isTrue(title.length() >= 3, "제목은 3글자이상 적어야합니다.");
-    }
-
-    public void validContent(String content) {
-        isTrue(content.length() >= 5, "내용은 5글자이상 적어야합니다.");
     }
 
     public void changeTitle(String changeTitle) {
         this.title = changeTitle;
     }
+
     public void changeContent(String changeContent) {
         this.content = changeContent;
     }
+
     public void changePhoto(List<Photo> changePhoto) {
         this.photos = changePhoto;
     }

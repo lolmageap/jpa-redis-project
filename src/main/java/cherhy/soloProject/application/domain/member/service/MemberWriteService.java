@@ -29,11 +29,13 @@ public class MemberWriteService {
 
     public String modifyMember(MemberDto memberDto, Long memberId) {
         Member findMember = memberRepository.findById(memberId)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new NoSuchElementException("회원정보가 존재하지 않습니다."));
 
         memberRepository.save(modify(memberDto, findMember));
         return "회원정보 변경";
     }
+
+    // ↓ 여기서부턴 비즈니스 로직 ↓
 
     private Member modify(MemberDto memberDto, Member findMember) {
         if (!memberDto.user_id().isEmpty()){

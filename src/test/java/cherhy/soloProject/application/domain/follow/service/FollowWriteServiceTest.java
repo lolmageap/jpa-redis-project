@@ -1,6 +1,6 @@
 package cherhy.soloProject.application.domain.follow.service;
 
-import cherhy.soloProject.application.domain.follow.dto.FollowMemberDto;
+import cherhy.soloProject.application.domain.follow.dto.request.FollowMemberDto;
 import cherhy.soloProject.application.domain.follow.entity.Follow;
 import cherhy.soloProject.application.domain.follow.repository.jpa.FollowRepository;
 import cherhy.soloProject.application.domain.member.entity.Member;

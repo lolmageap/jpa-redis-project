@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -29,11 +30,7 @@ public class MemberReadService {
     }
     public String signIn(SignInDto signInDto, HttpSession session){
 
-        Member findMember = memberRepository.findByUserId(signInDto.userId());
-        if (findMember.getId() == null){
-            //login exception
-            return "Id 오류";
-        }
+        Member findMember = memberRepository.findByUserId(signInDto.userId()).orElseThrow(() -> new NullPointerException("아이디가 존재하지 않습니다."));
 
         if(encoder.matches(signInDto.password(), findMember.getPassword())){
             session.setAttribute("userData" , findMember);
@@ -42,7 +39,7 @@ public class MemberReadService {
         return "비밀번호 오류";
     }
 
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ↓ 여기서부턴 비즈니스 로직 ↓
 
     private void duplicateCheckEmail(String email) {
         Member member = memberRepository.findByEmail(email);
@@ -51,8 +48,8 @@ public class MemberReadService {
         }
     }
     private void duplicateCheckUserId(String userId) {
-        Member member = memberRepository.findByUserId(userId);
-        if (member != null){
+        Optional<Member> member = memberRepository.findByUserId(userId);
+        if (!member.isEmpty()){
             throw new NoSuchElementException("존재하는 아이디입니다.");
         }
     }

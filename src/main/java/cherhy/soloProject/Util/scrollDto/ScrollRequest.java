@@ -1,4 +1,4 @@
-package cherhy.soloProject.Util;
+package cherhy.soloProject.Util.scrollDto;
 
 public record ScrollRequest(Long key, int size) { //커서키는 인덱스가 있어야 하고 정렬도 가능해야 하며 중복된 데이터가 존재하면 안된다!
     public static final Long NONE_KEY = -1L; //마지막 페이지일 경우, 키값이 -1일 수 없기 때문에

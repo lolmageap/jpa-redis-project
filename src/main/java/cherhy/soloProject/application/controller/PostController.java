@@ -1,8 +1,8 @@
 package cherhy.soloProject.application.controller;
 
-import cherhy.soloProject.Util.PageScroll;
-import cherhy.soloProject.Util.ScrollRequest;
-import cherhy.soloProject.application.domain.post.dto.PostDto;
+import cherhy.soloProject.Util.scrollDto.PageScroll;
+import cherhy.soloProject.Util.scrollDto.ScrollRequest;
+import cherhy.soloProject.application.domain.post.dto.request.PostRequestDto;
 import cherhy.soloProject.application.domain.post.dto.PostPhotoDto;
 import cherhy.soloProject.application.domain.post.service.PostReadService;
 import cherhy.soloProject.application.domain.post.service.PostWriteService;
@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Tag(name = "게시물")
@@ -26,14 +27,14 @@ public class PostController {
 
     @Operation(summary = "게시물 생성")
     @PostMapping("/create")
-    public void createPost(PostDto postDto){
-        postWriteService.save(postDto);
+    public String createPost(@RequestBody @Valid PostRequestDto postRequestDto){
+        return postWriteService.createPost(postRequestDto);
     }
 
     @Operation(summary = "게시물 수정")
     @PostMapping("/modify/{postId}")
-    public void modifyPost(@PathVariable Long postId, PostDto postDto){
-        postWriteService.modifyPost(postDto, postId);
+    public String modifyPost(@RequestBody @Valid PostRequestDto postRequestDto, @PathVariable Long postId){
+        return postWriteService.modifyPost(postRequestDto, postId);
     }
 
     @Operation(summary = "사용자의 게시물 불러오기, 전체")

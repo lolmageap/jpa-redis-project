@@ -1,7 +1,7 @@
 package cherhy.soloProject.application.domain.post.service;
 
-import cherhy.soloProject.Util.ScrollRequest;
-import cherhy.soloProject.Util.PageScroll;
+import cherhy.soloProject.Util.scrollDto.ScrollRequest;
+import cherhy.soloProject.Util.scrollDto.PageScroll;
 import cherhy.soloProject.application.domain.post.dto.PostPhotoDto;
 import cherhy.soloProject.application.domain.post.entity.Post;
 import cherhy.soloProject.application.domain.post.repository.jpa.PostRepository;
@@ -34,7 +34,7 @@ public class PostReadService {
     }
 
     public PageScroll<PostPhotoDto> findPostByMemberIdCursor(Long memberId, ScrollRequest scrollRequest) {
-        List<PostPhotoDto> findPosts = new ArrayList<>();
+        List<Post> findPosts = new ArrayList<>();
         long nextKey = 0;
 
         if (scrollRequest.hasKey()){
@@ -42,9 +42,10 @@ public class PostReadService {
         }else {
             findPosts = postRepository.findAllByMemberIdNoKey(memberId, scrollRequest);
         }
+        List<PostPhotoDto> postPhotoDtos = changePostPhotoDto(findPosts);
 
-        nextKey = getNextKey(findPosts);
-        return new PageScroll<>(scrollRequest.next(nextKey) ,findPosts);
+        nextKey = getNextKey(postPhotoDtos);
+        return new PageScroll<>(scrollRequest.next(nextKey) ,postPhotoDtos);
     }
 
     private long getNextKey(List<PostPhotoDto> findPosts) {

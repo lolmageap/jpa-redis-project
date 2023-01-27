@@ -1,4 +1,4 @@
-package cherhy.soloProject.application.domain.follow.dto;
+package cherhy.soloProject.application.domain.follow.dto.request;
 
 import javax.validation.constraints.NotNull;
 
