@@ -1,4 +1,4 @@
-package cherhy.soloProject.application.domain.reply.dto;
+package cherhy.soloProject.application.domain.reply.dto.response;
 
 import cherhy.soloProject.application.domain.member.entity.Member;
 

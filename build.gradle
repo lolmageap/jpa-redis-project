@@ -67,7 +67,7 @@ querydsl {
 sourceSets {
 	main.java.srcDir querydslDir
 }
-compileQuerydsl{d
+compileQuerydsl{
 	options.annotationProcessorPath = configurations.querydsl
 }
 

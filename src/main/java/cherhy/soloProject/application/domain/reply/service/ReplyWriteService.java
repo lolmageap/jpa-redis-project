@@ -8,10 +8,12 @@ import cherhy.soloProject.application.domain.reply.dto.RequestReplyDto;
 import cherhy.soloProject.application.domain.reply.entity.Reply;
 import cherhy.soloProject.application.domain.reply.repository.jpa.ReplyRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.time.format.DateTimeFormatter;
 
 @Service
 @Transactional
@@ -20,12 +22,28 @@ public class ReplyWriteService {
     private final ReplyRepository replyRepository;
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
+    private final StringRedisTemplate stringRedisTemplate;
 
-    public void setReply(RequestReplyDto reply){
+    public Boolean setReply(RequestReplyDto reply){
+        ZSetOperations zSetOps = stringRedisTemplate.opsForZSet(); //Sorted Set 선언
         Member findMember = getMember(reply);
         Post findPost = getPost(reply);
-        Reply buildReply = buildReply(reply, findMember, findPost);
-        replyRepository.save(buildReply);
+        Reply build = buildReply(reply, findMember, findPost);
+        Reply save = replyRepository.save(build);
+        return addRedis(zSetOps, findPost, save);
+    }
+
+    private Boolean addRedis(ZSetOperations zSetOps, Post findPost, Reply save) {
+        String key = String.valueOf(save.getId());
+        String postRedis = "postReplyOrderByLastModifyDate" + findPost.getId();
+        Long format = formatScore(save);
+        Boolean add = zSetOps.add(postRedis, key, format);// sorted set에 입력
+        return add;
+    }
+
+    private Long formatScore(Reply save) {
+        String format = DateTimeFormatter.ofPattern("yyyyMMddhhmmssSSSSS").format(save.getLastModifiedDate());
+        return Long.parseLong(format);
     }
 
     private Reply buildReply(RequestReplyDto reply, Member findMember, Post findPost) {

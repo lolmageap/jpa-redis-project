@@ -25,7 +25,7 @@ public class PostController {
     private final PostWriteService postWriteService;
     private final PostReadService postReadService;
 
-    @Operation(summary = "게시물 생성")
+    @Operation(summary = "게시물 생성 // Push Model")
     @PostMapping("/create")
     public String createPost(@RequestBody @Valid PostRequestDto postRequestDto){
         return postWriteService.createPost(postRequestDto);

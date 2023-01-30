@@ -24,6 +24,7 @@ public class Reply extends BaseTimeEntity {
     private Member member;
     private String content;
 
+
     @Builder
     public Reply(Post post, Member member, String content) {
         this.post = post;
