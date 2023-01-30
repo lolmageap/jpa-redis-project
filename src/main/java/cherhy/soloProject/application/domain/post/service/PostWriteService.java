@@ -1,17 +1,23 @@
 package cherhy.soloProject.application.domain.post.service;
 
+
 import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.member.repository.jpa.MemberRepository;
 import cherhy.soloProject.application.domain.photo.entity.Photo;
 import cherhy.soloProject.application.domain.photo.repository.jpa.PhotoRepository;
 import cherhy.soloProject.application.domain.post.dto.request.PostRequestDto;
 import cherhy.soloProject.application.domain.post.entity.Post;
+import cherhy.soloProject.application.domain.post.entity.TimeLine;
 import cherhy.soloProject.application.domain.post.repository.jpa.PostRepository;
+import cherhy.soloProject.application.domain.post.repository.jpa.TimeLineRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
+
 
 @Service
 @Transactional
@@ -21,15 +27,31 @@ public class PostWriteService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final PhotoRepository photoRepository;
+    private final TimeLineRepository timeLineRepository;
 
 
     public String createPost(PostRequestDto postRequestDto){ //게시물 생성
+
         Member findMember = memberRepository.findById(postRequestDto.memberId())
                 .orElseThrow(() -> new NullPointerException("회원정보가 없습니다"));
 
         Post addPost = buildPost(postRequestDto, findMember);
         postRepository.save(addPost);
         insertPhoto(postRequestDto, addPost);
+
+        String result = insertTimeLineValue(findMember, addPost);
+        return result;
+    }
+
+    private String insertTimeLineValue(Member findMember, Post post) {
+
+        List<Member> findAllByFollower = memberRepository.findAllByFollowers(findMember.getId());
+
+        if (findAllByFollower.size() < 1){
+            return "성공";
+        }
+
+        uploadTimeLine(post, findAllByFollower);
         return "업로드 성공";
     }
 
@@ -41,8 +63,24 @@ public class PostWriteService {
         return "변경 성공";
     }
 
+    private void uploadTimeLine(Post post,  List<Member> findAllByFollower) {
+        List<TimeLine> timeLineMember = new ArrayList<>();
 
-    // ↓ 여기서부턴 비즈니스 로직 ↓
+        for (Member member : findAllByFollower) {
+            TimeLine timeLine = buildTimeLine(post, member);
+            timeLineMember.add(timeLine);
+        }
+
+        List<TimeLine> timeLines = timeLineRepository.saveAll(timeLineMember);
+    }
+
+    private TimeLine buildTimeLine(Post post, Member member) {
+        return TimeLine.builder()
+                .post(post)
+                .member(member)
+                .build();
+    }
+
     private Post modify(PostRequestDto postRequestDto, Post findPost) {
         if (!postRequestDto.content().isEmpty()){
             findPost.changeContent(postRequestDto.content());

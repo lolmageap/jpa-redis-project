@@ -13,12 +13,11 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.springframework.util.Assert.isTrue;
-
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post extends BaseEntity {
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
     private Long id;
@@ -29,8 +28,12 @@ public class Post extends BaseEntity {
     private String content;
     @OneToMany(mappedBy = "post")
     private List<Photo> photos = new ArrayList<>();
+
     @OneToMany(mappedBy = "post")
     private List<Reply> replies = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post")
+    private List<TimeLine> timeLines = new ArrayList<>();
 
     @Builder
     public Post(Member member, String title, String content, List<Photo> photos) {
