@@ -39,7 +39,7 @@ public class PostController {
     }
 
     @Operation(summary = "게시물 수정")
-    @PostMapping("/modify/{postId}")
+    @PutMapping("/modify/{postId}")
     public String modifyPost(@RequestBody @Valid PostRequestDto postRequestDto, @PathVariable Long postId){
         return postWriteService.modifyPost(postRequestDto, postId);
     }
