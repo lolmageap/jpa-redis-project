@@ -49,7 +49,7 @@ public class PostReadService {
     private List<PostPhotoDto> changePostPhotoDto(List<Post> findPosts) {
         return findPosts.stream().map(post ->
                 new PostPhotoDto(
-                post.getId(), post.getMember().getId(), post.getTitle(), post.getContent(), post.getPhotos())
+                post.getId(), post.getMember().getId(), post.getTitle(), post.getContent(), post.getLikeCount(), post.getPhotos())
         ).collect(Collectors.toList());
     }
 

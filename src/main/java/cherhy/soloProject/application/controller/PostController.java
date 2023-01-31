@@ -6,6 +6,9 @@ import cherhy.soloProject.application.domain.post.dto.request.PostRequestDto;
 import cherhy.soloProject.application.domain.post.dto.PostPhotoDto;
 import cherhy.soloProject.application.domain.post.service.PostReadService;
 import cherhy.soloProject.application.domain.post.service.PostWriteService;
+import cherhy.soloProject.application.domain.postLike.dto.PostLikeDto;
+import cherhy.soloProject.application.domain.postLike.service.PostLikeReadService;
+import cherhy.soloProject.application.domain.postLike.service.PostLikeWriteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +27,10 @@ public class PostController {
 
     private final PostWriteService postWriteService;
     private final PostReadService postReadService;
+
+    private final PostLikeReadService postLikeReadService;
+
+    private final PostLikeWriteService postLikeWriteService;
 
     @Operation(summary = "게시물 생성 // Push Model")
     @PostMapping("/create")
@@ -56,6 +63,13 @@ public class PostController {
     public PageScroll<PostPhotoDto> getPostScroll(@PathVariable Long member_id, ScrollRequest scrollRequest){
         PageScroll<PostPhotoDto> postByMemberId = postReadService.findPostByMemberIdCursor(member_id, scrollRequest);
         return postByMemberId;
+    }
+
+    @Operation(summary = "좋아요, 취소")
+    @PostMapping("postLike")
+    public String postLike(@Valid @RequestBody PostLikeDto postLikeDto){
+        postLikeWriteService.postLike(postLikeDto);
+        return "성공";
     }
 
 }

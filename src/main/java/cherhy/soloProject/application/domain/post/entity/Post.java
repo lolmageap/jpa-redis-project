@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,12 +36,23 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post")
     private List<TimeLine> timeLines = new ArrayList<>();
 
+    private Long likeCount;
+
+//    @Version //낙관적 락
+//    private Long version;
+
     @Builder
-    public Post(Member member, String title, String content, List<Photo> photos) {
+    public Post(Member member, String title, String content, List<Photo> photos, Long likeCount) {
         this.member = member;
         this.title = title;
         this.content = content;
         this.photos = photos;
+        this.likeCount = likeCount == null ? 0 : likeCount;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.likeCount = this.likeCount == null ? 0 : this.likeCount;
     }
 
     public void changeTitle(String changeTitle) {

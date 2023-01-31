@@ -16,13 +16,15 @@ public class PostPhotoDto{
     private Long memberId;
     private String title;
     private String content;
+    private Long likeCount;
     private List<String> photos = new ArrayList<>();
 
     @QueryProjection
-    public PostPhotoDto(Long id, Long memberId, String title, String content, List<Photo> photos) {
+    public PostPhotoDto(Long id, Long memberId, String title, String content, Long likeCount, List<Photo> photos) {
         this.id = id;
         this.memberId = memberId;
         this.title = title;
+        this.likeCount = likeCount;
         this.content = content;
         for (Photo photo : photos) {
             this.photos.add(photo.getPhoto());
