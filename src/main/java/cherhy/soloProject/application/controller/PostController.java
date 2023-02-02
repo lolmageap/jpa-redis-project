@@ -4,6 +4,7 @@ import cherhy.soloProject.Util.scrollDto.PageScroll;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.application.domain.post.dto.request.PostRequestDto;
 import cherhy.soloProject.application.domain.post.dto.PostPhotoDto;
+import cherhy.soloProject.application.domain.post.entity.Post;
 import cherhy.soloProject.application.domain.post.service.PostReadService;
 import cherhy.soloProject.application.domain.post.service.PostWriteService;
 import cherhy.soloProject.application.domain.postLike.dto.PostLikeDto;
@@ -63,6 +64,13 @@ public class PostController {
     public PageScroll<PostPhotoDto> getPostScroll(@PathVariable Long member_id, ScrollRequest scrollRequest){
         PageScroll<PostPhotoDto> postByMemberId = postReadService.findPostByMemberIdCursor(member_id, scrollRequest);
         return postByMemberId;
+    }
+
+    @Operation(summary = "타임라인 조회 // only RDBMS")
+    @GetMapping("/timeLine/{member_id}")
+    public PageScroll<PostPhotoDto> getTimeLine(@PathVariable Long member_id, ScrollRequest scrollRequest){
+        PageScroll<PostPhotoDto> timeLine = postReadService.getTimeLine(member_id, scrollRequest);
+        return timeLine;
     }
 
     @Operation(summary = "좋아요, 취소")
