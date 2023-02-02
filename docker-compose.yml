@@ -1,67 +1,73 @@
 version: "3"
-services: 
-  my-redis-a:
-    hostname: redis-master
-    container_name: redis-master
-    image: "bitnami/redis"
-    environment:
-      - REDIS_REPLICATION_MODE=master
-      - ALLOW_EMPTY_PASSWORD=yes
-    ports:
-      - 5000:6379 
-  my-redis-b:
-    hostname: redis-replicas-1
-    container_name: redis-replicas-1
-    image: "bitnami/redis"
-    environment:
-      - REDIS_REPLICATION_MODE=slave
-      - REDIS_MASTER_HOST=redis-master
-      - ALLOW_EMPTY_PASSWORD=yes
-    ports:
-      - 5001:6379
-    depends_on:
-      - my-redis-a
 
-  redis-sentinel-1:
-    container_name: sentinel1
-    image: 'bitnami/redis-sentinel:latest'
-    environment:
-      - REDIS_SENTINEL_DOWN_AFTER_MILLISECONDS=3000
-      - REDIS_MASTER_HOST=redis-master
-      - REDIS_MASTER_PORT_NUMBER=6379
-      - REDIS_MASTER_SET=mymaster
-      - REDIS_SENTINEL_QUORUM=2
+services:
+
+#  predixy:
+#    image: redis:7.0.8
+#    build:
+#      context: predixy/
+#    container_name: predixy
+#    hostname: predixy
+#    volumes:
+#      - C:\Users\user\Desktop\soloproject\conf\predixy\redis.conf
+#    ports:
+#      - "127.0.0.1:7300:7300"
+
+  redis-node1:
+#    image: redis:latest
+    image: redis:7.0.8
+    container_name: redis-node1
+    volumes:
+      - C:\Users\user\Desktop\soloproject\conf\7000\redis.conf
+    command: redis-server \conf\7000\redis.conf
     ports:
-      - 26379:26379
-    depends_on:
-      - my-redis-a
-      - my-redis-b
-  redis-sentinel-2:
-    container_name: sentinel2
-    image: 'bitnami/redis-sentinel:latest'
-    environment:
-      - REDIS_SENTINEL_DOWN_AFTER_MILLISECONDS=3000
-      - REDIS_MASTER_HOST=redis-master
-      - REDIS_MASTER_PORT_NUMBER=6379
-      - REDIS_MASTER_SET=mymaster
-      - REDIS_SENTINEL_QUORUM=2
+        - "127.0.0.1:7000:7000"
+
+  redis-node2:
+    image: redis:7.0.8
+    container_name: redis-node2
+    volumes:
+      - C:\Users\user\Desktop\soloproject\conf\7001\redis.conf
+    command: redis-server \conf\7001\redis.conf
     ports:
-      - 26380:26379
-    depends_on:
-      - my-redis-a
-      - my-redis-b
-  redis-sentinel-3:
-    container_name: sentinel3
-    image: 'bitnami/redis-sentinel:latest'
-    environment:
-      - REDIS_SENTINEL_DOWN_AFTER_MILLISECONDS=3000
-      - REDIS_MASTER_HOST=redis-master
-      - REDIS_MASTER_PORT_NUMBER=6379
-      - REDIS_MASTER_SET=mymaster
-      - REDIS_SENTINEL_QUORUM=2
+      - "127.0.0.1:7001:7001"
+
+  redis-node3:
+    image: redis:7.0.8
+    container_name: redis-node3
+    volumes:
+      - C:\Users\user\Desktop\soloproject\conf\7002\redis.conf
+    command: redis-server \conf\7002\redis.conf
     ports:
-      - 26381:26379
-    depends_on:
-      - my-redis-a
-      - my-redis-b
-    
+      - "127.0.0.1:7002:7002"
+
+  redis-node4:
+    image: redis:7.0.8
+    container_name: redis-node4
+    volumes:
+      - C:\Users\user\Desktop\soloproject\conf\7003\redis.conf
+    command: redis-server \conf\7003\redis.conf
+    ports:
+      - "127.0.0.1:7003:7003"
+
+  redis-node5:
+    image: redis:7.0.8
+    container_name: redis-node5
+    volumes:
+      - C:\Users\user\Desktop\soloproject\conf\7004\redis.conf
+    command: redis-server \conf\7004\redis.conf
+    ports:
+      - "127.0.0.1:7004:7004"
+
+  redis-node6:
+    image: redis:7.0.8
+    container_name: redis-node6
+    volumes:
+      - C:\Users\user\Desktop\soloproject\conf\7005\redis.conf
+    command: redis-server \conf\7005\redis.conf
+    ports:
+      - "127.0.0.1:7005:7005"
+
+networks:
+  redis-net:
+    driver: bridge

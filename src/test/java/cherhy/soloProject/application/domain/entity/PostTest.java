@@ -44,19 +44,19 @@ class PostTest {
 //        memberWriteService.signUp(member);
 //    }
 
-    @Test
-    public void postTest(){
-//      사진 입력받음
-
-        ArrayList<String> photoList = new ArrayList<>();
-        for (int i = 0; i < 52; i++) {
-        photoList.add("test number one" + i);
-        photoList.add("test number two" + i);
-        photoList.add("test number three" + i);
-
-        PostRequestDto postRequestDto = new PostRequestDto(2L,i+i + "개",i+i  + "장", photoList);
-        postWriteService.save(postRequestDto);
-        }
+//    @Test
+//    public void postTest(){
+////      사진 입력받음
+//
+//        ArrayList<String> photoList = new ArrayList<>();
+//        for (int i = 0; i < 52; i++) {
+//        photoList.add("test number one" + i);
+//        photoList.add("test number two" + i);
+//        photoList.add("test number three" + i);
+//
+//        PostRequestDto postRequestDto = new PostRequestDto(2L,i+i + "개",i+i  + "장", photoList);
+//        postWriteService.save(postRequestDto);
+//        }
 
 //        em.flush();
 //        em.clear();
@@ -66,6 +66,6 @@ class PostTest {
 //
 //        assertThat(photos.size()).isEqualTo(3);
 
-    }
+//    }
 
 }
