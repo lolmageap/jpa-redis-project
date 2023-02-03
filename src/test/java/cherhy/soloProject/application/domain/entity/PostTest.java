@@ -48,15 +48,15 @@ class PostTest {
     public void postTest(){
 //      사진 입력받음
 
-        ArrayList<String> photoList = new ArrayList<>();
-        for (int i = 0; i < 52; i++) {
-        photoList.add("test number one" + i);
-        photoList.add("test number two" + i);
-        photoList.add("test number three" + i);
-
-        PostRequestDto postRequestDto = new PostRequestDto(2L,i+i + "개",i+i  + "장", photoList);
-        postWriteService.save(postRequestDto);
-        }
+//        ArrayList<String> photoList = new ArrayList<>();
+//        for (int i = 0; i < 52; i++) {
+//        photoList.add("test number one" + i);
+//        photoList.add("test number two" + i);
+//        photoList.add("test number three" + i);
+//
+//        PostRequestDto postRequestDto = new PostRequestDto(2L,i+i + "개",i+i  + "장", photoList);
+//        postWriteService.save(postRequestDto);
+//        }
 
 //        em.flush();
 //        em.clear();
