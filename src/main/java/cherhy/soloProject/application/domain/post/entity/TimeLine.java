@@ -1,5 +1,6 @@
 package cherhy.soloProject.application.domain.post.entity;
 
+import cherhy.soloProject.Util.BaseTimeEntity;
 import cherhy.soloProject.application.domain.member.entity.Member;
 import lombok.*;
 
@@ -10,7 +11,10 @@ import java.util.List;
 @Entity
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TimeLine {
+@Table(name = "TIMELINE",
+        indexes = {@Index(name = "timeline__index__member_id", columnList = "member_id")
+                 , @Index(name = "timeline__index__post_id", columnList = "post_id")})
+public class TimeLine extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "timeline_id")

@@ -44,10 +44,17 @@ class PostTest {
 //        memberWriteService.signUp(member);
 //    }
 
+<<<<<<< HEAD
 //    @Test
 //    public void postTest(){
 ////      사진 입력받음
 //
+=======
+    @Test
+    public void postTest(){
+//      사진 입력받음
+
+>>>>>>> 061388d2cfaac0c6bddb60697b9f4f23799d1a66
 //        ArrayList<String> photoList = new ArrayList<>();
 //        for (int i = 0; i < 52; i++) {
 //        photoList.add("test number one" + i);
