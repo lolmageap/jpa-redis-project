@@ -12,6 +12,9 @@ import javax.persistence.*;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "FOLLOW",
+        indexes = {@Index(name = "follower__index__member_id", columnList = "follower_member_id")
+                , @Index(name = "following__index__post_id", columnList = "following_member_id")})
 public class Follow extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "follow_id")

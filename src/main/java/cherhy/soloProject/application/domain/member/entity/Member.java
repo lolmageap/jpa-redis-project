@@ -12,13 +12,14 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
 import static java.util.Objects.requireNonNull;
-import static org.springframework.util.Assert.isTrue;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "MEMBER",
+        indexes = @Index(name = "user_id__index__member", columnList = "user_id"))
+
 public class Member extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
@@ -31,14 +32,14 @@ public class Member extends BaseTimeEntity {
     private String name;
     private String password;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<Post> posts = new ArrayList<>();
 
     //member -> follow 단방향 참조
-    @OneToMany(mappedBy = "follower")
+    @OneToMany(mappedBy = "follower", cascade = CascadeType.REMOVE)
     private List<Follow> followers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "following")
+    @OneToMany(mappedBy = "following", cascade = CascadeType.REMOVE)
     private List<Follow> follows = new ArrayList<>();
 
     @Builder //회원가입
@@ -60,6 +61,5 @@ public class Member extends BaseTimeEntity {
     public void changePassword(String changePassword) {
         this.password = changePassword;
     }
-
 
 }
