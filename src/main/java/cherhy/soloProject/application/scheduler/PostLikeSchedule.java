@@ -12,9 +12,9 @@ import java.time.LocalDateTime;
 public class PostLikeSchedule {
 
     // 스케쥴러를 사용하여 좋아요수 한번에 가져오기
-//    @Async
-//    @Scheduled(fixedDelay = 2000)
-//    public void postLikeUpdate(){
-//        System.out.println("time = " + LocalDateTime.now());
-//    }
+    @Async
+    @Scheduled(fixedDelay = 2000)
+    public void postLikeUpdate(){
+        System.out.println("time = " + LocalDateTime.now());
+    }
 }
