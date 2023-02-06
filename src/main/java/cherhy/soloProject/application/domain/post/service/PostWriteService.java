@@ -11,6 +11,8 @@ import cherhy.soloProject.application.domain.post.entity.TimeLine;
 import cherhy.soloProject.application.domain.post.repository.jpa.PostRepository;
 import cherhy.soloProject.application.domain.post.repository.jpa.TimeLineRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,20 +30,19 @@ public class PostWriteService {
     private final MemberRepository memberRepository;
     private final PhotoRepository photoRepository;
     private final TimeLineRepository timeLineRepository;
+    private final StringRedisTemplate redisTemplate;
 
+    public String createPost(PostRequestDto postRequestDto){
 
-    public String createPost(PostRequestDto postRequestDto){ //게시물 생성
-
-        Member findMember = memberRepository.findById(postRequestDto.memberId())
-                .orElseThrow(() -> new NullPointerException("회원정보가 없습니다"));
-
+        Member findMember = findMember(postRequestDto);
         Post addPost = buildPost(postRequestDto, findMember);
-        postRepository.save(addPost);
+        Post savePost = postRepository.save(addPost);
         insertPhoto(postRequestDto, addPost);
-
         String result = insertTimeLineValue(findMember, addPost);
+        addPostLikeToRedis(savePost);
         return result;
     }
+
 
     private String insertTimeLineValue(Member findMember, Post post) {
 
@@ -62,6 +63,21 @@ public class PostWriteService {
         modify(postRequestDto, findPost);
         return "변경 성공";
     }
+
+    private Member findMember(PostRequestDto postRequestDto) {
+        return memberRepository.findById(postRequestDto.memberId())
+                .orElseThrow(() -> new NullPointerException("회원정보가 없습니다"));
+    }
+
+    private void addPostLikeToRedis(Post savePost) {
+        ValueOperations<String, String> ops = redisTemplate.opsForValue();
+        String formatPost = String.format("postLike" + savePost.getId());
+        System.out.println("formatPost = " + formatPost);
+        ops.set(formatPost, "1");
+        String s = ops.get(formatPost);
+        System.out.println("s = " + s);
+    }
+
 
     private void uploadTimeLine(Post post,  List<Member> findAllByFollower) {
         List<TimeLine> timeLineMember = new ArrayList<>();

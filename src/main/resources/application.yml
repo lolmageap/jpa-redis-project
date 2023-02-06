@@ -6,14 +6,13 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   redis:
-#    cluster:
-#      nodes: 127.0.0.1:7000, 127.0.0.1:7001, 127.0.0.1:7002, 127.0.0.1:7003, 127.0.0.1:7004, 127.0.0.1:7005
     host: localhost
     port: 6379
+#    cluster:
+#      nodes: 127.0.0.1:7000, 127.0.0.1:7001, 127.0.0.1:7002, 127.0.0.1:7003, 127.0.0.1:7004, 127.0.0.1:7005
 #    sentinel:
 #      master: mymaster
 #      nodes:  127.0.0.1: 26379, 127.0.0.1: 26380, 127.0.0.1: 26381
-
 
   jpa:
     hibernate:
