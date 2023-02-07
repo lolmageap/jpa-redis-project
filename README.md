@@ -9,9 +9,4 @@ Blog : https://velog.io/@ekxk1234  ,  https://blog.naver.com/ekxk1234
 
 개발 환경 : 도커로 1개의 레디스 서버로 테스트 환경 구축
 
-// 게시물 조회 로직
-// 좋아요 테이블 조회
-// 좋아요를 해놓은 데이터가 없으면 좋아요 테이블에 insert
-// 레디스에 조회 테이블 id 값과 조회수 increment
-// 좋아요를 해놨었다면 데이터를 delete
-// 레디스에 조회 테이블 id 값과 조회수 decrement
+좋아요 -> redis increase or decrease -> postLike Table insert or delete -> scheduler update
