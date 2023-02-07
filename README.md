@@ -11,5 +11,9 @@ Blog : https://velog.io/@ekxk1234  ,  https://blog.naver.com/ekxk1234
 RedisStream으로 스케줄러가 돌 때 PostLike 테이블에 insert
 insert 후 그 이후 데이터들 쌓기 (event-driven)
 
-
 개발 환경 : 도커로 1개의 레디스 서버로 테스트 환경 구축
+
+
+좋아요 -> redis increase or decrease -> postLike Table insert or delete -> scheduler update
+
+exception handler 수정 해야함

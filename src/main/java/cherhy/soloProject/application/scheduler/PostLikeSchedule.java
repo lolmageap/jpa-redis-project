@@ -15,7 +15,7 @@ public class PostLikeSchedule {
     @Async
     @Scheduled(fixedDelay = 2000)
     public void postLikeUpdate(){
-        System.out.println("time = " + LocalDateTime.now());
+//        System.out.println("time = " + LocalDateTime.now());
         // 스케쥴러를 사용하여 좋아요수 한번에 가져오기
         // redis에서 계산된 값들을 전부 가져오고 bulk update
         // System.out.println("time = " + LocalDateTime.now());

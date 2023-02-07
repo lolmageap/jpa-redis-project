@@ -76,8 +76,8 @@ public class PostController {
     @Operation(summary = "좋아요, 취소")
     @PostMapping("postLike")
     public String postLike(@Valid @RequestBody PostLikeDto postLikeDto){
-        postLikeWriteService.postLike(postLikeDto);
-        return "성공";
+        String result = postLikeWriteService.postLike(postLikeDto);
+        return result;
     }
 
 }

@@ -17,12 +17,23 @@ public class redisTest {
     @Test
     public void testMember() throws Exception{
         ValueOperations<String, String> ops = redisTemplate.opsForValue();
-        String dummyValue = "apple";
+        String dummyValue = "banana";
 
         for (int i = 0; i < 1000; i++) {
             String key = String.format("%d", i);
             ops.set(key, dummyValue);
         }
-    }    
+    }
+
+    @Test
+    public void ss() throws Exception{
+        ValueOperations<String, String> ops = redisTemplate.opsForValue();
+
+        for (int i = 0; i < 1000; i++) {
+            String key = String.format("%d", i);
+            String s = ops.get(key);
+            System.out.println("s = " + s);
+        }
+    }
     
 }

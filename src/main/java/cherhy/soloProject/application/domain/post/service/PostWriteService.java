@@ -43,25 +43,23 @@ public class PostWriteService {
         return result;
     }
 
-
     private String insertTimeLineValue(Member findMember, Post post) {
-
         List<Member> findAllByFollower = memberRepository.findAllByFollowers(findMember.getId());
-
-        if (findAllByFollower.size() < 1){
-            return "성공";
-        }
-
-        uploadTimeLine(post, findAllByFollower);
-        return "업로드 성공";
+        return createTimeLine(post, findAllByFollower);
     }
 
     public String modifyPost(PostRequestDto postRequestDto, Long postId){ //게시물 저장
-        Post findPost = postRepository.findById(postId).orElseThrow(
-                () -> new NoSuchElementException("게시물이 존재하지 않습니다."));
-
+        Post findPost = getFindPost(postId);
         modify(postRequestDto, findPost);
         return "변경 성공";
+    }
+    private String createTimeLine(Post post, List<Member> findAllByFollower) {
+        if (findAllByFollower.size() < 1){
+            return "성공";
+        }else {
+            uploadTimeLine(post, findAllByFollower);
+            return "업로드 성공";
+        }
     }
 
     private Member findMember(PostRequestDto postRequestDto) {
@@ -72,10 +70,8 @@ public class PostWriteService {
     private void addPostLikeToRedis(Post savePost) {
         ValueOperations<String, String> ops = redisTemplate.opsForValue();
         String formatPost = String.format("postLike" + savePost.getId());
-        System.out.println("formatPost = " + formatPost);
-        ops.set(formatPost, "1");
-        String s = ops.get(formatPost);
-        System.out.println("s = " + s);
+        ops.set(formatPost, "0");
+        ops.get(formatPost);
     }
 
 
@@ -112,13 +108,15 @@ public class PostWriteService {
     }
 
     private void insertPhoto(PostRequestDto postRequestDto, Post addPost) {
-
-        Post findPost = postRepository.findById(addPost.getId())
-                .orElseThrow(() -> new NullPointerException("게시물이 등록되지 않았습니다."));
-
+        Post findPost = getFindPost(addPost.getId());
         if(!postRequestDto.photos().isEmpty()){ //사진 업로드가 없을 경우
             buildPhoto(postRequestDto, findPost);
         }
+    }
+
+    private Post getFindPost(Long p) {
+        return postRepository.findById(p)
+                .orElseThrow(() -> new NoSuchElementException("게시물이 존재하지 않습니다."));
     }
 
     private Post buildPost(PostRequestDto postRequestDto, Member findMember) {
