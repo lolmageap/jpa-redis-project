@@ -14,8 +14,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -27,6 +25,15 @@ public class PostLikeWriteService {
     private final StringRedisTemplate redisTemplate;
     private final PostLikeRepository postLikeRepository;
 
+
+    public String postExample(PostLikeDto postLikeDto){
+        Member findMember = findMember(postLikeDto);
+        Post findPost = findPost(postLikeDto.PostId());
+        findPost.updatePostLikeCount(findPost.getLikeCount()+1);
+        Post save = postRepository.save(findPost);
+        Long likeCount = save.getLikeCount();
+        return Long.toString(likeCount);
+    }
 
 
     public String postLike(PostLikeDto postLikeDto){
@@ -47,12 +54,20 @@ public class PostLikeWriteService {
     private String likeOrLikeCancel(ValueOperations<String, String> ops, Member findMember, Post findPost, String formatPost, Optional<PostLike> postLike) {
         if (postLike.isEmpty()){
             //좋아요 테이블에 값이 없으면 좋아요 +1
-            ops.increment(formatPost);
+            if (ops.get(formatPost) == null){
+                ops.set(formatPost, Long.toString(findPost.getLikeCount()+1));
+            }else {
+                ops.increment(formatPost);
+            }
             buildPostLike(findMember, findPost);
             return "좋아요";
         }else {
-            //좋아요 테이블에 값이 없으면 좋아요 +1
-            ops.decrement(formatPost);
+            //좋아요 테이블에 값이 있으면 좋아요 -1
+            if (ops.get(formatPost) == null){
+                ops.set(formatPost, Long.toString(findPost.getLikeCount()-1));
+            }else {
+                ops.decrement(formatPost);
+            }
             postLikeRepository.delete(postLike.get());
             return "좋아요 취소";
         }
@@ -80,7 +95,7 @@ public class PostLikeWriteService {
     @Async
     @Scheduled(fixedDelay = 5000)
     public void scheduler(){
-        ScanOptions scanOptions = ScanOptions.scanOptions().match("*").count(10).build();
+        ScanOptions scanOptions = ScanOptions.scanOptions().match("postLike*").count(10).build();
         Cursor<String> cursor = redisTemplate.scan(scanOptions);
 
         while (cursor.hasNext()){
@@ -99,14 +114,13 @@ public class PostLikeWriteService {
         }
     }
 
+    //
     private Long extractPostId(String key) {
         Long postId;
         if (key.contains("postLike:")){
             int index = key.indexOf(":");
             postId = Long.valueOf(key.substring(index + 1));
         }else {
-            System.out.println("엘스");
-
             return null;
         }
         return postId;
