@@ -4,7 +4,6 @@ import cherhy.soloProject.Util.scrollDto.PageScroll;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.application.domain.post.dto.request.PostRequestDto;
 import cherhy.soloProject.application.domain.post.dto.PostPhotoDto;
-import cherhy.soloProject.application.domain.post.entity.Post;
 import cherhy.soloProject.application.domain.post.service.PostReadService;
 import cherhy.soloProject.application.domain.post.service.PostWriteService;
 import cherhy.soloProject.application.domain.postLike.dto.PostLikeDto;
