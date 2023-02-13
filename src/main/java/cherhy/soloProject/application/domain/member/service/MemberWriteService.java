@@ -3,14 +3,11 @@ package cherhy.soloProject.application.domain.member.service;
 import cherhy.soloProject.application.domain.member.dto.MemberDto;
 import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.member.repository.jpa.MemberRepository;
+import cherhy.soloProject.application.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -28,14 +25,15 @@ public class MemberWriteService {
     }
 
     public String modifyMember(MemberDto memberDto, Long memberId) {
-        Member findMember = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NoSuchElementException("회원정보가 존재하지 않습니다."));
-
+        Member findMember = getMember(memberId);
         memberRepository.save(modify(memberDto, findMember));
         return "회원정보 변경";
     }
 
-    // ↓ 여기서부턴 비즈니스 로직 ↓
+    private Member getMember(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+    }
 
     private Member modify(MemberDto memberDto, Member findMember) {
         if (!memberDto.user_id().isEmpty()){

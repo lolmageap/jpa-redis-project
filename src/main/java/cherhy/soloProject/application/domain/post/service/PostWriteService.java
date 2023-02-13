@@ -10,6 +10,8 @@ import cherhy.soloProject.application.domain.post.entity.Post;
 import cherhy.soloProject.application.domain.post.entity.TimeLine;
 import cherhy.soloProject.application.domain.post.repository.jpa.PostRepository;
 import cherhy.soloProject.application.domain.post.repository.jpa.TimeLineRepository;
+import cherhy.soloProject.application.exception.MemberNotFoundException;
+import cherhy.soloProject.application.exception.PostNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -18,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 
 @Service
@@ -49,7 +50,7 @@ public class PostWriteService {
     }
 
     public String modifyPost(PostRequestDto postRequestDto, Long postId){ //게시물 저장
-        Post findPost = getFindPost(postId);
+        Post findPost = getPost(postId);
         modify(postRequestDto, findPost);
         return "변경 성공";
     }
@@ -64,12 +65,12 @@ public class PostWriteService {
 
     private Member findMember(PostRequestDto postRequestDto) {
         return memberRepository.findById(postRequestDto.memberId())
-                .orElseThrow(() -> new NullPointerException("회원정보가 없습니다"));
+                .orElseThrow(MemberNotFoundException::new);
     }
 
     private void addPostLikeToRedis(Post savePost) {
         ValueOperations<String, String> ops = redisTemplate.opsForValue();
-        String formatPost = String.format("postLike" + savePost.getId());
+        String formatPost = String.format("postLike:" + savePost.getId());
         ops.set(formatPost, "0");
         ops.get(formatPost);
     }
@@ -83,7 +84,7 @@ public class PostWriteService {
             timeLineMember.add(timeLine);
         }
 
-        List<TimeLine> timeLines = timeLineRepository.saveAll(timeLineMember);
+        timeLineRepository.saveAll(timeLineMember);
     }
 
     private TimeLine buildTimeLine(Post post, Member member) {
@@ -108,15 +109,15 @@ public class PostWriteService {
     }
 
     private void insertPhoto(PostRequestDto postRequestDto, Post addPost) {
-        Post findPost = getFindPost(addPost.getId());
+        Post findPost = getPost(addPost.getId());
         if(!postRequestDto.photos().isEmpty()){ //사진 업로드가 없을 경우
             buildPhoto(postRequestDto, findPost);
         }
     }
 
-    private Post getFindPost(Long p) {
+    private Post getPost(Long p) {
         return postRepository.findById(p)
-                .orElseThrow(() -> new NoSuchElementException("게시물이 존재하지 않습니다."));
+                .orElseThrow(PostNotFoundException::new);
     }
 
     private Post buildPost(PostRequestDto postRequestDto, Member findMember) {

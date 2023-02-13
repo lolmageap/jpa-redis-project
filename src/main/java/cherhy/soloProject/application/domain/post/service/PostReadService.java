@@ -8,6 +8,7 @@ import cherhy.soloProject.application.domain.post.dto.PostPhotoDto;
 import cherhy.soloProject.application.domain.post.entity.Post;
 import cherhy.soloProject.application.domain.post.repository.jpa.PostRepository;
 import cherhy.soloProject.application.domain.post.repository.jpa.TimeLineRepository;
+import cherhy.soloProject.application.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -66,7 +67,7 @@ public class PostReadService {
     }
 
     private Member getMember(Long member_id) {
-        return memberRepository.findById(member_id).orElseThrow(() -> new NullPointerException("회원정보가 없습니다."));
+        return memberRepository.findById(member_id).orElseThrow(MemberNotFoundException::new);
     }
 
     private List<PostPhotoDto> changePostPhotoDto(List<Post> findPosts) {

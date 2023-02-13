@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom, MemberMapper {
-    Member findByEmail(String email);
+    Optional<Member> findByEmail(String email);
     @Query("select m from Member m where m.user_id = :userId")
     Optional<Member> findByUserId(@Param("userId") String userId);
 

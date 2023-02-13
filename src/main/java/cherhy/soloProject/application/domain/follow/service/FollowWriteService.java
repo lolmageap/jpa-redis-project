@@ -5,11 +5,12 @@ import cherhy.soloProject.application.domain.follow.entity.Follow;
 import cherhy.soloProject.application.domain.follow.repository.jpa.FollowRepository;
 import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.member.repository.jpa.MemberRepository;
+import cherhy.soloProject.application.exception.MemberNotFoundException;
+import cherhy.soloProject.application.exception.NoFollowerException;
+import cherhy.soloProject.application.exception.NotFollowException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -21,67 +22,54 @@ public class FollowWriteService {
 
     public Boolean followMember(FollowMemberDto followMemberDto){
         Follow follow = followValid(followMemberDto);
-        Follow save = followRepository.save(follow);
-
-        if (save != null) return true;
-
-        return false;
+        followRepository.save(follow);
+        return true;
     }
 
     public Boolean unFollowMember(FollowMemberDto followMemberDto){
         Follow follow = unFollowValid(followMemberDto);
         followRepository.delete(follow);
 
-        Optional<Follow> byId = followRepository.findById(follow.getId());
+        getFollower(follow);
+        return true;
+    }
 
-        if (byId.isEmpty()){
-            return true;
-        }
-        return false;
+    private Follow getFollower(Follow follow) {
+        return followRepository.findById(follow.getId()).orElseThrow(NoFollowerException::new);
     }
 
     public Follow unFollowValid(FollowMemberDto followMemberDto){
-        var findMember = memberRepository.findById(followMemberDto.MemberId());
-        var followMember = memberRepository.findById(followMemberDto.FollowerId());
-
-        Follow check = followingCheck(findMember, followMember);
-
-        if (check == null){
-            throw new IllegalArgumentException("팔로잉이 되어있지않습니다");
-        }
-
+        Member findMember = getMember(followMemberDto.MemberId());
+        Member followMember = getMember(followMemberDto.FollowerId());
+        Follow check = unFollowingCheck(findMember, followMember);
         return check;
     }
 
+    private Member getMember(Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+    }
+
     private Follow followValid(FollowMemberDto followMemberDto) {
-        var findMember = memberRepository.findById(followMemberDto.MemberId());
-        var followMember = memberRepository.findById(followMemberDto.FollowerId());
-
-        Follow check = followingCheck(findMember, followMember);
-
-        if (check != null){
-            throw new IllegalArgumentException("이미 팔로잉이 되어있습니다");
-        }
-
+        Member findMember = getMember(followMemberDto.MemberId());
+        Member followMember = getMember(followMemberDto.FollowerId());
+        followingCheck(findMember, followMember); 
+        
         Follow buildFollow = Follow.builder()
-                .follower(findMember.get())
-                .following(followMember.get())
+                .follower(findMember)
+                .following(followMember)
                 .build();
 
         return buildFollow;
     }
 
-    private Follow followingCheck(Optional<Member> findMember, Optional<Member> followMember) {
-        if (findMember.isEmpty() || followMember.isEmpty()){
-            throw new IllegalArgumentException("존재하지 않는 유저입니다");
-        }
-
-        Follow followCheck = followRepository.followCheck(findMember.get().getId(), followMember.get().getId());
-
-        return followCheck;
-    }
-
-
-
+    private Follow followingCheck(Member findMember, Member followMember) {
+        return followRepository.followCheck(findMember.getId(), followMember.getId())
+                .orElseThrow(NotFollowException::new);
+    }  // 팔로워가 아니어야함
+    
+    private Follow unFollowingCheck(Member findMember, Member followMember) {
+        return followRepository.followCheck(findMember.getId(), followMember.getId())
+                .orElseThrow(NotFollowException::new);
+    } // 팔로워가 맞아야함
 
 }

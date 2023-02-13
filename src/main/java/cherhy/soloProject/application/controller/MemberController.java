@@ -21,14 +21,14 @@ public class MemberController {
     private final MemberWriteService memberWriteService;
 
     @Operation(summary = "이메일 체크")
-    @PostMapping("/check/{email}")
+    @PostMapping("/check/email/{email}")
     public Boolean emailCheck(@PathVariable String email){
         Boolean aBoolean = memberReadService.emailCheck(email);
         return aBoolean;
     }
 
     @Operation(summary = "id 체크")
-    @PostMapping("/check/{userId}")
+    @PostMapping("/check/id/{userId}")
     public Boolean idCheck(@PathVariable String userId){
         Boolean aBoolean = memberReadService.idCheck(userId);
         return aBoolean;

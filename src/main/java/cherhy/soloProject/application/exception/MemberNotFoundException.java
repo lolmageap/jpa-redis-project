@@ -1,10 +1,10 @@
 package cherhy.soloProject.application.exception;
 
-public class UserNotFoundException extends SnsException {
+public class MemberNotFoundException extends SnsException {
 
     private static final String MESSAGE = "존재하지 않는 회원입니다.";
 
-    public UserNotFoundException() {
+    public MemberNotFoundException() {
         super(MESSAGE);
     }
 

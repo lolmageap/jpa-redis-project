@@ -6,6 +6,7 @@ import cherhy.soloProject.application.domain.follow.dto.response.ResponseFollowM
 import cherhy.soloProject.application.domain.follow.repository.jpa.FollowRepository;
 import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.member.repository.jpa.MemberRepository;
+import cherhy.soloProject.application.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +42,7 @@ public class FollowReadService {
 
     private Member getMember(Long id) {
         Member member = memberRepository.findById(id)
-                .orElseThrow(() -> new NullPointerException("회원정보가 없습니다."));
+                .orElseThrow(MemberNotFoundException::new);
         return member;
     }
 

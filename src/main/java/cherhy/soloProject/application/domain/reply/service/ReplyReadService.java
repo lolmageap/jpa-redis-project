@@ -7,6 +7,7 @@ import cherhy.soloProject.application.domain.post.repository.jpa.PostRepository;
 import cherhy.soloProject.application.domain.reply.dto.response.ResponseReplyDto;
 import cherhy.soloProject.application.domain.reply.entity.Reply;
 import cherhy.soloProject.application.domain.reply.repository.jpa.ReplyRepository;
+import cherhy.soloProject.application.exception.PostNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
@@ -37,7 +38,7 @@ public class ReplyReadService {
 
         Post findPost = getPost(postId);
 
-        String postRedis = "postReplyOrderByLastModifyDate" + findPost.getId(); // redis key 값
+        String postRedis = "postReplyOrderByLastModifyDate:" + findPost.getId(); // redis key 값
 
         List<Long> sortedKeys = getSortedKeys(scrollRequest, zSetOps, postRedis); // scrollRequest 정렬 되어있는 키 가져오기
 
@@ -50,10 +51,6 @@ public class ReplyReadService {
 //        long getNextKey = nextKey(scrollRequest, repliesScroll);
         return new PageScroll<>(scrollRequest.next(getNextKey),responseReplyDtos);
     }
-
-//    private long nextKey(ScrollRequest scrollRequest, List<Reply> repliesScroll) {
-//        return repliesScroll.stream().mapToLong(v -> v.getId()).min().orElse(scrollRequest.NONE_KEY);
-//    }
 
     private Long NextKeyCheck(ScrollRequest scrollRequest, List<Long> sortedKeys) {
         if (sortedKeys.size()-1 == scrollRequest.size()){
@@ -84,6 +81,6 @@ public class ReplyReadService {
 
     private Post getPost(Long postId) {
         return postRepository.findById(postId)
-                .orElseThrow(() -> new NullPointerException("게시물이 존재하지 않습니다."));
+                .orElseThrow(PostNotFoundException::new);
     }
 }

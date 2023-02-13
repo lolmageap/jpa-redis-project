@@ -7,6 +7,8 @@ import cherhy.soloProject.application.domain.post.repository.jpa.PostRepository;
 import cherhy.soloProject.application.domain.reply.dto.RequestReplyDto;
 import cherhy.soloProject.application.domain.reply.entity.Reply;
 import cherhy.soloProject.application.domain.reply.repository.jpa.ReplyRepository;
+import cherhy.soloProject.application.exception.MemberNotFoundException;
+import cherhy.soloProject.application.exception.PostNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
@@ -35,7 +37,7 @@ public class ReplyWriteService {
 
     private Boolean addRedis(ZSetOperations zSetOps, Post findPost, Reply save) {
         String key = String.valueOf(save.getId());
-        String postRedis = "postReplyOrderByLastModifyDate" + findPost.getId();
+        String postRedis = "postReplyOrderByLastModifyDate:" + findPost.getId();
         Long format = formatScore(save);
         Boolean add = zSetOps.add(postRedis, key, format);// sorted set에 입력
         return add;
@@ -56,12 +58,12 @@ public class ReplyWriteService {
 
     private Member getMember(RequestReplyDto reply) {
         return memberRepository.findById(reply.memberId())
-                .orElseThrow(() -> new NullPointerException("회원이 존재하지 않습니다"));
+                .orElseThrow(MemberNotFoundException::new);
     }
 
     private Post getPost(RequestReplyDto reply) {
         return postRepository.findById(reply.postId())
-                .orElseThrow(() -> new NullPointerException("게시물이 존재하지 않습니다"));
+                .orElseThrow(PostNotFoundException::new);
     }
 
 }

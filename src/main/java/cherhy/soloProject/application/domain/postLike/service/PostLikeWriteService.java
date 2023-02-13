@@ -7,6 +7,8 @@ import cherhy.soloProject.application.domain.post.repository.jpa.PostRepository;
 import cherhy.soloProject.application.domain.postLike.dto.PostLikeDto;
 import cherhy.soloProject.application.domain.postLike.entity.PostLike;
 import cherhy.soloProject.application.domain.postLike.repository.jpa.PostLikeRepository;
+import cherhy.soloProject.application.exception.MemberNotFoundException;
+import cherhy.soloProject.application.exception.PostNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.*;
 import org.springframework.scheduling.annotation.Async;
@@ -84,12 +86,12 @@ public class PostLikeWriteService {
 
     private Post findPost(Long PostId) {
         return postRepository.findById(PostId)
-                .orElseThrow(() -> new NullPointerException("게시물이 존재하지 않습니다."));
+                .orElseThrow(PostNotFoundException::new);
     }
 
     private Member findMember(PostLikeDto postLikeDto) {
         return memberRepository.findById(postLikeDto.memberId())
-                .orElseThrow(() -> new NullPointerException("회원 정보가 없습니다."));
+                .orElseThrow(MemberNotFoundException::new);
     }
 
     @Async
