@@ -79,4 +79,11 @@ public class PostController {
         return result;
     }
 
+    @Operation(summary = "breakpoint 좋아요 동시성 테스트")
+    @PostMapping("postLike/example")
+    public String postExample(@Valid @RequestBody PostLikeDto postLikeDto){
+        String result = postLikeWriteService.postExample(postLikeDto);
+        return result;
+    }
+
 }

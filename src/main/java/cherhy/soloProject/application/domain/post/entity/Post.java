@@ -4,10 +4,7 @@ import cherhy.soloProject.Util.BaseEntity;
 import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.photo.entity.Photo;
 import cherhy.soloProject.application.domain.reply.entity.Reply;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
 import javax.persistence.*;
@@ -16,6 +13,7 @@ import java.util.List;
 
 @Getter
 @Entity
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post extends BaseEntity {
 
@@ -66,5 +64,9 @@ public class Post extends BaseEntity {
     public void changePhoto(List<Photo> changePhoto) {
         this.photos = changePhoto;
     }
+
+    public void updatePostLikeCount(Long likeCount){
+        this.likeCount = likeCount;
+    };
 
 }

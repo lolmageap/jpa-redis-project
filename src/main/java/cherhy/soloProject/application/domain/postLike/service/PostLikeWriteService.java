@@ -14,25 +14,34 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class PostLikeWriteService {
-
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
     private final StringRedisTemplate redisTemplate;
     private final PostLikeRepository postLikeRepository;
 
+
+    public String postExample(PostLikeDto postLikeDto){
+        Member findMember = findMember(postLikeDto);
+        Post findPost = findPost(postLikeDto.PostId());
+        findPost.updatePostLikeCount(findPost.getLikeCount()+1);
+        Post save = postRepository.save(findPost);
+        Long likeCount = save.getLikeCount();
+        return Long.toString(likeCount);
+    }
+
+
     public String postLike(PostLikeDto postLikeDto){
         ValueOperations<String, String> ops = redisTemplate.opsForValue();
 
         Member findMember = findMember(postLikeDto);
-        Post findPost = findPost(postLikeDto);
-        String formatPost = String.format("postLike" + findPost.getId());
+        Post findPost = findPost(postLikeDto.PostId());
+        String formatPost = String.format("postLike:" + findPost.getId());
         Optional<PostLike> postLike = postLikeRepository.findByMemberIdAndPostId(findMember.getId(), findPost.getId());
         String result = likeOrLikeCancel(ops, findMember, findPost, formatPost, postLike);
 
@@ -45,14 +54,20 @@ public class PostLikeWriteService {
     private String likeOrLikeCancel(ValueOperations<String, String> ops, Member findMember, Post findPost, String formatPost, Optional<PostLike> postLike) {
         if (postLike.isEmpty()){
             //좋아요 테이블에 값이 없으면 좋아요 +1
-            System.out.println("ops = " + ops);
-            ops.increment(formatPost);
+            if (ops.get(formatPost) == null){
+                ops.set(formatPost, Long.toString(findPost.getLikeCount()+1));
+            }else {
+                ops.increment(formatPost);
+            }
             buildPostLike(findMember, findPost);
             return "좋아요";
         }else {
-            //좋아요 테이블에 값이 없으면 좋아요 +1
-            System.out.println("postLike = " + postLike.get());
-            ops.decrement(formatPost);
+            //좋아요 테이블에 값이 있으면 좋아요 -1
+            if (ops.get(formatPost) == null){
+                ops.set(formatPost, Long.toString(findPost.getLikeCount()-1));
+            }else {
+                ops.decrement(formatPost);
+            }
             postLikeRepository.delete(postLike.get());
             return "좋아요 취소";
         }
@@ -67,8 +82,8 @@ public class PostLikeWriteService {
         return savePostLike;
     }
 
-    private Post findPost(PostLikeDto postLikeDto) {
-        return postRepository.findById(postLikeDto.PostId())
+    private Post findPost(Long PostId) {
+        return postRepository.findById(PostId)
                 .orElseThrow(() -> new NullPointerException("게시물이 존재하지 않습니다."));
     }
 
@@ -77,12 +92,43 @@ public class PostLikeWriteService {
                 .orElseThrow(() -> new NullPointerException("회원 정보가 없습니다."));
     }
 
-//    @Async
-//    @Scheduled(fixedDelay = 2000)
-//    public void postLikeUpdate(){
-//        // 스케쥴러를 사용하여 좋아요수 한번에 가져오기
-//        // redis에서 계산된 값들을 전부 가져오고 bulk update
-//        System.out.println("time = " + LocalDateTime.now());
-//    }
+    @Async
+    @Scheduled(fixedDelay = 5000)
+    public void scheduler(){
+        ScanOptions scanOptions = ScanOptions.scanOptions().match("postLike*").count(10).build();
+        Cursor<String> cursor = redisTemplate.scan(scanOptions);
+
+        while (cursor.hasNext()){
+
+            String key = new String(cursor.next());
+            Long postId = 0L;
+            postId = extractPostId(key);
+            if (postId == null) continue;
+
+            String value = redisTemplate.opsForValue().get(key);
+            Post post = findPost(postId);
+            post.updatePostLikeCount(Long.parseLong(value));
+            Post savePost = postRepository.save(post);
+            deleteRedisKey(savePost);
+
+        }
+    }
+
+    //
+    private Long extractPostId(String key) {
+        Long postId;
+        if (key.contains("postLike:")){
+            int index = key.indexOf(":");
+            postId = Long.valueOf(key.substring(index + 1));
+        }else {
+            return null;
+        }
+        return postId;
+    }
+
+    private void deleteRedisKey(Post savePost) {
+        String formatPost = String.format("postLike:" + savePost.getId());
+        redisTemplate.delete(formatPost);
+    }
 
 }

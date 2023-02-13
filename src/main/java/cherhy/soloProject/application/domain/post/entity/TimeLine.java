@@ -8,7 +8,6 @@ import javax.persistence.*;
 
 @Getter
 @Entity
-@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "TIMELINE",
         indexes = {@Index(name = "timeline__index__member_id", columnList = "member_id")
