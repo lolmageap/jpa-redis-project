@@ -3,9 +3,9 @@ package cherhy.soloProject.application.domain.member.service;
 import cherhy.soloProject.application.domain.member.dto.SignInDto;
 import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.member.repository.jpa.MemberRepository;
-import cherhy.soloProject.application.exception.ExistException;
 import cherhy.soloProject.application.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,12 +22,12 @@ public class MemberReadService {
     private final PasswordEncoder encoder;
 
     public Boolean emailCheck(String email){
-        duplicateCheckEmail(email);
-        return true;
+        boolean res = duplicateCheckEmail(email);
+        return res;
     }
     public Boolean idCheck(String userId){
-        duplicateCheckUserId(userId);
-        return true;
+        boolean res = duplicateCheckUserId(userId);
+        return res;
     }
     public String signIn(SignInDto signInDto, HttpSession session){
 
@@ -45,17 +45,44 @@ public class MemberReadService {
         return memberRepository.findByUserId(signInDto.userId()).orElseThrow(MemberNotFoundException::new);
     }
 
-    private void duplicateCheckEmail(String email) {
+    private boolean duplicateCheckEmail(String email) {
         Optional<Member> member = memberRepository.findByEmail(email);
-        if (member != null){
-            throw new ExistException("email");
+        if (!member.isEmpty()){
+            return false;
         }
+        return true;
     }
-    private void duplicateCheckUserId(String userId) {
+    private boolean duplicateCheckUserId(String userId) {
         Optional<Member> member = memberRepository.findByUserId(userId);
         if (!member.isEmpty()){
-            throw new ExistException("id");
+            return false;
         }
+        return true;
     }
 
+//    private void duplicateCheckEmail(String email) {
+//        Optional<Member> member = memberRepository.findByEmail(email);
+//        if (!member.isEmpty()){
+//            throw new ExistException("email");
+//        }
+//    }
+//    private void duplicateCheckUserId(String userId) {
+//        Optional<Member> member = memberRepository.findByUserId(userId);
+//        if (!member.isEmpty()){
+//            throw new ExistException("id");
+//        }
+//    }
+
+    public ResponseEntity<String> getResponseEmail(Boolean aBoolean) {
+        if (aBoolean){
+            return ResponseEntity.ok("이메일이 사용 가능합니다");
+        }
+        return ResponseEntity.badRequest().body("이메일이 중복됩니다");
+    }
+    public ResponseEntity<String> getResponseId(Boolean aBoolean) {
+        if (aBoolean){
+            return ResponseEntity.ok("아이디가 사용 가능합니다");
+        }
+        return ResponseEntity.badRequest().body("아이디가 존재합니다");
+    }
 }

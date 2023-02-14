@@ -6,11 +6,11 @@ import cherhy.soloProject.application.domain.follow.repository.jpa.FollowReposit
 import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.member.repository.jpa.MemberRepository;
 import cherhy.soloProject.application.exception.MemberNotFoundException;
-import cherhy.soloProject.application.exception.NoFollowerException;
-import cherhy.soloProject.application.exception.NotFollowException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -20,56 +20,33 @@ public class FollowWriteService {
     private final FollowRepository followRepository;
     private final MemberRepository memberRepository;
 
-    public Boolean followMember(FollowMemberDto followMemberDto){
-        Follow follow = followValid(followMemberDto);
-        followRepository.save(follow);
-        return true;
-    }
-
-    public Boolean unFollowMember(FollowMemberDto followMemberDto){
-        Follow follow = unFollowValid(followMemberDto);
-        followRepository.delete(follow);
-
-        getFollower(follow);
-        return true;
-    }
-
-    private Follow getFollower(Follow follow) {
-        return followRepository.findById(follow.getId()).orElseThrow(NoFollowerException::new);
-    }
-
-    public Follow unFollowValid(FollowMemberDto followMemberDto){
+    public String followMember(FollowMemberDto followMemberDto){
         Member findMember = getMember(followMemberDto.MemberId());
         Member followMember = getMember(followMemberDto.FollowerId());
-        Follow check = unFollowingCheck(findMember, followMember);
-        return check;
+        String res = followingCheck(findMember, followMember);
+        return res;
     }
 
     private Member getMember(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
     }
 
-    private Follow followValid(FollowMemberDto followMemberDto) {
-        Member findMember = getMember(followMemberDto.MemberId());
-        Member followMember = getMember(followMemberDto.FollowerId());
-        followingCheck(findMember, followMember); 
-        
-        Follow buildFollow = Follow.builder()
+    private static Follow buildFollow(Member findMember, Member followMember) {
+        return Follow.builder()
                 .follower(findMember)
                 .following(followMember)
                 .build();
-
-        return buildFollow;
     }
 
-    private Follow followingCheck(Member findMember, Member followMember) {
-        return followRepository.followCheck(findMember.getId(), followMember.getId())
-                .orElseThrow(NotFollowException::new);
-    }  // 팔로워가 아니어야함
-    
-    private Follow unFollowingCheck(Member findMember, Member followMember) {
-        return followRepository.followCheck(findMember.getId(), followMember.getId())
-                .orElseThrow(NotFollowException::new);
-    } // 팔로워가 맞아야함
+    private String followingCheck(Member findMember, Member followMember) {
+        Optional<Follow> follow = followRepository.followCheck(findMember.getId(), followMember.getId());
+        if (follow.isEmpty()){
+            Follow buildFollow = buildFollow(findMember, followMember);
+            followRepository.save(buildFollow);
+            return "팔로우";
+        }
+        followRepository.delete(follow.get());
+        return "언팔로우";
+    }
 
 }

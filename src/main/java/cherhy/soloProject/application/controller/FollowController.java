@@ -22,16 +22,10 @@ public class FollowController {
     private final FollowWriteService followWriteService;
     private final FollowReadService followReadService;
 
-    @Operation(summary = "팔로우하기")
+    @Operation(summary = "팔로우, 언팔로우")
     @PostMapping
-    public Boolean follow(@RequestBody @Valid FollowMemberDto followMemberDto){
+    public String follow(@RequestBody @Valid FollowMemberDto followMemberDto){
         return followWriteService.followMember(followMemberDto);
-    }
-
-    @Operation(summary = "언팔하기")
-    @PostMapping("/unfollow")
-    public Boolean unfollow(@RequestBody @Valid FollowMemberDto followMemberDto){
-        return followWriteService.unFollowMember(followMemberDto);
     }
 
     @Operation(summary = "팔로우 리스트")
