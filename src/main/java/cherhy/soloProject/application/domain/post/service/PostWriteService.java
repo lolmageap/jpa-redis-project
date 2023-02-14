@@ -35,17 +35,18 @@ public class PostWriteService {
 
     public String createPost(PostRequestDto postRequestDto){
 
-        Member findMember = findMember(postRequestDto);
+        Member findMember = getMember(postRequestDto);
         Post addPost = buildPost(postRequestDto, findMember);
-        Post savePost = postRepository.save(addPost);
-        insertPhoto(postRequestDto, addPost);
         String result = insertTimeLineValue(findMember, addPost);
-        addPostLikeToRedis(savePost);
+        addPostLikeToRedis(addPost);
         return result;
     }
 
     private String insertTimeLineValue(Member findMember, Post post) {
         List<Member> findAllByFollower = memberRepository.findAllByFollowers(findMember.getId());
+        for (Member member : findAllByFollower) {
+            System.out.println("member = " + member);
+        }
         return createTimeLine(post, findAllByFollower);
     }
 
@@ -63,7 +64,7 @@ public class PostWriteService {
         }
     }
 
-    private Member findMember(PostRequestDto postRequestDto) {
+    private Member getMember(PostRequestDto postRequestDto) {
         return memberRepository.findById(postRequestDto.memberId())
                 .orElseThrow(MemberNotFoundException::new);
     }
@@ -72,7 +73,6 @@ public class PostWriteService {
         ValueOperations<String, String> ops = redisTemplate.opsForValue();
         String formatPost = String.format("postLike:" + savePost.getId());
         ops.set(formatPost, "0");
-        ops.get(formatPost);
     }
 
 
@@ -115,17 +115,21 @@ public class PostWriteService {
         }
     }
 
-    private Post getPost(Long p) {
-        return postRepository.findById(p)
+    private Post getPost(Long post) {
+        return postRepository.findById(post)
                 .orElseThrow(PostNotFoundException::new);
     }
 
     private Post buildPost(PostRequestDto postRequestDto, Member findMember) {
-        return Post.builder()
+        Post buildPost = Post.builder()
                 .member(findMember)
                 .title(postRequestDto.title())
                 .content(postRequestDto.content())
                 .build();
+
+        Post savePost = postRepository.save(buildPost);
+        insertPhoto(postRequestDto, savePost);
+        return savePost;
     }
 
     private void buildPhoto(PostRequestDto postRequestDto, Post findPost) {

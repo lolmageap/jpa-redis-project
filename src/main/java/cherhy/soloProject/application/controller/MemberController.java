@@ -12,6 +12,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import javax.validation.ValidationException;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
@@ -26,26 +27,19 @@ public class MemberController {
 
     @Operation(summary = "이메일 체크")
     @GetMapping("/check/email")
-    public ResponseEntity<String> emailCheck(@Email @RequestParam("email") String email){
+    public String emailCheck(@Email @RequestParam("email") String email){
 
-        if (StringUtils.isEmpty(email) || !email.contains("@")) {
-            return ResponseEntity.badRequest().body("이메일 형식을 맞춰주세요");
-        }
-
-        Boolean aBoolean = memberReadService.emailCheck(email);
-        ResponseEntity<String> responseEmail = memberReadService.getResponseEmail(aBoolean);
-        return responseEmail;
+        emailValid(email);
+        String res = memberReadService.emailCheck(email);
+        return res;
     }
-
 
     @Operation(summary = "id 체크")
     @GetMapping("/check/id/{userId}")
-    public ResponseEntity<String> idCheck(@PathVariable @NotBlank String userId){
-        Boolean aBoolean = memberReadService.idCheck(userId);
-        ResponseEntity<String> responseEmail = memberReadService.getResponseId(aBoolean);
-        return responseEmail;
+    public String idCheck(@PathVariable @NotBlank String userId){
+        String res = memberReadService.idCheck(userId);
+        return res;
     }
-
 
     @Operation(summary = "회원가입")
     @PostMapping("/signUp")
@@ -65,4 +59,9 @@ public class MemberController {
         return memberWriteService.modifyMember(memberDto, memberId);
     }
 
+    private void emailValid(String email) {
+        if (StringUtils.isEmpty(email) || !email.contains("@")) {
+            throw new ValidationException("이메일 형식을 맞춰주세요.");
+        }
+    }
 }

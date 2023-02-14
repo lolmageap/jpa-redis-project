@@ -1,6 +1,5 @@
 package cherhy.soloProject.application.domain.post.dto.request;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -12,7 +11,8 @@ public record PostRequestDto(
         @NotBlank(message = "제목을 입력해주세요")
         @Size(min = 5,message = "5자이상 적어주셔야합니다.")
         String title,
+        @NotBlank(message = "내용을 입력해주세요")
         @Size(min = 5,message = "5자이상 적어주셔야합니다.")
-        @NotBlank(message = "내용을 입력해주세요") String content,
+        String content,
         List<String> photos
 ){}
