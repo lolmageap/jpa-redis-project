@@ -5,10 +5,7 @@ Server : Tomcat
 
 Blog : https://velog.io/@ekxk1234  ,  https://blog.naver.com/ekxk1234
 
-해야할일 : 로그인 시 출석체크, 최근 검색 기록 (친구 찾기)
-
-
-usecase와 service로 나눠서 메인로직은 usecase 비즈니스 로직은 서비스에서 실행
+해야할일 : 최근 검색 기록 (친구 찾기) , 캐싱 활용 , usecase와 service로 나눠서 메인로직은 usecase 비즈니스 로직은 서비스에서 실행
 
 로그인, 회원가입 -> spring security를 이용한 social login
 
@@ -20,8 +17,10 @@ Exception 처리 -> Exception Handler를 이용한 에러 핸들링
 
 댓글 등록 -> 댓글 정렬 방법 두가지 구현
 1. redis에 Sorted Set을 이용한 날짜순 정렬 구현 (추가와 변화에 대응하기 좋음, 캐싱과 같은 효과를 봄 [검색이 매우 빠름] , 단점 : cluster 구조로 구현을 했지만 휘발될 위험이 있음)
-   - redis에 접근 -> size 만큼 key값 조회 -> 조회된 댓글 id를 가지고 댓글 조회 -> redis를 사용한 covering index
+->  redis에 접근 -> size 만큼 key값 조회 -> 조회된 댓글 id를 가지고 댓글 조회 -> redis를 사용한 covering index
+   
 2. RDB의 modifiedDate를 키로 삼아 정렬 (modifiedDate는 자주 update ==> 인덱스로 사용하기 부적절 and 코드에 연산이 많이 들어가 성능이 비교적 좋지않고 구현이 어려움)
+
 3. 데이터가 휘발되어 redis에서 키값 조회가 안되면 RDB로 접근하는 방식
 
 게시물 등록 시 -> 게시글 table insert -> photo table insert -> 팔로워들 timeline insert (Push Model) -> 타임라인을 만들었기에 쓰기 성능 ↓, 조회 성능 ↑
@@ -30,4 +29,14 @@ Exception 처리 -> Exception Handler를 이용한 에러 핸들링
 
 좋아요 테이블을 따로 만들어서 누가 어떤 게시물에 좋아요를 눌렀는지 확인 가능
 
-로그인 시 or 쿠키로 로그인 처리시 -> redis bitmap에 {key: 오늘날짜} {value: 유저의 idx} insert
+로그인 시 or 쿠키로 로그인 처리시 -> redis bitmap에 ({key: 오늘날짜}, {value: 유저의 idx}, 1) insert - 출석체크
+
+최근 검색 기록(이름) -> Member 테이블 이름 컬럼에 인덱스가 존재 -> 1주일에 한번만 이름 변경 가능
+
+
+##
+조회 최근 검색어 5개만, Write-Through pattern으로 캐싱처리
+검색창을 처음 눌렀을 때 -> google , 내가 검색하려는 단어의 조합 'Like%' -> 검색어의 순위 5위까지
+검색창 페이지를 들어갔을 때 -> facebook
+ops.reverseRange(key,0,4);
+##

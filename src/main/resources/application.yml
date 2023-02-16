@@ -1,4 +1,6 @@
 spring:
+  cache:
+    redis
   datasource:
     url: jdbc:mysql://127.0.0.1:3500/instagram
     username: root

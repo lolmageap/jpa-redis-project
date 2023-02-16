@@ -1,6 +1,7 @@
 package cherhy.soloProject.application.controller;
 
 import cherhy.soloProject.application.domain.member.dto.MemberDto;
+import cherhy.soloProject.application.domain.member.dto.MemberSearchDto;
 import cherhy.soloProject.application.domain.member.dto.SignInDto;
 import cherhy.soloProject.application.domain.member.service.MemberReadService;
 import cherhy.soloProject.application.domain.member.service.MemberWriteService;
@@ -15,6 +16,7 @@ import javax.validation.Valid;
 import javax.validation.ValidationException;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 @Tag(name = "회원정보")
 @RestController
@@ -24,16 +26,13 @@ public class MemberController {
 
     private final MemberReadService memberReadService;
     private final MemberWriteService memberWriteService;
-
     @Operation(summary = "이메일 체크")
     @GetMapping("/check/email")
     public String emailCheck(@Email @RequestParam("email") String email){
-
         emailValid(email);
         String res = memberReadService.emailCheck(email);
         return res;
     }
-
     @Operation(summary = "id 체크")
     @GetMapping("/check/id/{userId}")
     public String idCheck(@PathVariable @NotBlank String userId){
@@ -55,8 +54,14 @@ public class MemberController {
 
     @Operation(summary = "회원정보 수정")
     @PutMapping("/signUp/{memberId}")
-    public String modifyMember(@RequestBody @Valid MemberDto memberDto , @PathVariable Long memberId) {
+    public String modifyMember(@Valid MemberDto memberDto , @PathVariable Long memberId) {
         return memberWriteService.modifyMember(memberDto, memberId);
+    }
+
+    @Operation(summary = "회원 검색")
+    @GetMapping("/search/name")
+    public List<MemberSearchDto> modifyMember(@Valid MemberSearchDto memberSearchDto) {
+        return memberReadService.searchMember(memberSearchDto);
     }
 
     private void emailValid(String email) {
@@ -64,4 +69,5 @@ public class MemberController {
             throw new ValidationException("이메일 형식을 맞춰주세요.");
         }
     }
+
 }

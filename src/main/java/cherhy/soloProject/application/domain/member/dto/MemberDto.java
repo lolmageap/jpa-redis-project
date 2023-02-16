@@ -4,10 +4,6 @@ package cherhy.soloProject.application.domain.member.dto;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-
-import static org.springframework.util.Assert.isTrue;
-
-
 public record MemberDto(
         @NotBlank(message = "id를 입력해주세요")
         @Size(min = 5, message = "아이디는 5글자 이상이어야합니다.")
