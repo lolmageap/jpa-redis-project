@@ -20,9 +20,6 @@
 //여기서부터 시작
 
 좋아요 = like_id, post_id, member_id, basetime
-    // 낙관적 락으로 구현 = 트래픽이 심하지 않을때 -> version 컬럼 추가 -> update table set version + 1 where version = :version
-    -> 실패시 재귀함수 호출로 조회부터 다시 실행
-
 
 게시물 신고 = declare_id , member_id , post_id , basetime
 
