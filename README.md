@@ -40,3 +40,8 @@ Exception 처리 -> Exception Handler를 이용한 에러 핸들링
 검색창 페이지를 들어갔을 때 -> facebook
 ops.reverseRange(key,0,4);
 ##
+구글 연관검색어 => 구글창에서 한 /글자/를 치면 그 단어로 시작하고 검색이 가장 많이 되는 검색어 10개를 보여줌
+##
+
+
+
