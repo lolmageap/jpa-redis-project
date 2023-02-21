@@ -3,6 +3,7 @@ package cherhy.soloProject.application.domain.member.entity;
 import cherhy.soloProject.Util.BaseTimeEntity;
 import cherhy.soloProject.application.domain.follow.entity.Follow;
 import cherhy.soloProject.application.domain.post.entity.Post;
+import cherhy.soloProject.application.domain.postBlock.entity.PostBlock;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,6 +41,9 @@ public class Member extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "following", cascade = CascadeType.REMOVE)
     private List<Follow> follows = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private List<PostBlock> postBlocks = new ArrayList<>();
 
     @Builder //회원가입
     public Member(String user_id, String name, String email, String password, LocalDate birthday) {
