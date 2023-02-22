@@ -33,7 +33,7 @@ public class PostLikeWriteService {
         Post findPost = findPost(postLikeDto.PostId());
         findPost.updatePostLikeCount(findPost.getLikeCount()+1);
         Post save = postRepository.save(findPost);
-        Long likeCount = save.getLikeCount();
+        Integer likeCount = save.getLikeCount();
         return Long.toString(likeCount);
     }
 
@@ -101,7 +101,6 @@ public class PostLikeWriteService {
         Cursor<String> cursor = redisTemplate.scan(scanOptions);
 
         while (cursor.hasNext()){
-
             String key = new String(cursor.next());
             Long postId = 0L;
             postId = extractPostId(key);
@@ -109,10 +108,9 @@ public class PostLikeWriteService {
 
             String value = redisTemplate.opsForValue().get(key);
             Post post = findPost(postId);
-            post.updatePostLikeCount(Long.parseLong(value));
+            post.updatePostLikeCount(Integer.parseInt(value));
             Post savePost = postRepository.save(post);
             deleteRedisKey(savePost);
-
         }
     }
 

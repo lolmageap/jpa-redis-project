@@ -4,6 +4,7 @@ package cherhy.soloProject.application.domain.post.dto;
 import cherhy.soloProject.application.domain.photo.entity.Photo;
 import cherhy.soloProject.application.domain.post.entity.Post;
 import com.querydsl.core.annotations.QueryProjection;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -16,11 +17,11 @@ public class PostPhotoDto{
     private Long memberId;
     private String title;
     private String content;
-    private Long likeCount;
+    private Integer likeCount;
     private List<String> photos = new ArrayList<>();
 
     @QueryProjection
-    public PostPhotoDto(Long id, Long memberId, String title, String content, Long likeCount, List<Photo> photos) {
+    public PostPhotoDto(Long id, Long memberId, String title, String content, Integer likeCount, List<Photo> photos) {
         this.id = id;
         this.memberId = memberId;
         this.title = title;
@@ -31,6 +32,7 @@ public class PostPhotoDto{
         }
     }
 
+    @Builder
     public PostPhotoDto(Post post) {
         this.id = post.getId();
         this.memberId = post.getMember().getId();
@@ -40,4 +42,5 @@ public class PostPhotoDto{
             this.photos.add(photo.getPhoto());
         }
     }
+
 }

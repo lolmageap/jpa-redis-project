@@ -30,7 +30,16 @@ public class PostReadService {
     private final TimeLineRepository timeLineRepository;
 
     public List<PostPhotoDto> findPostByMemberId(Long memberId){
-        List<Post> findPosts = postRepository.findAllByMemberId(memberId);
+        Member member = getMember(memberId);
+        List<Post> findPosts = postRepository.findAllByMemberId(member.getId());
+        List<PostPhotoDto> collect = changePostPhotoDto(findPosts);
+        return collect;
+    }
+    public List<PostPhotoDto> findPostByMemberId(Long memberId, Long memberSessionId){
+        Member member = getMember(memberId);
+        Member myMember = getMember(memberSessionId);
+//        List<Post> findPosts = postRepository.findAllByMemberId(member.getId());
+        List<Post> findPosts = postRepository.findPostByMemberId(member.getId(),myMember.getId());
         List<PostPhotoDto> collect = changePostPhotoDto(findPosts);
         return collect;
     }

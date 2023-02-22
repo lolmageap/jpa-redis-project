@@ -35,7 +35,7 @@ public class MemberController {
         return res;
     }
     @Operation(summary = "id 체크")
-    @GetMapping("/check/id/{userId}")
+    @GetMapping("/check/{userId}")
     public String idCheck(@PathVariable @NotBlank String userId){
         String res = memberReadService.idCheck(userId);
         return res;

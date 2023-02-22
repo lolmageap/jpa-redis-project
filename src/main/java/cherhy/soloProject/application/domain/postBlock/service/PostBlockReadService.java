@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -27,15 +26,18 @@ public class PostBlockReadService {
     public List<PostBlockResponseDto> getBlockPost(Long memberId) { // 페이징 해야함
         Member member = getMember(memberId);
         List<PostBlock> postBlocks = getPostBlocks(member);
-        postRepository.findById(postBlocks.get())
         List<PostBlockResponseDto> res = changePostBlockResponseDto(postBlocks);
         return res;
     }
 
-    // 다시해야될 부분
-    private static List<PostBlockResponseDto> changePostBlockResponseDto(List<PostBlock> postBlocks) {
+    private List<PostBlockResponseDto> changePostBlockResponseDto(List<PostBlock> postBlocks) {
+        List<PostPhotoDto> postPhotoDtos = getPostPhotoDtos(postBlocks);
+        return postPhotoDtos.stream().map(p -> new PostBlockResponseDto(p.getId(), p)).collect(Collectors.toList());
+    }
+
+    private List<PostPhotoDto> getPostPhotoDtos(List<PostBlock> postBlocks) {
         List<PostPhotoDto> collect = postBlocks.stream().map(p -> new PostPhotoDto(p.getPost())).collect(Collectors.toList());
-        return collect.stream().map(p -> new PostBlockResponseDto(p.getId(), p)).collect(Collectors.toList());
+        return collect;
     }
 
     private List<PostBlock> getPostBlocks(Member member) {

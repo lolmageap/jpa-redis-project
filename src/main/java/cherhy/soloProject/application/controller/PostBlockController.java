@@ -7,6 +7,7 @@ import cherhy.soloProject.application.domain.postBlock.dto.response.PostBlockRes
 import cherhy.soloProject.application.domain.postBlock.service.PostBlockReadService;
 import cherhy.soloProject.application.domain.postBlock.service.PostBlockWriteService;
 import cherhy.soloProject.application.exception.SessionNotFoundException;
+import cherhy.soloProject.application.utilService.SessionReadService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -25,11 +26,13 @@ public class PostBlockController {
 
     private final PostBlockWriteService postBlockWriteService;
     private final PostBlockReadService postBlockReadService;
+    private final SessionReadService sessionReadService;
 
     @Operation(summary = "게시물 차단하기")
-    @PostMapping("/postBlock")
-    public String postBlock(@RequestBody @Valid PostBlockRequestDto postBlockRequestDto){
-        return postBlockWriteService.blockPost(postBlockRequestDto);
+    @PostMapping("/postBlock/{postId}")
+    public String postBlock(@PathVariable Long postId, HttpSession session){
+        Member userData = sessionReadService.getUserData(session);
+        return postBlockWriteService.blockPost(userData.getId(),postId);
     }
 
     @Operation(summary = "차단한 게시물 보기")

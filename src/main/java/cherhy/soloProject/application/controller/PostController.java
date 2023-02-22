@@ -10,6 +10,7 @@ import cherhy.soloProject.application.domain.post.service.PostWriteService;
 import cherhy.soloProject.application.domain.postLike.dto.PostLikeDto;
 import cherhy.soloProject.application.domain.postLike.service.PostLikeReadService;
 import cherhy.soloProject.application.domain.postLike.service.PostLikeWriteService;
+import cherhy.soloProject.application.utilService.SessionReadService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -29,9 +30,7 @@ public class PostController {
 
     private final PostWriteService postWriteService;
     private final PostReadService postReadService;
-
-    private final PostLikeReadService postLikeReadService;
-
+    private final SessionReadService sessionReadService;
     private final PostLikeWriteService postLikeWriteService;
 
     @Operation(summary = "게시물 생성 // Push Model")
@@ -46,11 +45,16 @@ public class PostController {
         return postWriteService.modifyPost(postRequestDto, postId);
     }
 
-    @Operation(summary = "사용자의 게시물 불러오기, 전체")
+    @Operation(summary = "사용자의 게시물 불러오기, 전체 // 로그인 했으면 차단된 게시물 제외")
     @GetMapping("/{member_id}")
-    public List<PostPhotoDto> getPost(@PathVariable Long member_id){
-        List<PostPhotoDto> postByMemberId = postReadService.findPostByMemberId(member_id);
-        return postByMemberId;
+    public List<PostPhotoDto> getPost(@PathVariable("member_id") Long memberId, HttpSession session){
+        Long memberSessionId = sessionReadService.getUserDataNoThrow(session);
+
+        if (memberSessionId == null){
+            return postReadService.findPostByMemberId(memberId);
+        }
+
+        return postReadService.findPostByMemberId(memberId,memberSessionId);
     }
 
     @Operation(summary = "사용자의 게시물 불러오기, 페이징")

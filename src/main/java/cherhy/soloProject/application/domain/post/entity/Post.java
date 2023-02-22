@@ -34,13 +34,13 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<TimeLine> timeLines = new ArrayList<>();
 
-    private Long likeCount;
+    private Integer likeCount;
 
 //    @Version //낙관적 락
 //    private Long version;
 
     @Builder
-    public Post(Member member, String title, String content, List<Photo> photos, Long likeCount) {
+    public Post(Member member, String title, String content, List<Photo> photos, Integer likeCount) {
         this.member = member;
         this.title = title;
         this.content = content;
@@ -65,7 +65,7 @@ public class Post extends BaseEntity {
         this.photos = changePhoto;
     }
 
-    public void updatePostLikeCount(Long likeCount){
+    public void updatePostLikeCount(Integer likeCount){
         this.likeCount = likeCount;
     };
 
