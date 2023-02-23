@@ -29,17 +29,21 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<PostPhotoDto> findAllByMemberId(Long memberId, Pageable pageable) {
-        List<PostPhotoDto> content = getPosts(memberId, pageable);
-        Long total = getTotal(memberId);
-        return new PageImpl<>(content, pageable, total);
+    public List<Post> findAllByMemberId(Long memberId, Pageable pageable) {
+        return getPosts(memberId, pageable);
+    }
+    @Override
+    public List<Post> findAllByMemberId(Long memberId, Long memberSessionId, Pageable pageable) {
+        return getPosts(memberId, memberSessionId, pageable);
+    }
+    @Override
+    public Long findAllByMemberIdCount(Long memberId) {
+        return  getTotal(memberId);
     }
 
     @Override
-    public Page<PostPhotoDto> findAllByMemberId(Long memberId, Long memberSessionId, Pageable pageable) {
-        List<PostPhotoDto> content = getPosts(memberId, memberSessionId, pageable);
-        Long total = getTotal(memberId, memberSessionId);
-        return new PageImpl<>(content, pageable, total);
+    public Long findAllByMemberIdCount(Long memberId, Long memberSessionId) {
+        return getTotal(memberId, memberSessionId);
     }
 
     @Override
@@ -49,7 +53,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
 
     @Override
     public List<Post> findByMemberIdPostIdDesc(Long memberId, Long memberSessionId, ScrollRequest scrollRequest) {
-        return null;
+        return getPostsCursor(memberId, memberSessionId, scrollRequest);
     }
 
     private Long getTotal(Long memberId) {
@@ -69,8 +73,8 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
         return getTotal;
     }
 
-    private List<PostPhotoDto> getPosts(Long memberId, Pageable pageable) {
-        List<Post> fetch = queryFactory.select(post).distinct()
+    private List<Post> getPosts(Long memberId, Pageable pageable) {
+        return queryFactory.select(post).distinct()
                 .from(post)
                 .leftJoin(photo1).on(photo1.post.eq(post))
                 .fetchJoin()
@@ -79,12 +83,10 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .orderBy(post.id.desc())
                 .fetch();
-
-        List<PostPhotoDto> collect = getPostPhotoDtos(fetch);
-        return collect;
     }
-    private List<PostPhotoDto> getPosts(Long memberId,Long memberSessionId, Pageable pageable) {
-        List<Post> fetch = queryFactory.select(post).distinct()
+
+    private List<Post> getPosts(Long memberId,Long memberSessionId, Pageable pageable) {
+        return queryFactory.select(post).distinct()
                 .from(post)
                 .leftJoin(photo1).on(photo1.post.eq(post))
                 .fetchJoin()
@@ -96,9 +98,6 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .orderBy(post.id.desc())
                 .fetch();
-
-        List<PostPhotoDto> collect = getPostPhotoDtos(fetch);
-        return collect;
     }
 
     private List<Post> getPostsCursor(Long memberId, ScrollRequest scrollRequest) {
@@ -112,16 +111,24 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .orderBy(post.id.desc())
                 .fetch();
     }
+    private List<Post> getPostsCursor(Long memberId, Long memberSessionId, ScrollRequest scrollRequest) {
+        return queryFactory.select(post).distinct()
+                .from(post)
+                .leftJoin(photo1).on(photo1.post.eq(post))
+                .fetchJoin()
+                .leftJoin(postBlock).on(postBlock.post.id.eq(post.id)
+                        .and(postBlock.member.id.eq(memberSessionId)))
+                .fetchJoin()
+                .where(post.member.id.eq(memberId),
+                        (postBlock.id.isNull()),
+                        keyCheck(scrollRequest))
+                .limit(scrollRequest.size())
+                .orderBy(post.id.desc())
+                .fetch();
+    }
 
     private BooleanExpression keyCheck(ScrollRequest scrollRequest) {
         return scrollRequest.hasKey() ? post.id.lt(scrollRequest.key()) : null;
-    }
-
-    private List<PostPhotoDto> getPostPhotoDtos(List<Post> fetch) {
-        List<PostPhotoDto> collect = fetch.stream()
-                .map(p -> new PostPhotoDto(p))
-                .collect(Collectors.toList());
-        return collect;
     }
 
 }

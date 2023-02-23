@@ -25,4 +25,12 @@ public class SessionReadService {
         Member userData = (Member) session.getAttribute("userData");
         return userData.getId();
     }
+
+    public String signOut(HttpSession session) {
+        if (session.getAttribute("userData") == null){
+            throw new SessionNotFoundException();
+        }
+        session.removeAttribute("userData");
+        return "로그아웃 성공";
+    }
 }

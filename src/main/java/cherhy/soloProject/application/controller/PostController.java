@@ -2,6 +2,7 @@ package cherhy.soloProject.application.controller;
 
 import cherhy.soloProject.Util.scrollDto.PageScroll;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
+import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.post.dto.request.PostRequestDto;
 import cherhy.soloProject.application.domain.post.dto.PostPhotoDto;
 import cherhy.soloProject.application.domain.post.service.PostReadService;
@@ -67,7 +68,7 @@ public class PostController {
 
     }
 
-    @Operation(summary = "사용자의 게시물 불러오기 , 무한 스크롤 // 로그인 했으면 차단된 게시물 제외") //여기서부터 다시
+    @Operation(summary = "사용자의 게시물 불러오기 , 무한 스크롤 // 로그인 했으면 차단된 게시물 제외")
     @GetMapping("/{member_id}/scroll")
     public PageScroll<PostPhotoDto> getPostScroll(@PathVariable Long member_id, ScrollRequest scrollRequest, HttpSession session){
         Long memberSessionId = sessionReadService.getUserDataNoThrow(session);
@@ -75,15 +76,16 @@ public class PostController {
         if (memberSessionId == null){
             return postReadService.findPostByMemberIdCursor(member_id, scrollRequest);
         }
-        // 다시
-        PageScroll<PostPhotoDto> postByMemberId = postReadService.findPostByMemberIdCursor(member_id, scrollRequest);
+
+        PageScroll<PostPhotoDto> postByMemberId = postReadService.findPostByMemberIdCursor(member_id, memberSessionId, scrollRequest);
         return postByMemberId;
     }
 
     @Operation(summary = "타임라인 조회 // only RDBMS")
-    @GetMapping("/timeLine/{member_id}")
-    public PageScroll<PostPhotoDto> getTimeLine(@PathVariable Long member_id, ScrollRequest scrollRequest){
-        PageScroll<PostPhotoDto> timeLine = postReadService.getTimeLine(member_id, scrollRequest);
+    @GetMapping("/timeLine")
+    public PageScroll<PostPhotoDto> getTimeLine(ScrollRequest scrollRequest, HttpSession session){
+        Member userData = sessionReadService.getUserData(session);
+        PageScroll<PostPhotoDto> timeLine = postReadService.getTimeLine(userData.getId(), scrollRequest);
         return timeLine;
     }
 
@@ -94,7 +96,7 @@ public class PostController {
         return result;
     }
 
-    @Operation(summary = "breakpoint 좋아요 동시성 테스트")
+    @Operation(summary = "breakpoint, 좋아요 동시성 테스트")
     @PostMapping("postLike/example")
     public String postExample(@Valid @RequestBody PostLikeDto postLikeDto){
         String result = postLikeWriteService.postExample(postLikeDto);

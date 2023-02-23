@@ -10,8 +10,10 @@ import java.util.List;
 
 public interface PostRepositoryCustom {
 
-    Page<PostPhotoDto> findAllByMemberId(Long memberId, Pageable pageable);
-    Page<PostPhotoDto> findAllByMemberId(Long memberId, Long memberSessionId, Pageable pageable);
+    List<Post> findAllByMemberId(Long memberId, Pageable pageable);
+    List<Post> findAllByMemberId(Long memberId, Long memberSessionId, Pageable pageable);
+    Long findAllByMemberIdCount(Long memberId);
+    Long findAllByMemberIdCount(Long memberId, Long memberSessionId);
     List<Post> findByMemberIdPostIdDesc(Long memberId, ScrollRequest scrollRequest);
     List<Post> findByMemberIdPostIdDesc(Long memberId, Long memberSessionId, ScrollRequest scrollRequest);
 

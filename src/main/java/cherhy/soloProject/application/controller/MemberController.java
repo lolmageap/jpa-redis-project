@@ -5,10 +5,10 @@ import cherhy.soloProject.application.domain.member.dto.MemberSearchDto;
 import cherhy.soloProject.application.domain.member.dto.SignInDto;
 import cherhy.soloProject.application.domain.member.service.MemberReadService;
 import cherhy.soloProject.application.domain.member.service.MemberWriteService;
+import cherhy.soloProject.application.utilService.SessionReadService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,18 +27,17 @@ public class MemberController {
 
     private final MemberReadService memberReadService;
     private final MemberWriteService memberWriteService;
+    private final SessionReadService sessionReadService;
     @Operation(summary = "이메일 체크")
     @GetMapping("/check/email")
     public String emailCheck(@Email @RequestParam("email") String email){
         emailValid(email);
-        String res = memberReadService.emailCheck(email);
-        return res;
+        return memberReadService.emailCheck(email);
     }
     @Operation(summary = "id 체크")
     @GetMapping("/check/{userId}")
     public String idCheck(@PathVariable @NotBlank String userId){
-        String res = memberReadService.idCheck(userId);
-        return res;
+        return memberReadService.idCheck(userId);
     }
 
     @Operation(summary = "회원가입")
@@ -51,6 +50,11 @@ public class MemberController {
     @GetMapping("/signIn")
     public String signIn(@Valid SignInDto signInDto, HttpSession session){
         return memberReadService.signIn(signInDto, session);
+    }
+    @Operation(summary = "로그아웃")
+    @GetMapping("/signOut")
+    public String signOut(HttpSession session){
+        return sessionReadService.signOut(session);
     }
 
     @Operation(summary = "회원정보 수정")

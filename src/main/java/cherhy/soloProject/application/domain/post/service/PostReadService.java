@@ -11,6 +11,7 @@ import cherhy.soloProject.application.domain.post.repository.jpa.TimeLineReposit
 import cherhy.soloProject.application.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,23 +39,32 @@ public class PostReadService {
     public List<PostPhotoDto> findPostByMemberId(Long memberId, Long memberSessionId){
         Member member = getMember(memberId);
         Member myMember = getMember(memberSessionId);
-//        List<Post> findPosts = postRepository.findAllByMemberId(member.getId());
         List<Post> findPosts = postRepository.findPostByMemberId(member.getId(),myMember.getId());
         List<PostPhotoDto> collect = changePostPhotoDto(findPosts);
         return collect;
     }
 
     public Page<PostPhotoDto> findPostByMemberIdPage(Long memberId, Pageable pageable) {
-        Page<PostPhotoDto> findPosts = postRepository.findAllByMemberId(memberId, pageable);
-        return findPosts;
+        List<Post> findPosts = postRepository.findAllByMemberId(memberId, pageable);
+        List<PostPhotoDto> postPhotoDtos = changePostPhotoDto(findPosts);
+        Long count = postRepository.findAllByMemberIdCount(memberId);
+        return new PageImpl<>(postPhotoDtos,pageable,count);
     }
     public Page<PostPhotoDto> findPostByMemberIdPage(Long memberId, Long memberSessionId , Pageable pageable) {
-        Page<PostPhotoDto> findPosts = postRepository.findAllByMemberId(memberId, memberSessionId, pageable);
-        return findPosts;
+        List<Post> findPosts = postRepository.findAllByMemberId(memberId, memberSessionId, pageable);
+        List<PostPhotoDto> postPhotoDtos = changePostPhotoDto(findPosts);
+        Long count = postRepository.findAllByMemberIdCount(memberId, memberSessionId);
+        return new PageImpl<>(postPhotoDtos,pageable,count);
     }
 
     public PageScroll<PostPhotoDto> findPostByMemberIdCursor(Long memberId, ScrollRequest scrollRequest) {
         List<Post> findPosts = postRepository.findByMemberIdPostIdDesc(memberId, scrollRequest);
+        List<PostPhotoDto> postPhotoDtos = changePostPhotoDto(findPosts);
+        long nextKey = getNextKey(postPhotoDtos);
+        return new PageScroll<>(scrollRequest.next(nextKey) ,postPhotoDtos);
+    }
+    public PageScroll<PostPhotoDto> findPostByMemberIdCursor(Long memberId,Long memberSessionId, ScrollRequest scrollRequest) {
+        List<Post> findPosts = postRepository.findByMemberIdPostIdDesc(memberId, memberSessionId, scrollRequest);
         List<PostPhotoDto> postPhotoDtos = changePostPhotoDto(findPosts);
         long nextKey = getNextKey(postPhotoDtos);
         return new PageScroll<>(scrollRequest.next(nextKey) ,postPhotoDtos);
