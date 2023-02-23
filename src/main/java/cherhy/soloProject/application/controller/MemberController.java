@@ -59,7 +59,7 @@ public class MemberController {
 
     @Operation(summary = "회원정보 수정")
     @PutMapping("/signUp/{memberId}")
-    public String modifyMember(@Valid MemberDto memberDto , @PathVariable Long memberId) {
+    public String modifyMember(@Valid MemberDto memberDto, @PathVariable Long memberId) {
         return memberWriteService.modifyMember(memberDto, memberId);
     }
 
