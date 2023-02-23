@@ -79,19 +79,15 @@ public class MemberReadService {
 
     private void duplicateCheckEmail(String email) {
         Optional<Member> member = memberRepository.findByEmail(email);
-        if (!member.isEmpty()){
-            throw new ExistException("email");
-        }
+        member.ifPresent(m -> {throw new ExistException("email");});
+    }
+    private void duplicateCheckUserId(String userId) {
+        Optional<Member> member = memberRepository.findByUserId(userId);
+        member.ifPresent(m -> {throw new ExistException("id");});
     }
     private void attendToday(ValueOperations<String, String> ops, Member findMember) {
         String format = formatToday();
         ops.setBit(format, findMember.getId(), true);
-    }
-    private void duplicateCheckUserId(String userId) {
-        Optional<Member> member = memberRepository.findByUserId(userId);
-        if (!member.isEmpty()){
-            throw new ExistException("id");
-        }
     }
 
     private void passwordComparison(SignInDto signInDto, Member findMember) {
