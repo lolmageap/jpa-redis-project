@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -78,12 +77,14 @@ public class MemberReadService {
     }
 
     private void duplicateCheckEmail(String email) {
-        Optional<Member> member = memberRepository.findByEmail(email);
-        member.ifPresent(m -> {throw new ExistException("email");});
+        memberRepository.findByEmail(email).ifPresent(m -> {
+            throw new ExistException("email");
+        });
     }
     private void duplicateCheckUserId(String userId) {
-        Optional<Member> member = memberRepository.findByUserId(userId);
-        member.ifPresent(m -> {throw new ExistException("id");});
+        memberRepository.findByUserId(userId).ifPresent(m -> {
+            throw new ExistException("id");
+        });
     }
     private void attendToday(ValueOperations<String, String> ops, Member findMember) {
         String format = formatToday();
@@ -103,32 +104,4 @@ public class MemberReadService {
                 .map(m -> new MemberSearchDto(m.getId(), m.getName()))
                 .collect(Collectors.toList());
     }
-
-//    private boolean duplicateCheckEmail(String email) {
-//        Optional<Member> member = memberRepository.findByEmail(email);
-//        if (!member.isEmpty()){
-//            return false;
-//        }
-//        return true;
-//    }
-//    private boolean duplicateCheckUserId(String userId) {
-//        Optional<Member> member = memberRepository.findByUserId(userId);
-//        if (!member.isEmpty()){
-//            return false;
-//        }
-//        return true;
-//    }
-//
-//    public ResponseEntity<String> getResponseEmail(Boolean aBoolean) {
-//        if (aBoolean){
-//            return ResponseEntity.ok("이메일이 사용 가능합니다");
-//        }
-//        return ResponseEntity.badRequest().body("이메일이 중복됩니다");
-//    }
-//    public ResponseEntity<String> getResponseId(Boolean aBoolean) {
-//        if (aBoolean){
-//            return ResponseEntity.ok("아이디가 사용 가능합니다");
-//        }
-//        return ResponseEntity.badRequest().body("아이디가 존재합니다");
-//    }
 }

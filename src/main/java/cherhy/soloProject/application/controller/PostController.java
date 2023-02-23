@@ -2,13 +2,11 @@ package cherhy.soloProject.application.controller;
 
 import cherhy.soloProject.Util.scrollDto.PageScroll;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
-import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.post.dto.request.PostRequestDto;
 import cherhy.soloProject.application.domain.post.dto.PostPhotoDto;
 import cherhy.soloProject.application.domain.post.service.PostReadService;
 import cherhy.soloProject.application.domain.post.service.PostWriteService;
 import cherhy.soloProject.application.domain.postLike.dto.PostLikeDto;
-import cherhy.soloProject.application.domain.postLike.service.PostLikeReadService;
 import cherhy.soloProject.application.domain.postLike.service.PostLikeWriteService;
 import cherhy.soloProject.application.utilService.SessionReadService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -57,16 +55,27 @@ public class PostController {
         return postReadService.findPostByMemberId(memberId,memberSessionId);
     }
 
-    @Operation(summary = "사용자의 게시물 불러오기, 페이징")
-    @GetMapping("/{member_id}/page")
-    public Page<PostPhotoDto> getPostPage(@PathVariable Long member_id, Pageable pageable){
-        Page<PostPhotoDto> postByMemberId = postReadService.findPostByMemberIdPage(member_id, pageable);
-        return postByMemberId;
+    @Operation(summary = "사용자의 게시물 불러오기, 페이징 // 로그인 했으면 차단된 게시물 제외")
+    @GetMapping("/{memberId}/page")
+    public Page<PostPhotoDto> getPostPage(@PathVariable Long memberId, Pageable pageable, HttpSession session){
+        Long memberSessionId = sessionReadService.getUserDataNoThrow(session);
+
+        if (memberSessionId == null){
+            return postReadService.findPostByMemberIdPage(memberId, pageable);
+        }
+        return postReadService.findPostByMemberIdPage(memberId,memberSessionId, pageable);
+
     }
 
-    @Operation(summary = "사용자의 게시물 불러오기 , 무한 스크롤")
+    @Operation(summary = "사용자의 게시물 불러오기 , 무한 스크롤 // 로그인 했으면 차단된 게시물 제외") //여기서부터 다시
     @GetMapping("/{member_id}/scroll")
-    public PageScroll<PostPhotoDto> getPostScroll(@PathVariable Long member_id, ScrollRequest scrollRequest){
+    public PageScroll<PostPhotoDto> getPostScroll(@PathVariable Long member_id, ScrollRequest scrollRequest, HttpSession session){
+        Long memberSessionId = sessionReadService.getUserDataNoThrow(session);
+
+        if (memberSessionId == null){
+            return postReadService.findPostByMemberIdCursor(member_id, scrollRequest);
+        }
+        // 다시
         PageScroll<PostPhotoDto> postByMemberId = postReadService.findPostByMemberIdCursor(member_id, scrollRequest);
         return postByMemberId;
     }

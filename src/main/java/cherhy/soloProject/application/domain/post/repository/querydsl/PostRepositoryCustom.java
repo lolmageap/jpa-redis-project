@@ -11,6 +11,8 @@ import java.util.List;
 public interface PostRepositoryCustom {
 
     Page<PostPhotoDto> findAllByMemberId(Long memberId, Pageable pageable);
+    Page<PostPhotoDto> findAllByMemberId(Long memberId, Long memberSessionId, Pageable pageable);
     List<Post> findByMemberIdPostIdDesc(Long memberId, ScrollRequest scrollRequest);
+    List<Post> findByMemberIdPostIdDesc(Long memberId, Long memberSessionId, ScrollRequest scrollRequest);
 
 }

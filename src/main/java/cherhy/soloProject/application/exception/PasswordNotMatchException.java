@@ -10,7 +10,7 @@ public class PasswordNotMatchException extends SnsException {
 
     @Override
     public int getStatusCode() {
-        return 404;
+        return 500;
     }
 
 }

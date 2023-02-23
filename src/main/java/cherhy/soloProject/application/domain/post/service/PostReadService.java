@@ -48,6 +48,10 @@ public class PostReadService {
         Page<PostPhotoDto> findPosts = postRepository.findAllByMemberId(memberId, pageable);
         return findPosts;
     }
+    public Page<PostPhotoDto> findPostByMemberIdPage(Long memberId, Long memberSessionId , Pageable pageable) {
+        Page<PostPhotoDto> findPosts = postRepository.findAllByMemberId(memberId, memberSessionId, pageable);
+        return findPosts;
+    }
 
     public PageScroll<PostPhotoDto> findPostByMemberIdCursor(Long memberId, ScrollRequest scrollRequest) {
         List<Post> findPosts = postRepository.findByMemberIdPostIdDesc(memberId, scrollRequest);

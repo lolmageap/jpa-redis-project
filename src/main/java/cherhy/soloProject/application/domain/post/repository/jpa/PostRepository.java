@@ -14,10 +14,9 @@ public interface PostRepository extends JpaRepository<Post, Long> , PostReposito
 
     @Query("SELECT distinct p FROM Post p " +
             "left join p.photos ph " +
-            "on p.member.id = :memberId " +
             "left join PostBlock pb " +
             "on p.id = pb.post.id and pb.member.id = :myMemberId " +
-            "where pb.id is null")
+            "where p.member.id = :memberId and pb.id is null")
     List<Post> findPostByMemberId(@Param("memberId") Long memberId, @Param("myMemberId") Long myMemberId);
 
 }
