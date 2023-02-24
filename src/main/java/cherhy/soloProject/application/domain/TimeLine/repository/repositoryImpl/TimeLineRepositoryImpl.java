@@ -1,9 +1,9 @@
-package cherhy.soloProject.application.domain.post.repository.repositoryImpl;
+package cherhy.soloProject.application.domain.TimeLine.repository.repositoryImpl;
 
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.post.entity.Post;
-import cherhy.soloProject.application.domain.post.repository.querydsl.TimeLineRepositoryCustom;
+import cherhy.soloProject.application.domain.TimeLine.repository.querydsl.TimeLineRepositoryCustom;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;

@@ -7,7 +7,7 @@ import cherhy.soloProject.application.domain.member.repository.jpa.MemberReposit
 import cherhy.soloProject.application.domain.post.dto.PostPhotoDto;
 import cherhy.soloProject.application.domain.post.entity.Post;
 import cherhy.soloProject.application.domain.post.repository.jpa.PostRepository;
-import cherhy.soloProject.application.domain.post.repository.jpa.TimeLineRepository;
+import cherhy.soloProject.application.domain.TimeLine.repository.jpa.TimeLineRepository;
 import cherhy.soloProject.application.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -70,23 +70,10 @@ public class PostReadService {
         return new PageScroll<>(scrollRequest.next(nextKey) ,postPhotoDtos);
     }
 
-    public PageScroll<PostPhotoDto> getTimeLine(Long member_id, ScrollRequest scrollRequest) {
-        Member member = getMember(member_id);
-        List<Post> findPostIdByCoveringIndex = timeLineRepository.findPostIdByMemberFromTimeLine(member, scrollRequest);
-        List<LocalDateTime> key = timeLineRepository.getNextKey(member, scrollRequest);
-        Long nextKey = getNextKey(scrollRequest, key);
-        List<PostPhotoDto> postPhotoDtos = changePostPhotoDto(findPostIdByCoveringIndex);
-        return new PageScroll<>(scrollRequest.next(nextKey),postPhotoDtos);
-    }
 
     private long getNextKey(List<PostPhotoDto> findPosts) {
         return findPosts.stream().mapToLong(v -> v.getId())
                 .min().orElse(ScrollRequest.NONE_KEY);
-    }
-
-    private long getNextKey(ScrollRequest scrollRequest, List<LocalDateTime> covering) {
-        return covering.stream().mapToLong(v -> Long.parseLong(v.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSSS"))))
-                .min().orElse(scrollRequest.NONE_KEY);
     }
 
     private Member getMember(Long member_id) {

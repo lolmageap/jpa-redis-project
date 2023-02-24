@@ -1,7 +1,8 @@
-package cherhy.soloProject.application.domain.post.entity;
+package cherhy.soloProject.application.domain.TimeLine.entity;
 
 import cherhy.soloProject.Util.BaseTimeEntity;
 import cherhy.soloProject.application.domain.member.entity.Member;
+import cherhy.soloProject.application.domain.post.entity.Post;
 import lombok.*;
 
 import javax.persistence.*;

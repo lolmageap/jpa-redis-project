@@ -2,6 +2,7 @@ package cherhy.soloProject.application.controller;
 
 import cherhy.soloProject.Util.scrollDto.PageScroll;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
+import cherhy.soloProject.application.domain.TimeLine.service.TimeLineReadService;
 import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.post.dto.request.PostRequestDto;
 import cherhy.soloProject.application.domain.post.dto.PostPhotoDto;
@@ -31,6 +32,7 @@ public class PostController {
     private final PostReadService postReadService;
     private final SessionReadService sessionReadService;
     private final PostLikeWriteService postLikeWriteService;
+    private final TimeLineReadService timeLineReadService;
 
     @Operation(summary = "게시물 생성 // Push Model")
     @PostMapping("/create")
@@ -85,7 +87,7 @@ public class PostController {
     @GetMapping("/timeLine")
     public PageScroll<PostPhotoDto> getTimeLine(ScrollRequest scrollRequest, HttpSession session){
         Member userData = sessionReadService.getUserData(session);
-        PageScroll<PostPhotoDto> timeLine = postReadService.getTimeLine(userData.getId(), scrollRequest);
+        PageScroll<PostPhotoDto> timeLine = timeLineReadService.getTimeLine(userData.getId(), scrollRequest);
         return timeLine;
     }
 

@@ -1,4 +1,4 @@
-package cherhy.soloProject.application.domain.post.repository.querydsl;
+package cherhy.soloProject.application.domain.TimeLine.repository.querydsl;
 
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.application.domain.member.entity.Member;

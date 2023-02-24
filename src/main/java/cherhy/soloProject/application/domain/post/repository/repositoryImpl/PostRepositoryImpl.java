@@ -1,20 +1,16 @@
 package cherhy.soloProject.application.domain.post.repository.repositoryImpl;
 
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
-import cherhy.soloProject.application.domain.post.dto.PostPhotoDto;
 import cherhy.soloProject.application.domain.post.entity.Post;
 import cherhy.soloProject.application.domain.post.repository.querydsl.PostRepositoryCustom;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static cherhy.soloProject.application.domain.photo.entity.QPhoto.*;
 import static cherhy.soloProject.application.domain.post.entity.QPost.*;
@@ -63,6 +59,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .fetchOne();
         return getTotal;
     }
+
     private Long getTotal(Long memberId, Long memberSessionId) {
         Long getTotal = queryFactory.select(post.count())
                 .from(post)

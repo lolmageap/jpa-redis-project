@@ -7,9 +7,9 @@ import cherhy.soloProject.application.domain.photo.entity.Photo;
 import cherhy.soloProject.application.domain.photo.repository.jpa.PhotoRepository;
 import cherhy.soloProject.application.domain.post.dto.request.PostRequestDto;
 import cherhy.soloProject.application.domain.post.entity.Post;
-import cherhy.soloProject.application.domain.post.entity.TimeLine;
+import cherhy.soloProject.application.domain.TimeLine.entity.TimeLine;
 import cherhy.soloProject.application.domain.post.repository.jpa.PostRepository;
-import cherhy.soloProject.application.domain.post.repository.jpa.TimeLineRepository;
+import cherhy.soloProject.application.domain.TimeLine.repository.jpa.TimeLineRepository;
 import cherhy.soloProject.application.exception.MemberNotFoundException;
 import cherhy.soloProject.application.exception.PostNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -55,6 +55,7 @@ public class PostWriteService {
         modify(postRequestDto, findPost);
         return "변경 성공";
     }
+
     private String createTimeLine(Post post, List<Member> findAllByFollower) {
         if (findAllByFollower.size() < 1){
             return "성공";

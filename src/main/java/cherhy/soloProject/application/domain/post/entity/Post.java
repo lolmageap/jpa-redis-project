@@ -1,6 +1,7 @@
 package cherhy.soloProject.application.domain.post.entity;
 
 import cherhy.soloProject.Util.BaseEntity;
+import cherhy.soloProject.application.domain.TimeLine.entity.TimeLine;
 import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.photo.entity.Photo;
 import cherhy.soloProject.application.domain.reply.entity.Reply;
