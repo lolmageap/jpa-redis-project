@@ -18,6 +18,7 @@ public class SessionReadService {
         }
         return (Member) session.getAttribute("userData");
     }
+
     public Long getUserDataNoThrow(HttpSession session) {
         if (session.getAttribute("userData") == null){
             return null;

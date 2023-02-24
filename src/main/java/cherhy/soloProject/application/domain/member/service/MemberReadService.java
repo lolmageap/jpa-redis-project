@@ -4,10 +4,13 @@ import cherhy.soloProject.application.domain.member.dto.MemberSearchDto;
 import cherhy.soloProject.application.domain.member.dto.SignInDto;
 import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.member.repository.jpa.MemberRepository;
+import cherhy.soloProject.application.domain.post.dto.request.PostRequestDto;
+import cherhy.soloProject.application.domain.postLike.dto.PostLikeDto;
 import cherhy.soloProject.application.exception.ExistException;
 import cherhy.soloProject.application.exception.MemberNotFoundException;
 import cherhy.soloProject.application.exception.PasswordNotMatchException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,7 +23,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static cherhy.soloProject.application.RedisKey.SEARCH_LOG;
+
 @Service
+@Slf4j
 @Transactional
 @RequiredArgsConstructor
 public class MemberReadService {
@@ -34,10 +40,12 @@ public class MemberReadService {
         duplicateCheckEmail(email);
         return "사용 가능한 이메일입니다.";
     }
+
     public String idCheck(String userId){
         duplicateCheckUserId(userId);
         return "사용 가능한 아이디입니다.";
     }
+
     public String signIn(SignInDto signInDto, HttpSession session){
         ValueOperations<String, String> ops = redisTemplate.opsForValue();
         Member findMember = getMember(signInDto);
@@ -51,10 +59,7 @@ public class MemberReadService {
     public List<MemberSearchDto> searchMember(MemberSearchDto memberSearchDto) {
         List<Member> findMemberList = getMemberList(memberSearchDto.searchName());
         List<MemberSearchDto> findMembers = changeMemberSearchResponseDto(findMemberList);
-
-
         insertRedisSearchLog(memberSearchDto);
-
         return findMembers;
     }
 
@@ -63,7 +68,8 @@ public class MemberReadService {
 
         LocalDateTime now = LocalDateTime.now();
         Long score = now.toEpochSecond(ZoneOffset.UTC);
-        String key = String.format("SearchLog:%s", memberSearchDto.memberId());
+        String key = String.format(SEARCH_LOG + memberSearchDto.memberId());
+        log.info("key = {}", key);
         String value = memberSearchDto.searchName();
         ops.add(key, value, score);
     }
@@ -72,7 +78,11 @@ public class MemberReadService {
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
     }
 
-    private Member getMember(SignInDto signInDto) {
+    public Member getMember(Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+    }
+
+    public Member getMember(SignInDto signInDto) {
         return memberRepository.findByUserId(signInDto.userId()).orElseThrow(MemberNotFoundException::new);
     }
 
@@ -81,11 +91,13 @@ public class MemberReadService {
             throw new ExistException("email");
         });
     }
+
     private void duplicateCheckUserId(String userId) {
         memberRepository.findByUserId(userId).ifPresent(m -> {
             throw new ExistException("id");
         });
     }
+
     private void attendToday(ValueOperations<String, String> ops, Member findMember) {
         String format = formatToday();
         ops.setBit(format, findMember.getId(), true);
@@ -96,9 +108,11 @@ public class MemberReadService {
             throw new PasswordNotMatchException();
         }
     }
+
     private List<Member> getMemberList(String searchMemberName) {
         return memberRepository.findByName(searchMemberName).orElseThrow(MemberNotFoundException::new);
     }
+
     private List<MemberSearchDto> changeMemberSearchResponseDto(List<Member> findMemberList) {
         return findMemberList.stream()
                 .map(m -> new MemberSearchDto(m.getId(), m.getName()))

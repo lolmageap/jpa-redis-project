@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static cherhy.soloProject.application.domain.post.entity.QPost.post;
-import static cherhy.soloProject.application.domain.post.entity.QTimeLine.*;
+import static cherhy.soloProject.application.domain.TimeLine.entity.QTimeLine.*;
 
 @Repository
 @RequiredArgsConstructor

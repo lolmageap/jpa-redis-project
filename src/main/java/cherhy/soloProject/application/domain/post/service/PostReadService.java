@@ -9,6 +9,7 @@ import cherhy.soloProject.application.domain.post.entity.Post;
 import cherhy.soloProject.application.domain.post.repository.jpa.PostRepository;
 import cherhy.soloProject.application.domain.TimeLine.repository.jpa.TimeLineRepository;
 import cherhy.soloProject.application.exception.MemberNotFoundException;
+import cherhy.soloProject.application.exception.PostNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -16,8 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,60 +26,50 @@ import java.util.stream.Collectors;
 public class PostReadService {
 
     private final PostRepository postRepository;
-    private final MemberRepository memberRepository;
-    private final TimeLineRepository timeLineRepository;
 
-    public List<PostPhotoDto> findPostByMemberId(Long memberId){
-        Member member = getMember(memberId);
-        List<Post> findPosts = postRepository.findAllByMemberId(member.getId());
-        List<PostPhotoDto> collect = changePostPhotoDto(findPosts);
-        return collect;
+    public List<Post> getPostByMemberId(Member member) {
+        return postRepository.findAllByMemberId(member.getId());
     }
-    public List<PostPhotoDto> findPostByMemberId(Long memberId, Long memberSessionId){
-        Member member = getMember(memberId);
-        Member myMember = getMember(memberSessionId);
-        List<Post> findPosts = postRepository.findPostByMemberId(member.getId(),myMember.getId());
-        List<PostPhotoDto> collect = changePostPhotoDto(findPosts);
-        return collect;
+    public List<Post> getPostByMemberId(Member member, Member myMember) {
+        return postRepository.findPostByMemberId(member.getId(), myMember.getId());
     }
 
-    public Page<PostPhotoDto> findPostByMemberIdPage(Long memberId, Pageable pageable) {
-        List<Post> findPosts = postRepository.findAllByMemberId(memberId, pageable);
-        List<PostPhotoDto> postPhotoDtos = changePostPhotoDto(findPosts);
-        Long count = postRepository.findAllByMemberIdCount(memberId);
-        return new PageImpl<>(postPhotoDtos,pageable,count);
-    }
-    public Page<PostPhotoDto> findPostByMemberIdPage(Long memberId, Long memberSessionId , Pageable pageable) {
-        List<Post> findPosts = postRepository.findAllByMemberId(memberId, memberSessionId, pageable);
-        List<PostPhotoDto> postPhotoDtos = changePostPhotoDto(findPosts);
-        Long count = postRepository.findAllByMemberIdCount(memberId, memberSessionId);
-        return new PageImpl<>(postPhotoDtos,pageable,count);
+    public Post getPost(Long post) {
+        return postRepository.findById(post)
+                .orElseThrow(PostNotFoundException::new);
     }
 
-    public PageScroll<PostPhotoDto> findPostByMemberIdCursor(Long memberId, ScrollRequest scrollRequest) {
-        List<Post> findPosts = postRepository.findByMemberIdPostIdDesc(memberId, scrollRequest);
-        List<PostPhotoDto> postPhotoDtos = changePostPhotoDto(findPosts);
-        long nextKey = getNextKey(postPhotoDtos);
-        return new PageScroll<>(scrollRequest.next(nextKey) ,postPhotoDtos);
+    public Long getPostCountPage(Long memberId) {
+        return postRepository.findAllByMemberIdCount(memberId);
     }
-    public PageScroll<PostPhotoDto> findPostByMemberIdCursor(Long memberId,Long memberSessionId, ScrollRequest scrollRequest) {
-        List<Post> findPosts = postRepository.findByMemberIdPostIdDesc(memberId, memberSessionId, scrollRequest);
-        List<PostPhotoDto> postPhotoDtos = changePostPhotoDto(findPosts);
-        long nextKey = getNextKey(postPhotoDtos);
-        return new PageScroll<>(scrollRequest.next(nextKey) ,postPhotoDtos);
+
+    public Long getPostCountPage(Long memberId, Long memberSessionId) {
+        return postRepository.findAllByMemberIdCount(memberId, memberSessionId);
+    }
+
+    public List<Post> getPostByMemberIdPage(Long memberId, Pageable pageable) {
+        return postRepository.findAllByMemberId(memberId, pageable);
+    }
+
+    public List<Post> getPostByMemberIdPage(Long memberId, Long memberSessionId, Pageable pageable) {
+        return postRepository.findAllByMemberId(memberId, memberSessionId, pageable);
+    }
+
+    public List<Post> getPostByMemberIdCursor(Long memberId, ScrollRequest scrollRequest) {
+        return postRepository.findByMemberIdPostIdDesc(memberId, scrollRequest);
+    }
+
+    public List<Post> getPostByMemberIdCursor(Long memberId, Long memberSessionId, ScrollRequest scrollRequest) {
+        return postRepository.findByMemberIdPostIdDesc(memberId, memberSessionId, scrollRequest);
     }
 
 
-    private long getNextKey(List<PostPhotoDto> findPosts) {
+    public long getNextKey(List<PostPhotoDto> findPosts) {
         return findPosts.stream().mapToLong(v -> v.getId())
                 .min().orElse(ScrollRequest.NONE_KEY);
     }
 
-    private Member getMember(Long member_id) {
-        return memberRepository.findById(member_id).orElseThrow(MemberNotFoundException::new);
-    }
-
-    private List<PostPhotoDto> changePostPhotoDto(List<Post> findPosts) {
+    public List<PostPhotoDto> changePostPhotoDto(List<Post> findPosts) {
         return findPosts.stream().map(post ->
                 new PostPhotoDto(
                 post.getId(), post.getMember().getId(), post.getTitle(), post.getContent(), post.getLikeCount(), post.getPhotos())

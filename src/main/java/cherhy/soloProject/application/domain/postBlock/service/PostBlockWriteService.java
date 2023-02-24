@@ -25,11 +25,15 @@ public class PostBlockWriteService {
     public String blockPost(Long memberId, Long postId) {
         Member member = getMember(memberId);
         Post post = getPost(postId);
-        Optional<PostBlock> postBlock = postBlockRepository.findByMemberIdAndPostId(memberId, postId);
+        Optional<PostBlock> postBlock = getPostBlockByMemberIdAndPostId(memberId, postId);
         return blockOrUnblock(member, post, postBlock);
     }
 
-    private String blockOrUnblock(Member member, Post post, Optional<PostBlock> postBlock) {
+    public Optional<PostBlock> getPostBlockByMemberIdAndPostId(Long memberId, Long postId) {
+        return postBlockRepository.findByMemberIdAndPostId(memberId, postId);
+    }
+
+    public String blockOrUnblock(Member member, Post post, Optional<PostBlock> postBlock) {
         if (postBlock.isPresent()){
             return unblock(postBlock.get());
         }

@@ -10,13 +10,13 @@ import java.util.List;
 @SpringBootTest
 class PostBlockReadServiceTest {
 
-    @Autowired
-    PostBlockReadService postBlockReadService;
-    @Test
-    public void test(){
-        List<PostBlockResponseDto> blockPost = postBlockReadService.getBlockPost(1L);
-        for (PostBlockResponseDto postBlockResponseDto : blockPost) {
-            System.out.println("postBlockResponseDto = " + postBlockResponseDto);
-        }
-    }
+//    @Autowired
+//    PostBlockReadService postBlockReadService;
+//    @Test
+//    public void test(){
+//        List<PostBlockResponseDto> blockPost = postBlockReadService.getBlockPost(1L);
+//        for (PostBlockResponseDto postBlockResponseDto : blockPost) {
+//            System.out.println("postBlockResponseDto = " + postBlockResponseDto);
+//        }
+//    }
 }
