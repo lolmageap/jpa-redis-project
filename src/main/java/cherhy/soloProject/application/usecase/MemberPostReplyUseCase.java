@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static cherhy.soloProject.application.RedisKey.REPLY_MODIFY_DESC;
+import static cherhy.soloProject.application.key.RedisKey.REPLY_MODIFY_DESC;
 
 
 @Service

@@ -1,10 +1,10 @@
-package cherhy.soloProject.application.domain.member.dto;
+package cherhy.soloProject.application.domain.member.dto.request;
 
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-public record MemberDto(
+public record MemberRequestDto(
         @NotBlank(message = "id를 입력해주세요")
         @Size(min = 5, message = "아이디는 5글자 이상이어야합니다.")
         String user_id,

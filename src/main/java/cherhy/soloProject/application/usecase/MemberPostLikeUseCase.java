@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static cherhy.soloProject.application.RedisKey.POST_LIKE;
+import static cherhy.soloProject.application.key.RedisKey.POST_LIKE;
 
 
 @Service

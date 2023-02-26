@@ -1,7 +1,7 @@
 package cherhy.soloProject.domain.member.repository;
 
 
-import cherhy.soloProject.application.domain.member.dto.MemberDto;
+import cherhy.soloProject.application.domain.member.dto.request.MemberRequestDto;
 import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.member.repository.jpa.MemberRepository;
 import cherhy.soloProject.application.domain.member.service.MemberWriteService;
@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -32,7 +31,7 @@ class MemberRepositoryTest {
     @Test
     public void testMember() throws Exception{
         //given
-        MemberDto member = new MemberDto("aaaa","홍길동","abcd@naver.com","abcd");
+        MemberRequestDto member = new MemberRequestDto("aaaa","홍길동","abcd@naver.com","abcd");
         //when
         memberWriteService.signUp(member);
         Member findMember = memberRepository.findById(1L).get();
@@ -44,7 +43,7 @@ class MemberRepositoryTest {
     public void testInsertMembers() throws Exception{
         //given
         for (int i = 0; i < 100; i++) {
-            MemberDto member = new MemberDto("aaaa" + i,"길동" + i,"abcd"+ i +"@naver.com" ,"abcd" + i);
+            MemberRequestDto member = new MemberRequestDto("aaaa" + i,"길동" + i,"abcd"+ i +"@naver.com" ,"abcd" + i);
             memberWriteService.signUp(member);
         }
         //when

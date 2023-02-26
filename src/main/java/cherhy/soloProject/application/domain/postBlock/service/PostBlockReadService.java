@@ -1,5 +1,6 @@
 package cherhy.soloProject.application.domain.postBlock.service;
 
+import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.post.dto.PostPhotoDto;
 import cherhy.soloProject.application.domain.postBlock.dto.response.PostBlockResponseDto;
@@ -20,15 +21,22 @@ public class PostBlockReadService {
     private final PostBlockRepository postBlockRepository;
 
     public List<PostBlock> getPostBlocks(Member member) {
-        return postBlockRepository.findByMember(member.getId()).orElseThrow(PostBlockNotFoundException::new);
+        return postBlockRepository.findByMemberIdOrderByPostAsc(member.getId()).orElseThrow(PostBlockNotFoundException::new);
     }
 
-    public List<PostBlockResponseDto> changePostBlockResponseDto(List<PostPhotoDto> postPhotoDtos) {
-        return postPhotoDtos.stream().map(p -> new PostBlockResponseDto(p.getId(), p)).collect(Collectors.toList());
+    public List<PostBlockResponseDto> changePostBlockResponseDto(List<PostBlock> postBlocks) {
+        return postBlocks.stream().map(p -> new PostBlockResponseDto(p.getId(),new PostPhotoDto(p.getPost())))
+                .collect(Collectors.toList());
     }
 
-    public List<PostPhotoDto> getPostPhotoDtos(List<PostBlock> postBlocks) {
-        return postBlocks.stream().map(p -> new PostPhotoDto(p.getPost())).collect(Collectors.toList());
+    // 여기 스크롤 페이징 처리해야함
+    public List<PostBlock> getPostBlocks(Member member, ScrollRequest scrollRequest) {
+        return postBlockRepository.findByPostBlockScroll(member, scrollRequest).orElseThrow(PostBlockNotFoundException::new);
+    }
+
+    public long getNextKey(List<PostBlockResponseDto> postBlockResponseDtos) {
+        return postBlockResponseDtos.stream().mapToLong(v -> v.post().getId())
+                .max().orElse(ScrollRequest.NONE_KEY);
     }
 
 }

@@ -1,4 +1,4 @@
-package cherhy.soloProject.application;
+package cherhy.soloProject.application.key;
 
 public interface RedisKey {
 

@@ -1,8 +1,8 @@
 package cherhy.soloProject.application.controller;
 
-import cherhy.soloProject.application.domain.member.dto.MemberDto;
-import cherhy.soloProject.application.domain.member.dto.MemberSearchDto;
-import cherhy.soloProject.application.domain.member.dto.SignInDto;
+import cherhy.soloProject.application.domain.member.dto.request.MemberRequestDto;
+import cherhy.soloProject.application.domain.member.dto.request.MemberSearchRequestDto;
+import cherhy.soloProject.application.domain.member.dto.request.SignInRequestDto;
 import cherhy.soloProject.application.domain.member.service.MemberReadService;
 import cherhy.soloProject.application.domain.member.service.MemberWriteService;
 import cherhy.soloProject.application.utilService.SessionReadService;
@@ -35,26 +35,26 @@ public class MemberController {
     private final SessionReadService sessionReadService;
     @Operation(summary = "이메일 체크")
     @GetMapping("/check/email")
-    public String emailCheck(@Email @RequestParam("email") String email){
+    public ResponseEntity emailCheck(@Email @RequestParam("email") String email){
         emailValid(email);
         return memberReadService.emailCheck(email);
     }
     @Operation(summary = "id 체크")
     @GetMapping("/check/{userId}")
-    public String idCheck(@PathVariable @NotBlank String userId){
+    public ResponseEntity idCheck(@PathVariable @NotBlank String userId){
         return memberReadService.idCheck(userId);
     }
 
     @Operation(summary = "회원가입")
     @PostMapping("/signUp")
-    public ResponseEntity signUp(@RequestBody @Valid MemberDto memberDto) {
-        return memberWriteService.signUp(memberDto);
+    public ResponseEntity signUp(@RequestBody @Valid MemberRequestDto memberRequestDto) {
+        return memberWriteService.signUp(memberRequestDto);
     }
 
     @Operation(summary = "로그인")
     @GetMapping("/signIn")
-    public String signIn(@Valid SignInDto signInDto, HttpSession session){
-        return memberReadService.signIn(signInDto, session);
+    public ResponseEntity signIn(@Valid SignInRequestDto signInRequestDto, HttpSession session){
+        return memberReadService.signIn(signInRequestDto, session);
     }
 
     @Operation(summary = "시큐리티 로그인 연습")
@@ -76,14 +76,14 @@ public class MemberController {
 
     @Operation(summary = "회원정보 수정")
     @PutMapping("/signUp/{memberId}")
-    public String modifyMember(@Valid MemberDto memberDto, @PathVariable Long memberId) {
-        return memberWriteService.modifyMember(memberDto, memberId);
+    public String modifyMember(@Valid MemberRequestDto memberRequestDto, @PathVariable Long memberId) {
+        return memberWriteService.modifyMember(memberRequestDto, memberId);
     }
 
     @Operation(summary = "회원 검색")
     @GetMapping("/search/name")
-    public List<MemberSearchDto> modifyMember(@Valid MemberSearchDto memberSearchDto) {
-        return memberReadService.searchMember(memberSearchDto);
+    public List<MemberSearchRequestDto> modifyMember(@Valid MemberSearchRequestDto memberSearchRequestDto) {
+        return memberReadService.searchMember(memberSearchRequestDto);
     }
 
     private void emailValid(String email) {

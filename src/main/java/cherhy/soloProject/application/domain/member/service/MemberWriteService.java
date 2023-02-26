@@ -1,6 +1,6 @@
 package cherhy.soloProject.application.domain.member.service;
 
-import cherhy.soloProject.application.domain.member.dto.MemberDto;
+import cherhy.soloProject.application.domain.member.dto.request.MemberRequestDto;
 import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.member.repository.jpa.MemberRepository;
 import cherhy.soloProject.application.exception.MemberNotFoundException;
@@ -18,16 +18,16 @@ public class MemberWriteService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder encoder;
 
-    public ResponseEntity signUp(MemberDto memberDto) {
-            Member member = BuildMember(memberDto);
-            member.changePassword(encoder.encode(memberDto.password()));
+    public ResponseEntity signUp(MemberRequestDto memberRequestDto) {
+            Member member = BuildMember(memberRequestDto);
+            member.changePassword(encoder.encode(memberRequestDto.password()));
             memberRepository.save(member);
         return ResponseEntity.ok(200);
     }
 
-    public String modifyMember(MemberDto memberDto, Long memberId) {
+    public String modifyMember(MemberRequestDto memberRequestDto, Long memberId) {
         Member findMember = getMember(memberId);
-        memberRepository.save(modify(memberDto, findMember));
+        memberRepository.save(modify(memberRequestDto, findMember));
         return "회원정보 변경";
     }
 
@@ -36,25 +36,25 @@ public class MemberWriteService {
                 .orElseThrow(MemberNotFoundException::new);
     }
 
-    private Member modify(MemberDto memberDto, Member findMember) {
-        if (!memberDto.user_id().isEmpty()){
-            findMember.changeUserId(memberDto.user_id());
+    private Member modify(MemberRequestDto memberRequestDto, Member findMember) {
+        if (!memberRequestDto.user_id().isEmpty()){
+            findMember.changeUserId(memberRequestDto.user_id());
         }
-        if (!memberDto.name().isEmpty()){
-            findMember.changeName(memberDto.name());
+        if (!memberRequestDto.name().isEmpty()){
+            findMember.changeName(memberRequestDto.name());
         }
-        if (!memberDto.password().isEmpty()){
-            findMember.changePassword(encoder.encode(memberDto.password()));
+        if (!memberRequestDto.password().isEmpty()){
+            findMember.changePassword(encoder.encode(memberRequestDto.password()));
         }
         return findMember;
     }
 
-    private Member BuildMember(MemberDto memberDto) {
+    private Member BuildMember(MemberRequestDto memberRequestDto) {
         Member member = Member.builder()
-                .email(memberDto.email())
-                .name(memberDto.name())
-                .userId(memberDto.user_id())
-                .password(memberDto.password())
+                .email(memberRequestDto.email())
+                .name(memberRequestDto.name())
+                .userId(memberRequestDto.user_id())
+                .password(memberRequestDto.password())
                 .build();
         return member;
     }

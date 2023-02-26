@@ -1,9 +1,9 @@
 package cherhy.soloProject.application.usecase;
 
+import cherhy.soloProject.Util.scrollDto.PageScroll;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.member.service.MemberReadService;
-import cherhy.soloProject.application.domain.post.dto.PostPhotoDto;
 import cherhy.soloProject.application.domain.post.entity.Post;
 import cherhy.soloProject.application.domain.post.service.PostReadService;
 import cherhy.soloProject.application.domain.postBlock.dto.response.PostBlockResponseDto;
@@ -33,23 +33,23 @@ public class MemberPostBlockUseCase {
         Member member = memberReadService.getMember(memberId);
         Post post = postReadService.getPost(postId);
         Optional<PostBlock> postBlock = postBlockWriteService.getPostBlockByMemberIdAndPostId(memberId, postId);
-        postBlockWriteService.blockOrUnblock(member, post, postBlock);
+        postBlock.ifPresentOrElse(p -> postBlockWriteService.unblock(p),
+                () -> postBlockWriteService.block(member, post));
         return ResponseEntity.ok(200);
     }
 
     public List<PostBlockResponseDto> getBlockPost(Long memberId) {
         Member member = memberReadService.getMember(memberId);
         List<PostBlock> postBlocks = postBlockReadService.getPostBlocks(member);
-        List<PostPhotoDto> postPhotoDtos = postBlockReadService.getPostPhotoDtos(postBlocks);
-        List<PostBlockResponseDto> res = postBlockReadService.changePostBlockResponseDto(postPhotoDtos);
-        return res;
+        return  postBlockReadService.changePostBlockResponseDto(postBlocks);
     }
-    public List<PostBlockResponseDto> getBlockPost(ScrollRequest scrollRequest, Long memberId) { // 페이징
+
+    public PageScroll getBlockPost(Long memberId, ScrollRequest scrollRequest) {
         Member member = memberReadService.getMember(memberId);
-        List<PostBlock> postBlocks = postBlockReadService.getPostBlocks(member);
-        List<PostPhotoDto> postPhotoDtos = postBlockReadService.getPostPhotoDtos(postBlocks);
-        List<PostBlockResponseDto> res = postBlockReadService.changePostBlockResponseDto(postPhotoDtos);
-        return res;
+        List<PostBlock> postBlocks = postBlockReadService.getPostBlocks(member, scrollRequest);
+        List<PostBlockResponseDto> postBlockResponseDtos = postBlockReadService.changePostBlockResponseDto(postBlocks);
+        long nextKey = postBlockReadService.getNextKey(postBlockResponseDtos);
+        return new PageScroll<>(scrollRequest.next(nextKey), postBlockResponseDtos);
     }
 
 }

@@ -25,7 +25,9 @@ Exception 처리 -> Exception Handler를 이용한 에러 핸들링
 
 게시물 등록 시 -> 게시글 table insert -> photo table insert -> 팔로워들 timeline insert (Push Model) -> 타임라인을 만들었기에 쓰기 성능 ↓, 조회 성능 ↑
 
-좋아요 , 좋아요 취소 시 -> 좋아요 테이블에 insert (누가 좋아요를 눌렀는지 확인하기 위한 테이블) -> RDB에 부하를 줄이기 위해 redis에 increase, decrease 후 scheduler로 update -> 동시성 처리 해결 및 redis scan을 통한 성능 최적화
+좋아요 , 좋아요 취소 시 -> 좋아요 테이블에 insert (누가 좋아요를 눌렀는지 확인하기 위한 테이블)
+-> RDB에 부하를 줄이기 위해 redis에 increase, decrease 후 scheduler로 update 
+-> 동시성 처리 해결 및 redis scan을 통한 성능 최적화
 
 좋아요 테이블을 따로 만들어서 누가 어떤 게시물에 좋아요를 눌렀는지 확인 가능
 
@@ -46,5 +48,5 @@ ops.reverseRange(key, 0, 4);
 구글 연관검색어 => 구글창에서 한 /글자/를 치면 그 단어로 시작하고 검색이 가장 많이 되는 검색어 10개를 보여줌
 ##
 
-게시물을 볼 때 내 팔로워중에 누가 나의 게시물을 좋아요 눌렀는지 한명만 상단에 표시
+게시물을 볼 때 내 팔로워중에 누가 나의 게시물을 좋아요 눌렀는지 한명만 상단에 표시 , 내 팔로워 중에 좋아요 누른 사람이 없으면 null
 지금 좋아요 순위가 가장 높은 게시물 확인

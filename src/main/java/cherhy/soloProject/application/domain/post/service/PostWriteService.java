@@ -13,7 +13,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static cherhy.soloProject.application.RedisKey.POST_LIKE;
+import static cherhy.soloProject.application.key.RedisKey.POST_LIKE;
 
 
 @Service

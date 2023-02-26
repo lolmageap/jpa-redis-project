@@ -1,8 +1,8 @@
 package cherhy.soloProject.application.domain.member.service;
 
 
-import cherhy.soloProject.application.domain.member.dto.MemberDto;
-import cherhy.soloProject.application.domain.member.dto.MemberSearchDto;
+import cherhy.soloProject.application.domain.member.dto.request.MemberRequestDto;
+import cherhy.soloProject.application.domain.member.dto.request.MemberSearchRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,12 +23,12 @@ class MemberReadServiceTest {
     MemberWriteService memberWriteService;
     @Test
     public void testSignup() throws Exception{
-        memberWriteService.signUp(new MemberDto("abcdef", "정철희", "ekxk1234@gmail.com", "ss012012"));
+        memberWriteService.signUp(new MemberRequestDto("abcdef", "정철희", "ekxk1234@gmail.com", "ss012012"));
     }
 
     @Test
     public void testMember() throws Exception{
-        List<MemberSearchDto> find = memberReadService.searchMember(new MemberSearchDto(1L,"정철희"));
+        List<MemberSearchRequestDto> find = memberReadService.searchMember(new MemberSearchRequestDto(1L,"정철희"));
         assertThat(find.size()).isEqualTo(2);
     }
 
