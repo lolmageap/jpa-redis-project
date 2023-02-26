@@ -104,7 +104,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .fetchJoin()
                 .where(post.member.id.eq(memberId),
                         keyCheck(scrollRequest))
-                .limit(scrollRequest.size())
+                .limit(ScrollRequest.size)
                 .orderBy(post.id.desc())
                 .fetch();
     }
@@ -119,7 +119,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
                 .where(post.member.id.eq(memberId),
                         (postBlock.id.isNull()),
                         keyCheck(scrollRequest))
-                .limit(scrollRequest.size())
+                .limit(ScrollRequest.size)
                 .orderBy(post.id.desc())
                 .fetch();
     }

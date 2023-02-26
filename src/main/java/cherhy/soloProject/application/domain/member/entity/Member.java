@@ -25,8 +25,8 @@ public class Member extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long id;
-    @Column(unique = true)
-    private String user_id;
+    @Column(unique = true, name = "user_id")
+    private String userId;
     @Column(unique = true)
     private String email;
     private String name;
@@ -46,8 +46,8 @@ public class Member extends BaseTimeEntity {
     private List<PostBlock> postBlocks = new ArrayList<>();
 
     @Builder //회원가입
-    public Member(String user_id, String name, String email, String password, LocalDate birthday) {
-        this.user_id = requireNonNull(user_id);
+    public Member(String userId, String name, String email, String password, LocalDate birthday) {
+        this.userId = requireNonNull(userId);
         this.name = requireNonNull(name);
         this.password = requireNonNull(password);
         this.email = requireNonNull(email);
@@ -58,7 +58,7 @@ public class Member extends BaseTimeEntity {
     }
 
     public void changeUserId(String changeUserId) {
-        this.user_id = changeUserId;
+        this.userId = changeUserId;
     }
 
     public void changePassword(String changePassword) {

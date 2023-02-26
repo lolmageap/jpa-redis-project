@@ -14,7 +14,9 @@ import cherhy.soloProject.application.domain.reply.service.ReplyWriteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,6 +24,7 @@ import static cherhy.soloProject.application.RedisKey.REPLY_MODIFY_DESC;
 
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class MemberPostReplyUseCase {
 
@@ -31,14 +34,14 @@ public class MemberPostReplyUseCase {
     private final ReplyWriteService replyWriteService;
     private final StringRedisTemplate redisTemplate;
 
-    public Boolean setReply(RequestReplyDto reply){
+    public ResponseEntity setReply(RequestReplyDto reply){
         ZSetOperations zSetOps = redisTemplate.opsForZSet(); //Sorted Set 선언
         Member findMember = memberReadService.getMember(reply.memberId());
         Post findPost = postReadService.getPost(reply.postId());
         Reply build = replyWriteService.buildReply(reply, findMember, findPost);
         Reply save = replyWriteService.save(build);
-        Boolean aBoolean = replyWriteService.addRedis(zSetOps, findPost, save);
-        return aBoolean;
+        replyWriteService.addRedis(zSetOps, findPost, save);
+        return ResponseEntity.ok(200);
     }
 
     public List<ResponseReplyDto> getReply(Long postId) {

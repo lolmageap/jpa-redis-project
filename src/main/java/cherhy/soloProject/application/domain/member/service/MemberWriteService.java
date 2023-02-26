@@ -5,6 +5,7 @@ import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.member.repository.jpa.MemberRepository;
 import cherhy.soloProject.application.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,11 +18,11 @@ public class MemberWriteService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder encoder;
 
-    public String signUp(MemberDto memberDto) {
+    public ResponseEntity signUp(MemberDto memberDto) {
             Member member = BuildMember(memberDto);
             member.changePassword(encoder.encode(memberDto.password()));
             memberRepository.save(member);
-        return "회원가입";
+        return ResponseEntity.ok(200);
     }
 
     public String modifyMember(MemberDto memberDto, Long memberId) {
@@ -52,7 +53,7 @@ public class MemberWriteService {
         Member member = Member.builder()
                 .email(memberDto.email())
                 .name(memberDto.name())
-                .user_id(memberDto.user_id())
+                .userId(memberDto.user_id())
                 .password(memberDto.password())
                 .build();
         return member;

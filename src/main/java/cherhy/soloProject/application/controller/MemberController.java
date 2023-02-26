@@ -9,6 +9,10 @@ import cherhy.soloProject.application.utilService.SessionReadService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +21,7 @@ import javax.validation.Valid;
 import javax.validation.ValidationException;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.util.Collection;
 import java.util.List;
 
 @Tag(name = "회원정보")
@@ -42,7 +47,7 @@ public class MemberController {
 
     @Operation(summary = "회원가입")
     @PostMapping("/signUp")
-    public String signUp(@RequestBody @Valid MemberDto memberDto) {
+    public ResponseEntity signUp(@RequestBody @Valid MemberDto memberDto) {
         return memberWriteService.signUp(memberDto);
     }
 
@@ -51,9 +56,21 @@ public class MemberController {
     public String signIn(@Valid SignInDto signInDto, HttpSession session){
         return memberReadService.signIn(signInDto, session);
     }
+
+    @Operation(summary = "시큐리티 로그인 연습")
+    @GetMapping("/signIn/exam")
+    public String signInExam(Authentication authentication){
+        if (authentication != null && authentication.isAuthenticated()) {
+            String username = authentication.getName();
+            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        }
+        return "";
+    }
+
     @Operation(summary = "로그아웃")
-    @GetMapping("/signOut")
-    public String signOut(HttpSession session){
+    @PostMapping("/signOut")
+    public ResponseEntity signOut(HttpSession session){
         return sessionReadService.signOut(session);
     }
 

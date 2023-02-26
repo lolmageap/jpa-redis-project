@@ -1,6 +1,7 @@
 package cherhy.soloProject.application.controller;
 
 
+import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.postBlock.dto.response.PostBlockResponseDto;
 import cherhy.soloProject.application.usecase.MemberPostBlockUseCase;
@@ -8,6 +9,7 @@ import cherhy.soloProject.application.utilService.SessionReadService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -24,7 +26,7 @@ public class PostBlockController {
 
     @Operation(summary = "게시물 차단하기")
     @PostMapping("/postBlock/{postId}")
-    public String postBlock(@PathVariable Long postId, HttpSession session){
+    public ResponseEntity postBlock(@PathVariable Long postId, HttpSession session){
         Member userData = sessionReadService.getUserData(session);
         return memberPostPostBlockUseCase.blockPost(userData.getId(),postId);
     }
@@ -36,12 +38,12 @@ public class PostBlockController {
         return memberPostPostBlockUseCase.getBlockPost(userData.getId());
     }
 
-//// cursur paging
-//    @Operation(summary = "차단한 게시물 보기")
-//    @GetMapping("/postBlockList")
-//    public List<PostBlockResponseDto> getPostBlock(HttpSession session){
-//        Member userData = sessionReadService.getUserData(session);
-//        return memberPostPostBlockUseCase.getBlockPost(userData.getId());
-//    }
+//  cursur paging
+    @Operation(summary = "차단한 게시물 보기")
+    @GetMapping("/postBlockList/cursor")
+    public List<PostBlockResponseDto> getPostBlockCursor(ScrollRequest scrollRequest, HttpSession session){
+        Member userData = sessionReadService.getUserData(session);
+        return memberPostPostBlockUseCase.getBlockPost(scrollRequest, userData.getId());
+    }
 
 }

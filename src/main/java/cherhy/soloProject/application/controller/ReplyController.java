@@ -4,12 +4,11 @@ import cherhy.soloProject.Util.scrollDto.PageScroll;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.application.domain.reply.dto.RequestReplyDto;
 import cherhy.soloProject.application.domain.reply.dto.response.ResponseReplyDto;
-import cherhy.soloProject.application.domain.reply.service.ReplyReadService;
-import cherhy.soloProject.application.domain.reply.service.ReplyWriteService;
 import cherhy.soloProject.application.usecase.MemberPostReplyUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,7 +24,7 @@ public class ReplyController {
 
     @PostMapping
     @Operation(summary = "댓글 등록")
-    public Boolean setReply(@RequestBody @Valid RequestReplyDto reply){
+    public ResponseEntity setReply(@RequestBody @Valid RequestReplyDto reply){
         return memberPostReplyUseCase.setReply(reply);
     }
 

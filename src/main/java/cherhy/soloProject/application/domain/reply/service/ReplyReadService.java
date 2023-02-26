@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ReplyReadService {
     public final ReplyRepository replyRepository;
@@ -23,16 +23,16 @@ public class ReplyReadService {
         return replyRepository.findByPostIdScroll(postId, sortedKeys);
     }
     public Long NextKeyCheck(ScrollRequest scrollRequest, List<Long> sortedKeys) {
-        if (sortedKeys.size()-1 == scrollRequest.size()){
-            Long nextKey = sortedKeys.get(scrollRequest.size());
-            sortedKeys.remove(scrollRequest.size());
+        if (sortedKeys.size()-1 == ScrollRequest.size){
+            Long nextKey = sortedKeys.get(ScrollRequest.size);
+            sortedKeys.remove(ScrollRequest.size);
             return nextKey;
         }
         return scrollRequest.NONE_KEY;
     }
     public List<Long> getSortedKeys(ScrollRequest scrollRequest, ZSetOperations zSetOps, String postRedis) {
         Long checkKey = keyCheck(scrollRequest, zSetOps, postRedis);
-        Set<String> keys = zSetOps.reverseRange(postRedis, checkKey, scrollRequest.size());
+        Set<String> keys = zSetOps.reverseRange(postRedis, checkKey, ScrollRequest.size);
         List<Long> parseKeys = keys.stream().map(v -> Long.parseLong(v)).collect(Collectors.toList());
         return parseKeys;
     }

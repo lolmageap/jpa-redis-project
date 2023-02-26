@@ -1,7 +1,5 @@
 package cherhy.soloProject.application.domain.postLike.repository.jpa;
 
-import cherhy.soloProject.application.domain.member.entity.Member;
-import cherhy.soloProject.application.domain.post.entity.Post;
 import cherhy.soloProject.application.domain.postLike.entity.PostLike;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

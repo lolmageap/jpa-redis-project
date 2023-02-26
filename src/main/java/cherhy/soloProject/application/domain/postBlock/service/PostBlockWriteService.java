@@ -22,24 +22,13 @@ public class PostBlockWriteService {
     private final PostRepository postRepository;
     private final PostBlockRepository postBlockRepository;
 
-    public String blockPost(Long memberId, Long postId) {
-        Member member = getMember(memberId);
-        Post post = getPost(postId);
-        Optional<PostBlock> postBlock = getPostBlockByMemberIdAndPostId(memberId, postId);
-        return blockOrUnblock(member, post, postBlock);
-    }
-
     public Optional<PostBlock> getPostBlockByMemberIdAndPostId(Long memberId, Long postId) {
         return postBlockRepository.findByMemberIdAndPostId(memberId, postId);
     }
 
-    public String blockOrUnblock(Member member, Post post, Optional<PostBlock> postBlock) {
-        if (postBlock.isPresent()){
-            return unblock(postBlock.get());
-        }
-        else {
-            return save(member, post);
-        }
+    public void blockOrUnblock(Member member, Post post, Optional<PostBlock> postBlock) {
+        postBlock.ifPresentOrElse(p -> unblock(p),
+                () -> save(member, post));
     }
 
     private String save(Member member, Post post) {

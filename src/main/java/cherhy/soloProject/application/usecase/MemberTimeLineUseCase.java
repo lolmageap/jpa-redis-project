@@ -15,13 +15,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class MemberTimeLineUseCase {
 
@@ -39,10 +42,10 @@ public class MemberTimeLineUseCase {
         return result;
     }
 
-    public String modifyPost(PostRequestDto postRequestDto, Long postId){
+    public ResponseEntity modifyPost(PostRequestDto postRequestDto, Long postId){
         Post findPost = postReadService.getPost(postId);
         postWriteService.modify(postRequestDto, findPost);
-        return "변경 성공";
+        return ResponseEntity.ok(200);
     }
 
     public List<PostPhotoDto> findPostByMemberId(Long memberId){

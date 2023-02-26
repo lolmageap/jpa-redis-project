@@ -1,9 +1,11 @@
 package cherhy.soloProject.application.domain.postBlock.service;
 
+import cherhy.soloProject.application.usecase.MemberPostBlockUseCase;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -11,11 +13,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class PostBlockWriteServiceTest {
 
     @Autowired
-    PostBlockWriteService postBlockWriteService;
+    MemberPostBlockUseCase memberPostBlockUseCase;
 
     @Test
     public void test(){
-        String s = postBlockWriteService.blockPost(1L, 1L);
-        Assertions.assertThat(s).isEqualTo("차단 성공");
+        ResponseEntity responseEntity = memberPostBlockUseCase.blockPost(1L, 1L);
+        Assertions.assertThat(responseEntity).isEqualTo(ResponseEntity.ok(200));
     }
 }

@@ -26,8 +26,7 @@ public class TimeLineController {
     @GetMapping
     public PageScroll<PostPhotoDto> getTimeLine(ScrollRequest scrollRequest, HttpSession session){
         Member userData = sessionReadService.getUserData(session);
-        PageScroll<PostPhotoDto> timeLine = memberPostTimeLineUseCase.getTimeLine(userData.getId(), scrollRequest);
-        return timeLine;
+        return memberPostTimeLineUseCase.getTimeLine(userData.getId(), scrollRequest);
     }
 
 }

@@ -5,6 +5,7 @@ import cherhy.soloProject.application.domain.follow.entity.Follow;
 import cherhy.soloProject.application.domain.follow.repository.jpa.FollowRepository;
 import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.member.repository.jpa.MemberRepository;
+import cherhy.soloProject.application.usecase.MemberFollowUseCase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,6 +24,7 @@ class FollowWriteServiceTest {
 
     @Autowired
     FollowWriteService followWriteService;
+    MemberFollowUseCase memberFollowUseCase;
     @Autowired
     FollowRepository followRepository;
     @Autowired
@@ -40,7 +42,7 @@ class FollowWriteServiceTest {
         //given
         FollowMemberDto followMemberDto = new FollowMemberDto(1L, 2L);
         //when
-        followWriteService.followMember(followMemberDto);
+        memberFollowUseCase.followMember(followMemberDto);
 
         List<Follow> all = followRepository.findAll();
         //then

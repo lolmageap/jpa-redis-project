@@ -5,7 +5,6 @@ import cherhy.soloProject.application.domain.TimeLine.repository.jpa.TimeLineRep
 import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.member.repository.jpa.MemberRepository;
 import cherhy.soloProject.application.domain.post.entity.Post;
-import cherhy.soloProject.application.domain.post.repository.jpa.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

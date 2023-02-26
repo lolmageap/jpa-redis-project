@@ -3,15 +3,15 @@ package cherhy.soloProject.application.domain.follow.service;
 import cherhy.soloProject.Util.scrollDto.PageScroll;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.application.domain.follow.dto.response.ResponseFollowMemberDto;
+import cherhy.soloProject.application.domain.follow.entity.Follow;
 import cherhy.soloProject.application.domain.follow.repository.jpa.FollowRepository;
 import cherhy.soloProject.application.domain.member.entity.Member;
-import cherhy.soloProject.application.domain.member.repository.jpa.MemberRepository;
-import cherhy.soloProject.application.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -19,31 +19,23 @@ import java.util.List;
 public class FollowReadService {
 
     private final FollowRepository followRepository;
-    private final MemberRepository memberRepository;
 
-    public PageScroll<ResponseFollowMemberDto> followList(Long id, ScrollRequest scrollRequest) {
-        Member member = getMember(id);
-        List<ResponseFollowMemberDto> getFollowing = followRepository.findAllByFollowing(member, scrollRequest);
-        return getResponseFollowerMemberDtoPageScroll(getFollowing, scrollRequest);
+    public List<ResponseFollowMemberDto> getFollowing(ScrollRequest scrollRequest, Member member) {
+        return followRepository.findAllByFollowing(member, scrollRequest);
     }
 
-    public PageScroll<ResponseFollowMemberDto> followerList(Long id, ScrollRequest scrollRequest) {
-        Member member = getMember(id);
-        List<ResponseFollowMemberDto> getFollow = followRepository.findAllByFollower(member, scrollRequest);
-        return getResponseFollowerMemberDtoPageScroll(getFollow, scrollRequest);
+    public List<ResponseFollowMemberDto> getFollower(ScrollRequest scrollRequest, Member member) {
+        return followRepository.findAllByFollower(member, scrollRequest);
     }
 
-    private PageScroll<ResponseFollowMemberDto> getResponseFollowerMemberDtoPageScroll
-            (List<ResponseFollowMemberDto> follow, ScrollRequest scrollRequest) {
+    public Optional<Follow> getFollowExist(Member findMember, Member followMember) {
+        return followRepository.followCheck(findMember.getId(), followMember.getId());
+    }
+
+    public PageScroll<ResponseFollowMemberDto> getResponseFollowerMemberDtoScroll(List<ResponseFollowMemberDto> follow, ScrollRequest scrollRequest) {
         List<ResponseFollowMemberDto> resMemberDto = follow;
         long nextKey = getNextKey(scrollRequest, resMemberDto);
         return new PageScroll<>(scrollRequest.next(nextKey), resMemberDto);
-    }
-
-    private Member getMember(Long id) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(MemberNotFoundException::new);
-        return member;
     }
 
     private long getNextKey(ScrollRequest scrollRequest, List<ResponseFollowMemberDto> resMemberDto) {

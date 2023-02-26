@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom, MemberMapper {
     Optional<Member> findByEmail(String email);
-    @Query("select m from Member m where m.user_id = :userId")
+    @Query("select m from Member m where m.userId = :userId")
     Optional<Member> findByUserId(@Param("userId") String userId);
 
     @Query("select m from Member m where m.id in ( select f.following.id from Follow f where f.follower.id = :memberId) ")

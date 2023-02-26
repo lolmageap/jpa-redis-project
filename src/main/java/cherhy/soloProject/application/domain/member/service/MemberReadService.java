@@ -4,13 +4,10 @@ import cherhy.soloProject.application.domain.member.dto.MemberSearchDto;
 import cherhy.soloProject.application.domain.member.dto.SignInDto;
 import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.member.repository.jpa.MemberRepository;
-import cherhy.soloProject.application.domain.post.dto.request.PostRequestDto;
-import cherhy.soloProject.application.domain.postLike.dto.PostLikeDto;
 import cherhy.soloProject.application.exception.ExistException;
 import cherhy.soloProject.application.exception.MemberNotFoundException;
 import cherhy.soloProject.application.exception.PasswordNotMatchException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,8 +23,7 @@ import java.util.stream.Collectors;
 import static cherhy.soloProject.application.RedisKey.SEARCH_LOG;
 
 @Service
-@Slf4j
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberReadService {
 
@@ -69,7 +65,6 @@ public class MemberReadService {
         LocalDateTime now = LocalDateTime.now();
         Long score = now.toEpochSecond(ZoneOffset.UTC);
         String key = String.format(SEARCH_LOG + memberSearchDto.memberId());
-        log.info("key = {}", key);
         String value = memberSearchDto.searchName();
         ops.add(key, value, score);
     }

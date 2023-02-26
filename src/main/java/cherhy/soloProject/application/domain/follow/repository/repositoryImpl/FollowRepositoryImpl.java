@@ -42,7 +42,7 @@ public class FollowRepositoryImpl implements FollowRepositoryCustom {
                 .innerJoin(follow.following, member)
                 .where(follow.follower.eq(requestMember) , (keyCheck(scrollRequest)))
                 .orderBy(follow.id.desc())
-                .limit(scrollRequest.size())
+                .limit(ScrollRequest.size)
                 .fetch();
     }
 
@@ -54,7 +54,7 @@ public class FollowRepositoryImpl implements FollowRepositoryCustom {
                 .innerJoin(follow.follower, member)
                 .where(follow.following.eq(requestMember), (keyCheck(scrollRequest)))
                 .orderBy(follow.id.desc())
-                .limit(scrollRequest.size())
+                .limit(ScrollRequest.size)
                 .fetch();
     }
     private BooleanExpression keyCheck(ScrollRequest scrollRequest) {

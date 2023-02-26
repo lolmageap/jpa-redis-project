@@ -3,6 +3,7 @@ package cherhy.soloProject.application.utilService;
 import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.exception.SessionNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,11 +28,11 @@ public class SessionReadService {
         return userData.getId();
     }
 
-    public String signOut(HttpSession session) {
+    public ResponseEntity signOut(HttpSession session) {
         if (session.getAttribute("userData") == null){
             throw new SessionNotFoundException();
         }
         session.removeAttribute("userData");
-        return "로그아웃 성공";
+        return ResponseEntity.ok(200);
     }
 }

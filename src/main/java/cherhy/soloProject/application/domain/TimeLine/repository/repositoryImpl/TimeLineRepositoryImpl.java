@@ -29,7 +29,7 @@ public class TimeLineRepositoryImpl implements TimeLineRepositoryCustom {
         List<Long> getPostIds = queryFactory.select(timeLine.post.id)
                 .from(timeLine)
                 .where(timeLine.member.eq(paramMember), keyCheck(scrollRequest))
-                .limit(scrollRequest.size())
+                .limit(ScrollRequest.size)
                 .orderBy(timeLine.lastModifiedDate.desc())
                 .fetch();
         List<Post> postByCovering = getPostByCovering(getPostIds);
@@ -41,7 +41,7 @@ public class TimeLineRepositoryImpl implements TimeLineRepositoryCustom {
         List<LocalDateTime> keyOfLocalDateTimes = queryFactory.select(timeLine.lastModifiedDate)
                 .from(timeLine)
                 .where(timeLine.member.eq(paramMember), keyCheck(scrollRequest))
-                .limit(scrollRequest.size())
+                .limit(ScrollRequest.size)
                 .orderBy(timeLine.lastModifiedDate.desc())
                 .fetch();
         return keyOfLocalDateTimes;
