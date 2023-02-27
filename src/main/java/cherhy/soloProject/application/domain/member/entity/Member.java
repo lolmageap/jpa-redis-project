@@ -45,7 +45,7 @@ public class Member extends BaseTimeEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<PostBlock> postBlocks = new ArrayList<>();
 
-    @OneToMany(mappedBy = "blockMember", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<MemberBlock> memberBlocks = new ArrayList<>();
 
     @Builder //회원가입

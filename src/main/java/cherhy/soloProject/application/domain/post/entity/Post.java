@@ -14,7 +14,6 @@ import java.util.List;
 
 @Getter
 @Entity
-@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post extends BaseEntity {
 
