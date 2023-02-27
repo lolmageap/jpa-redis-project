@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -28,10 +27,6 @@ public class MemberBlockReadService {
     public List<MemberBlockResponseDto> getMemberBlocks(Member member, ScrollRequest scrollRequest) {
         return memberBlockRepository.getBlockMemberScroll(member,scrollRequest).orElseThrow(MemberNotFoundException::new);
     }
-
-//    public List<MemberBlockResponseDto> changeMemberResponseDto(List<MemberBlock> memberBlocks) {
-//        return memberBlocks.stream().map(m -> new MemberBlockResponseDto(m.getBlockMember(), m.getId())).collect(Collectors.toList());
-//    }
 
     public long getNextKey(List<MemberBlockResponseDto> memberBlockResponseDtos) {
         return memberBlockResponseDtos.stream().mapToLong(v -> v.MemberBlockId())

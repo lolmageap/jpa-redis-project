@@ -2,16 +2,17 @@ package cherhy.soloProject.application.controller;
 
 import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
-import cherhy.soloProject.application.domain.follow.dto.request.FollowMemberDto;
 import cherhy.soloProject.application.domain.follow.dto.response.ResponseFollowMemberDto;
+import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.usecase.MemberFollowUseCase;
+import cherhy.soloProject.application.utilService.SessionReadService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import javax.servlet.http.HttpSession;
 
 @Tag(name = "팔로우")
 @RestController
@@ -19,11 +20,13 @@ import javax.validation.Valid;
 @RequestMapping("/follow")
 public class FollowController {
     private final MemberFollowUseCase memberFollowUseCase;
+    private final SessionReadService sessionReadService;
 
     @Operation(summary = "팔로우, 언팔로우")
-    @PostMapping
-    public ResponseEntity follow(@RequestBody @Valid FollowMemberDto followMemberDto){
-        return memberFollowUseCase.followMember(followMemberDto);
+    @PostMapping("{followingId}")
+    public ResponseEntity follow(@PathVariable Long followingId, HttpSession session){
+        Member userData = sessionReadService.getUserData(session);
+        return memberFollowUseCase.followMember(userData.getId(), followingId);
     }
 
     @Operation(summary = "팔로우 리스트")

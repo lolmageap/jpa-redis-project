@@ -4,7 +4,6 @@ package cherhy.soloProject.application.domain.memberBlock.repository.repositoryI
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.memberBlock.dto.response.MemberBlockResponseDto;
-import cherhy.soloProject.application.domain.memberBlock.entity.MemberBlock;
 import cherhy.soloProject.application.domain.memberBlock.repository.querydsl.MemberBlockRepositoryCustom;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -26,7 +25,7 @@ public class MemberBlockRepositoryImpl implements MemberBlockRepositoryCustom {
     @Override
     public Optional<List<MemberBlockResponseDto>> getBlockMemberScroll(Member requestMember, ScrollRequest scrollRequest) {
         List<MemberBlockResponseDto> result = queryFactory.select(Projections.constructor(MemberBlockResponseDto.class,
-                         memberBlock.id, member.id, member.name, member.email))
+                         memberBlock.id, memberBlock.blockMember.id, memberBlock.blockMember.name, memberBlock.blockMember.email))
                 .from(memberBlock)
                 .innerJoin(memberBlock.member,member)
                 .where(memberBlock.member.eq(requestMember), keyCheck(scrollRequest))

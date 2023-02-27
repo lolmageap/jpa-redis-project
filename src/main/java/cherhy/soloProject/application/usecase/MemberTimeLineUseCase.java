@@ -6,11 +6,13 @@ import cherhy.soloProject.application.domain.TimeLine.service.TimeLineReadServic
 import cherhy.soloProject.application.domain.TimeLine.service.TimeLineWriteService;
 import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.member.service.MemberReadService;
+import cherhy.soloProject.application.domain.memberBlock.service.MemberBlockReadService;
 import cherhy.soloProject.application.domain.post.dto.PostPhotoDto;
 import cherhy.soloProject.application.domain.post.dto.request.PostRequestDto;
 import cherhy.soloProject.application.domain.post.entity.Post;
 import cherhy.soloProject.application.domain.post.service.PostReadService;
 import cherhy.soloProject.application.domain.post.service.PostWriteService;
+import cherhy.soloProject.application.exception.MemberBlockException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -33,6 +35,7 @@ public class MemberTimeLineUseCase {
     private final PostWriteService postWriteService;
     private final TimeLineWriteService timeLineWriteService;
     private final TimeLineReadService timeLineReadService;
+    private final MemberBlockReadService memberBlockReadService;
 
     public String createPost(PostRequestDto postRequestDto){
         Member findMember = memberReadService.getMember(postRequestDto.memberId());
@@ -58,39 +61,48 @@ public class MemberTimeLineUseCase {
     public List<PostPhotoDto> findPostByMemberId(Long memberId, Long memberSessionId){
         Member member = memberReadService.getMember(memberId);
         Member myMember = memberReadService.getMember(memberSessionId);
+        blockCheck(member, myMember);
         List<Post> findPosts = postReadService.getPostByMemberId(member,myMember);
         List<PostPhotoDto> result = postReadService.changePostPhotoDto(findPosts);
         return result;
     }
 
     public Page<PostPhotoDto> findPostByMemberIdPage(Long memberId, Pageable pageable) {
-        List<Post> findPosts = postReadService.getPostByMemberIdPage(memberId, pageable);
+        Member member = memberReadService.getMember(memberId);
+        List<Post> findPosts = postReadService.getPostByMemberIdPage(member, pageable);
         List<PostPhotoDto> postPhotoDtos = postReadService.changePostPhotoDto(findPosts);
         Long count = postReadService.getPostCountPage(memberId);
         return new PageImpl<>(postPhotoDtos,pageable,count);
     }
-
     public Page<PostPhotoDto> findPostByMemberIdPage(Long memberId, Long memberSessionId , Pageable pageable) {
-        List<Post> findPosts = postReadService.getPostByMemberIdPage(memberId, memberSessionId, pageable);
+        Member member = memberReadService.getMember(memberId);
+        Member myMember = memberReadService.getMember(memberSessionId);
+        blockCheck(member, myMember);
+        List<Post> findPosts = postReadService.getPostByMemberIdPage(member, myMember, pageable);
         List<PostPhotoDto> postPhotoDtos = postReadService.changePostPhotoDto(findPosts);
         Long count = postReadService.getPostCountPage(memberId, memberSessionId);
         return new PageImpl<>(postPhotoDtos,pageable,count);
     }
 
     public ScrollResponse<PostPhotoDto> findPostByMemberIdCursor(Long memberId, ScrollRequest scrollRequest) {
-        List<Post> findPosts = postReadService.getPostByMemberIdCursor(memberId, scrollRequest);
+        Member member = memberReadService.getMember(memberId);
+        List<Post> findPosts = postReadService.getPostByMemberIdCursor(member, scrollRequest);
         List<PostPhotoDto> postPhotoDtos = postReadService.changePostPhotoDto(findPosts);
         long nextKey = postReadService.getNextKey(postPhotoDtos);
         return new ScrollResponse<>(scrollRequest.next(nextKey) ,postPhotoDtos);
     }
 
     public ScrollResponse<PostPhotoDto> findPostByMemberIdCursor(Long memberId, Long memberSessionId, ScrollRequest scrollRequest) {
-        List<Post> findPosts = postReadService.getPostByMemberIdCursor(memberId, memberSessionId, scrollRequest);
+        Member member = memberReadService.getMember(memberId);
+        Member myMember = memberReadService.getMember(memberSessionId);
+        blockCheck(member, myMember);
+        List<Post> findPosts = postReadService.getPostByMemberIdCursor(member, myMember, scrollRequest);
         List<PostPhotoDto> postPhotoDtos = postReadService.changePostPhotoDto(findPosts);
         long nextKey = postReadService.getNextKey(postPhotoDtos);
         return new ScrollResponse<>(scrollRequest.next(nextKey) ,postPhotoDtos);
     }
 
+    // 차단 당한 사람은 팔로우를 해도 차단한 사람의 게시물이 타임라인에 생성 x
     public ScrollResponse<PostPhotoDto> getTimeLine(Long member_id, ScrollRequest scrollRequest) {
         Member member = memberReadService.getMember(member_id);
         List<Post> findPostIdByCoveringIndex = timeLineReadService.getPostIdByMemberFromTimeLineCursor(member, scrollRequest);
@@ -100,4 +112,7 @@ public class MemberTimeLineUseCase {
         return new ScrollResponse<>(scrollRequest.next(nextKey),postPhotoDtos);
     }
 
+    private void blockCheck(Member member, Member myMember) {
+        memberBlockReadService.getBlockMember(myMember, member).ifPresent(m -> new MemberBlockException());
+    }
 }

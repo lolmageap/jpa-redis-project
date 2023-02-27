@@ -7,7 +7,6 @@ import lombok.*;
 import javax.persistence.*;
 
 @Getter
-@ToString
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberBlock extends BaseTimeEntity {

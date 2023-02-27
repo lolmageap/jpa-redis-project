@@ -41,22 +41,21 @@ public class PostReadService {
         return postRepository.findAllByMemberIdCount(memberId, memberSessionId);
     }
 
-    public List<Post> getPostByMemberIdPage(Long memberId, Pageable pageable) {
-        return postRepository.findAllByMemberId(memberId, pageable);
+    public List<Post> getPostByMemberIdPage(Member member, Pageable pageable) {
+        return postRepository.findAllByMemberId(member.getId(), pageable);
     }
 
-    public List<Post> getPostByMemberIdPage(Long memberId, Long memberSessionId, Pageable pageable) {
-        return postRepository.findAllByMemberId(memberId, memberSessionId, pageable);
+    public List<Post> getPostByMemberIdPage(Member member, Member myMember, Pageable pageable) {
+        return postRepository.findAllByMemberId(member.getId(), myMember.getId(), pageable);
     }
 
-    public List<Post> getPostByMemberIdCursor(Long memberId, ScrollRequest scrollRequest) {
-        return postRepository.findByMemberIdPostIdDesc(memberId, scrollRequest);
+    public List<Post> getPostByMemberIdCursor(Member member, ScrollRequest scrollRequest) {
+        return postRepository.findByMemberIdPostIdDesc(member.getId(), scrollRequest);
     }
 
-    public List<Post> getPostByMemberIdCursor(Long memberId, Long memberSessionId, ScrollRequest scrollRequest) {
-        return postRepository.findByMemberIdPostIdDesc(memberId, memberSessionId, scrollRequest);
+    public List<Post> getPostByMemberIdCursor(Member member, Member myMember, ScrollRequest scrollRequest) {
+        return postRepository.findByMemberIdPostIdDesc(member.getId(), myMember.getId(), scrollRequest);
     }
-
 
     public long getNextKey(List<PostPhotoDto> findPosts) {
         return findPosts.stream().mapToLong(v -> v.getId())

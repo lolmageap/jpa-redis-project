@@ -7,6 +7,8 @@ import cherhy.soloProject.application.domain.member.repository.jpa.MemberReposit
 import cherhy.soloProject.application.exception.ExistException;
 import cherhy.soloProject.application.exception.MemberNotFoundException;
 import cherhy.soloProject.application.exception.PasswordNotMatchException;
+import cherhy.soloProject.application.exception.SameMemberException;
+import com.mysema.commons.lang.Assert;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.*;
 import org.springframework.http.ResponseEntity;
@@ -115,5 +117,9 @@ public class MemberReadService {
         return findMemberList.stream()
                 .map(m -> new MemberSearchRequestDto(m.getId(), m.getName()))
                 .collect(Collectors.toList());
+    }
+
+    public void SameUserCheck(Long memberId, Long blockMemberId) {
+         if (memberId == blockMemberId) throw new SameMemberException();
     }
 }

@@ -2,7 +2,6 @@ package cherhy.soloProject.application.usecase;
 
 import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
-import cherhy.soloProject.application.domain.follow.dto.request.FollowMemberDto;
 import cherhy.soloProject.application.domain.follow.dto.response.ResponseFollowMemberDto;
 import cherhy.soloProject.application.domain.follow.entity.Follow;
 import cherhy.soloProject.application.domain.follow.service.FollowReadService;
@@ -27,10 +26,10 @@ public class MemberFollowUseCase {
     private final FollowWriteService followWriteService;
     private final FollowReadService followReadService;
 
-    public ResponseEntity followMember(FollowMemberDto followMemberDto){
-        Member findMember = memberReadService.getMember(followMemberDto.MemberId());
-        Member followMember = memberReadService.getMember(followMemberDto.FollowerId());
-
+    public ResponseEntity followMember(Long memberId, Long FollowingId){
+        memberReadService.SameUserCheck(memberId, FollowingId);
+        Member findMember = memberReadService.getMember(memberId);
+        Member followMember = memberReadService.getMember(FollowingId);
         Optional<Follow> follow = followReadService.getFollowExist(findMember, followMember);
 
         follow.ifPresentOrElse(f -> followWriteService.unfollow(f),
