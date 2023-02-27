@@ -1,6 +1,6 @@
 package cherhy.soloProject.application.usecase;
 
-import cherhy.soloProject.Util.scrollDto.PageScroll;
+import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.member.service.MemberReadService;
@@ -51,7 +51,7 @@ public class MemberPostReplyUseCase {
     }
 
     // 레디스를 사용한 무한 스크롤
-    public PageScroll<ResponseReplyDto> getReplyScrollInRedis(Long postId, ScrollRequest scrollRequest) {
+    public ScrollResponse<ResponseReplyDto> getReplyScrollInRedis(Long postId, ScrollRequest scrollRequest) {
         ZSetOperations zSetOps = redisTemplate.opsForZSet();
         Post findPost = postReadService.getPost(postId);
         String postRedis = String.format(REPLY_MODIFY_DESC + findPost.getId()); // redis key 값
@@ -60,7 +60,7 @@ public class MemberPostReplyUseCase {
         List<Reply> repliesScroll = replyReadService.getPostIdScroll(postId, sortedKeys); // 정렬된 값을 기준으로 값 가져오기
         List<ResponseReplyDto> responseReplyDtos = replyReadService.changeResponseReplyDto(postId, repliesScroll); //dto로 변환
 //        long getNextKey = nextKey(scrollRequest, repliesScroll);
-        return new PageScroll<>(scrollRequest.next(getNextKey),responseReplyDtos);
+        return new ScrollResponse<>(scrollRequest.next(getNextKey),responseReplyDtos);
     }
 
 }

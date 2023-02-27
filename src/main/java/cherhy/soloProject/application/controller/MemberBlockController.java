@@ -1,6 +1,6 @@
 package cherhy.soloProject.application.controller;
 
-import cherhy.soloProject.Util.scrollDto.PageScroll;
+import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.usecase.MemberBlockUseCase;
@@ -31,7 +31,7 @@ public class MemberBlockController {
 
     @Operation(summary = "차단한 회원 보기")
     @GetMapping("/blockList")
-    public PageScroll getBlockMember(ScrollRequest scrollRequest, HttpSession session){
+    public ScrollResponse getBlockMember(ScrollRequest scrollRequest, HttpSession session){
         Member userData = sessionReadService.getUserData(session);
         return memberBlockUseCase.getBlockMember(userData.getId(),scrollRequest);
     }

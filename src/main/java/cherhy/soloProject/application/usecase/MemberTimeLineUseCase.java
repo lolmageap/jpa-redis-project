@@ -1,6 +1,6 @@
 package cherhy.soloProject.application.usecase;
 
-import cherhy.soloProject.Util.scrollDto.PageScroll;
+import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.application.domain.TimeLine.service.TimeLineReadService;
 import cherhy.soloProject.application.domain.TimeLine.service.TimeLineWriteService;
@@ -77,27 +77,27 @@ public class MemberTimeLineUseCase {
         return new PageImpl<>(postPhotoDtos,pageable,count);
     }
 
-    public PageScroll<PostPhotoDto> findPostByMemberIdCursor(Long memberId, ScrollRequest scrollRequest) {
+    public ScrollResponse<PostPhotoDto> findPostByMemberIdCursor(Long memberId, ScrollRequest scrollRequest) {
         List<Post> findPosts = postReadService.getPostByMemberIdCursor(memberId, scrollRequest);
         List<PostPhotoDto> postPhotoDtos = postReadService.changePostPhotoDto(findPosts);
         long nextKey = postReadService.getNextKey(postPhotoDtos);
-        return new PageScroll<>(scrollRequest.next(nextKey) ,postPhotoDtos);
+        return new ScrollResponse<>(scrollRequest.next(nextKey) ,postPhotoDtos);
     }
 
-    public PageScroll<PostPhotoDto> findPostByMemberIdCursor(Long memberId,Long memberSessionId, ScrollRequest scrollRequest) {
+    public ScrollResponse<PostPhotoDto> findPostByMemberIdCursor(Long memberId, Long memberSessionId, ScrollRequest scrollRequest) {
         List<Post> findPosts = postReadService.getPostByMemberIdCursor(memberId, memberSessionId, scrollRequest);
         List<PostPhotoDto> postPhotoDtos = postReadService.changePostPhotoDto(findPosts);
         long nextKey = postReadService.getNextKey(postPhotoDtos);
-        return new PageScroll<>(scrollRequest.next(nextKey) ,postPhotoDtos);
+        return new ScrollResponse<>(scrollRequest.next(nextKey) ,postPhotoDtos);
     }
 
-    public PageScroll<PostPhotoDto> getTimeLine(Long member_id, ScrollRequest scrollRequest) {
+    public ScrollResponse<PostPhotoDto> getTimeLine(Long member_id, ScrollRequest scrollRequest) {
         Member member = memberReadService.getMember(member_id);
         List<Post> findPostIdByCoveringIndex = timeLineReadService.getPostIdByMemberFromTimeLineCursor(member, scrollRequest);
         List<LocalDateTime> key = timeLineReadService.getTimeLineNextKey(scrollRequest, member);
         Long nextKey = timeLineReadService.getNextKey(scrollRequest, key);
         List<PostPhotoDto> postPhotoDtos = postReadService.changePostPhotoDto(findPostIdByCoveringIndex);
-        return new PageScroll<>(scrollRequest.next(nextKey),postPhotoDtos);
+        return new ScrollResponse<>(scrollRequest.next(nextKey),postPhotoDtos);
     }
 
 }

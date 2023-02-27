@@ -1,6 +1,6 @@
 package cherhy.soloProject.application.usecase;
 
-import cherhy.soloProject.Util.scrollDto.PageScroll;
+import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.application.domain.follow.dto.request.FollowMemberDto;
 import cherhy.soloProject.application.domain.follow.dto.response.ResponseFollowMemberDto;
@@ -39,13 +39,13 @@ public class MemberFollowUseCase {
         return ResponseEntity.ok(200);
     }
 
-    public PageScroll<ResponseFollowMemberDto> followList(Long id, ScrollRequest scrollRequest) {
+    public ScrollResponse<ResponseFollowMemberDto> followList(Long id, ScrollRequest scrollRequest) {
         Member member = memberReadService.getMember(id);
         List<ResponseFollowMemberDto> getFollowing = followReadService.getFollowing(scrollRequest, member);
         return followReadService.getResponseFollowerMemberDtoScroll(getFollowing, scrollRequest);
     }
 
-    public PageScroll<ResponseFollowMemberDto> followerList(Long id, ScrollRequest scrollRequest) {
+    public ScrollResponse<ResponseFollowMemberDto> followerList(Long id, ScrollRequest scrollRequest) {
         Member member = memberReadService.getMember(id);
         List<ResponseFollowMemberDto> getFollow = followReadService.getFollower(scrollRequest, member);
         return followReadService.getResponseFollowerMemberDtoScroll(getFollow, scrollRequest);

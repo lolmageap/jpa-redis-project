@@ -1,7 +1,7 @@
 package cherhy.soloProject.application.controller;
 
 
-import cherhy.soloProject.Util.scrollDto.PageScroll;
+import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.postBlock.dto.response.PostBlockResponseDto;
@@ -41,7 +41,7 @@ public class PostBlockController {
 
     @Operation(summary = "차단한 게시물 보기 cursor")
     @GetMapping("/postBlockList/cursor")
-    public PageScroll getPostBlockCursor(ScrollRequest scrollRequest, HttpSession session){
+    public ScrollResponse getPostBlockCursor(ScrollRequest scrollRequest, HttpSession session){
         Member userData = sessionReadService.getUserData(session);
         return memberPostPostBlockUseCase.getBlockPost(userData.getId(), scrollRequest);
     }

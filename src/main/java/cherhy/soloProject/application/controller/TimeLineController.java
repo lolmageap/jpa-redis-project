@@ -1,6 +1,6 @@
 package cherhy.soloProject.application.controller;
 
-import cherhy.soloProject.Util.scrollDto.PageScroll;
+import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.post.dto.PostPhotoDto;
@@ -24,7 +24,7 @@ public class TimeLineController {
 
     @Operation(summary = "타임라인 조회 // only RDBMS")
     @GetMapping
-    public PageScroll<PostPhotoDto> getTimeLine(ScrollRequest scrollRequest, HttpSession session){
+    public ScrollResponse<PostPhotoDto> getTimeLine(ScrollRequest scrollRequest, HttpSession session){
         Member userData = sessionReadService.getUserData(session);
         return memberPostTimeLineUseCase.getTimeLine(userData.getId(), scrollRequest);
     }

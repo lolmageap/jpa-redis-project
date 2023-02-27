@@ -25,13 +25,13 @@ public class MemberBlockReadService {
         return memberBlockRepository.getBlockMember(member, blockMember);
     }
 
-    public List<MemberBlock> getMemberBlocks(Member member, ScrollRequest scrollRequest) {
+    public List<MemberBlockResponseDto> getMemberBlocks(Member member, ScrollRequest scrollRequest) {
         return memberBlockRepository.getBlockMemberScroll(member,scrollRequest).orElseThrow(MemberNotFoundException::new);
     }
 
-    public List<MemberBlockResponseDto> changeMemberResponseDto(List<MemberBlock> memberBlocks) {
-        return memberBlocks.stream().map(m -> new MemberBlockResponseDto(m.getBlockMember(), m.getId())).collect(Collectors.toList());
-    }
+//    public List<MemberBlockResponseDto> changeMemberResponseDto(List<MemberBlock> memberBlocks) {
+//        return memberBlocks.stream().map(m -> new MemberBlockResponseDto(m.getBlockMember(), m.getId())).collect(Collectors.toList());
+//    }
 
     public long getNextKey(List<MemberBlockResponseDto> memberBlockResponseDtos) {
         return memberBlockResponseDtos.stream().mapToLong(v -> v.MemberBlockId())

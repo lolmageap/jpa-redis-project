@@ -1,6 +1,6 @@
 package cherhy.soloProject.application.usecase;
 
-import cherhy.soloProject.Util.scrollDto.PageScroll;
+import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.member.service.MemberReadService;
@@ -44,12 +44,12 @@ public class MemberPostBlockUseCase {
         return  postBlockReadService.changePostBlockResponseDto(postBlocks);
     }
 
-    public PageScroll getBlockPost(Long memberId, ScrollRequest scrollRequest) {
+    public ScrollResponse getBlockPost(Long memberId, ScrollRequest scrollRequest) {
         Member member = memberReadService.getMember(memberId);
         List<PostBlock> postBlocks = postBlockReadService.getPostBlocks(member, scrollRequest);
         List<PostBlockResponseDto> postBlockResponseDtos = postBlockReadService.changePostBlockResponseDto(postBlocks);
         long nextKey = postBlockReadService.getNextKey(postBlockResponseDtos);
-        return new PageScroll<>(scrollRequest.next(nextKey), postBlockResponseDtos);
+        return new ScrollResponse<>(scrollRequest.next(nextKey), postBlockResponseDtos);
     }
 
 }

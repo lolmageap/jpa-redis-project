@@ -1,6 +1,6 @@
 package cherhy.soloProject.application.controller;
 
-import cherhy.soloProject.Util.scrollDto.PageScroll;
+import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.application.domain.reply.dto.RequestReplyDto;
 import cherhy.soloProject.application.domain.reply.dto.response.ResponseReplyDto;
@@ -36,7 +36,7 @@ public class ReplyController {
 
     @GetMapping("/{postId}/scroll")
     @Operation(summary = "댓글 무한 스크롤 // 날짜순 정렬 to redis")
-    public PageScroll<ResponseReplyDto> getReplyScrollInRedis(@PathVariable Long postId, ScrollRequest scrollRequest){
+    public ScrollResponse<ResponseReplyDto> getReplyScrollInRedis(@PathVariable Long postId, ScrollRequest scrollRequest){
         return memberPostReplyUseCase.getReplyScrollInRedis(postId, scrollRequest);
     }
 

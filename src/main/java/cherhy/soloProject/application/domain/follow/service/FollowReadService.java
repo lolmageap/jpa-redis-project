@@ -1,6 +1,6 @@
 package cherhy.soloProject.application.domain.follow.service;
 
-import cherhy.soloProject.Util.scrollDto.PageScroll;
+import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.application.domain.follow.dto.response.ResponseFollowMemberDto;
 import cherhy.soloProject.application.domain.follow.entity.Follow;
@@ -32,10 +32,10 @@ public class FollowReadService {
         return followRepository.followCheck(findMember.getId(), followMember.getId());
     }
 
-    public PageScroll<ResponseFollowMemberDto> getResponseFollowerMemberDtoScroll(List<ResponseFollowMemberDto> follow, ScrollRequest scrollRequest) {
+    public ScrollResponse<ResponseFollowMemberDto> getResponseFollowerMemberDtoScroll(List<ResponseFollowMemberDto> follow, ScrollRequest scrollRequest) {
         List<ResponseFollowMemberDto> resMemberDto = follow;
         long nextKey = getNextKey(scrollRequest, resMemberDto);
-        return new PageScroll<>(scrollRequest.next(nextKey), resMemberDto);
+        return new ScrollResponse<>(scrollRequest.next(nextKey), resMemberDto);
     }
 
     private long getNextKey(ScrollRequest scrollRequest, List<ResponseFollowMemberDto> resMemberDto) {

@@ -1,6 +1,6 @@
 package cherhy.soloProject.application.controller;
 
-import cherhy.soloProject.Util.scrollDto.PageScroll;
+import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.application.domain.follow.dto.request.FollowMemberDto;
 import cherhy.soloProject.application.domain.follow.dto.response.ResponseFollowMemberDto;
@@ -28,13 +28,13 @@ public class FollowController {
 
     @Operation(summary = "팔로우 리스트")
     @GetMapping("/followList/{id}")
-    public PageScroll<ResponseFollowMemberDto> followList(@PathVariable("id") Long id, ScrollRequest scrollRequest){
+    public ScrollResponse<ResponseFollowMemberDto> followList(@PathVariable("id") Long id, ScrollRequest scrollRequest){
         return memberFollowUseCase.followList(id, scrollRequest);
     }
 
     @Operation(summary = "팔로워 리스트")
     @GetMapping("/followerList/{id}")
-    public PageScroll<ResponseFollowMemberDto> followerList(@PathVariable("id") Long id, ScrollRequest scrollRequest){
+    public ScrollResponse<ResponseFollowMemberDto> followerList(@PathVariable("id") Long id, ScrollRequest scrollRequest){
         return memberFollowUseCase.followerList(id, scrollRequest);
     }
 

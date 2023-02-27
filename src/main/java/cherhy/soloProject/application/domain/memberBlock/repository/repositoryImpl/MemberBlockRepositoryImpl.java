@@ -1,11 +1,12 @@
-package cherhy.soloProject.application.domain.memberBlock.repository.querydsl;
+package cherhy.soloProject.application.domain.memberBlock.repository.repositoryImpl;
 
 
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.application.domain.member.entity.Member;
-import cherhy.soloProject.application.domain.member.entity.QMember;
+import cherhy.soloProject.application.domain.memberBlock.dto.response.MemberBlockResponseDto;
 import cherhy.soloProject.application.domain.memberBlock.entity.MemberBlock;
-import com.querydsl.core.Tuple;
+import cherhy.soloProject.application.domain.memberBlock.repository.querydsl.MemberBlockRepositoryCustom;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -23,13 +24,12 @@ public class MemberBlockRepositoryImpl implements MemberBlockRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Optional<List<MemberBlock>> getBlockMemberScroll(Member findMember, ScrollRequest scrollRequest) {
-        List<MemberBlock> result = queryFactory.select(memberBlock)
+    public Optional<List<MemberBlockResponseDto>> getBlockMemberScroll(Member requestMember, ScrollRequest scrollRequest) {
+        List<MemberBlockResponseDto> result = queryFactory.select(Projections.constructor(MemberBlockResponseDto.class,
+                         memberBlock.id, member.id, member.name, member.email))
                 .from(memberBlock)
-                .leftJoin(member)
-                .on(memberBlock.member.eq(member))
-                .fetchJoin()
-                .where(memberBlock.member.eq(findMember), keyCheck(scrollRequest))
+                .innerJoin(memberBlock.member,member)
+                .where(memberBlock.member.eq(requestMember), keyCheck(scrollRequest))
                 .orderBy(memberBlock.id.desc())
                 .limit(ScrollRequest.size)
                 .fetch();
