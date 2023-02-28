@@ -2,6 +2,7 @@ package cherhy.soloProject.application.domain.TimeLine.repository.repositoryImpl
 
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.application.domain.member.entity.Member;
+import cherhy.soloProject.application.domain.memberBlock.entity.QMemberBlock;
 import cherhy.soloProject.application.domain.post.entity.Post;
 import cherhy.soloProject.application.domain.TimeLine.repository.querydsl.TimeLineRepositoryCustom;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import static cherhy.soloProject.application.domain.memberBlock.entity.QMemberBlock.*;
 import static cherhy.soloProject.application.domain.post.entity.QPost.post;
 import static cherhy.soloProject.application.domain.TimeLine.entity.QTimeLine.*;
 
@@ -25,12 +27,17 @@ public class TimeLineRepositoryImpl implements TimeLineRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Post> findPostIdByMemberFromTimeLine(Member paramMember, ScrollRequest scrollRequest) {
+    public List<Post> findPostIdByMemberFromTimeLine(Member myMember, ScrollRequest scrollRequest) {
         List<Long> getPostIds = queryFactory.select(timeLine.post.id)
                 .from(timeLine)
-                .where(timeLine.member.eq(paramMember), keyCheck(scrollRequest))
-                .limit(ScrollRequest.size)
+                .leftJoin(memberBlock)
+                .on(timeLine.member.id.eq(memberBlock.member.id),
+                        memberBlock.member.id.eq(myMember.getId()))
+                .where(timeLine.member.eq(myMember),
+                        memberBlock.member.id.isNull(),
+                        keyCheck(scrollRequest))
                 .orderBy(timeLine.lastModifiedDate.desc())
+                .limit(ScrollRequest.size)
                 .fetch();
         List<Post> postByCovering = getPostByCovering(getPostIds);
         return postByCovering;
@@ -41,20 +48,11 @@ public class TimeLineRepositoryImpl implements TimeLineRepositoryCustom {
         List<LocalDateTime> keyOfLocalDateTimes = queryFactory.select(timeLine.lastModifiedDate)
                 .from(timeLine)
                 .where(timeLine.member.eq(paramMember), keyCheck(scrollRequest))
-                .limit(ScrollRequest.size)
                 .orderBy(timeLine.lastModifiedDate.desc())
+                .limit(ScrollRequest.size)
                 .fetch();
         return keyOfLocalDateTimes;
     }
-
-// lastModifiedDate에 인덱스
-// ScrollRequest.key가 수정일이 되어도 되나?
-// main query
-// select post_id from timeline t inner join subquery s on t.member_id = s.member_id
-// select post_id from timeline t where t.member_id in subquery.member_id
-// subquery
-// select member_id from timeline where scrollRequest.key < lastModifiedDate
-// order By lastModifiedDate limit scrollRequest.size
 
     public List<Post> getPostByCovering(List<Long> getPostIds) {
         List<Post> result = queryFactory.select(post)

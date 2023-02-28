@@ -61,7 +61,7 @@ public class MemberTimeLineUseCase {
     public List<PostPhotoDto> findPostByMemberId(Long memberId, Long memberSessionId){
         Member member = memberReadService.getMember(memberId);
         Member myMember = memberReadService.getMember(memberSessionId);
-        blockCheck(member, myMember);
+        getBlockMember(member, myMember);
         List<Post> findPosts = postReadService.getPostByMemberId(member,myMember);
         List<PostPhotoDto> result = postReadService.changePostPhotoDto(findPosts);
         return result;
@@ -77,7 +77,7 @@ public class MemberTimeLineUseCase {
     public Page<PostPhotoDto> findPostByMemberIdPage(Long memberId, Long memberSessionId , Pageable pageable) {
         Member member = memberReadService.getMember(memberId);
         Member myMember = memberReadService.getMember(memberSessionId);
-        blockCheck(member, myMember);
+        getBlockMember(member, myMember);
         List<Post> findPosts = postReadService.getPostByMemberIdPage(member, myMember, pageable);
         List<PostPhotoDto> postPhotoDtos = postReadService.changePostPhotoDto(findPosts);
         Long count = postReadService.getPostCountPage(memberId, memberSessionId);
@@ -95,7 +95,7 @@ public class MemberTimeLineUseCase {
     public ScrollResponse<PostPhotoDto> findPostByMemberIdCursor(Long memberId, Long memberSessionId, ScrollRequest scrollRequest) {
         Member member = memberReadService.getMember(memberId);
         Member myMember = memberReadService.getMember(memberSessionId);
-        blockCheck(member, myMember);
+        getBlockMember(member, myMember);
         List<Post> findPosts = postReadService.getPostByMemberIdCursor(member, myMember, scrollRequest);
         List<PostPhotoDto> postPhotoDtos = postReadService.changePostPhotoDto(findPosts);
         long nextKey = postReadService.getNextKey(postPhotoDtos);
@@ -103,8 +103,8 @@ public class MemberTimeLineUseCase {
     }
 
     // 차단 당한 사람은 팔로우를 해도 차단한 사람의 게시물이 타임라인에 생성 x
-    public ScrollResponse<PostPhotoDto> getTimeLine(Long member_id, ScrollRequest scrollRequest) {
-        Member member = memberReadService.getMember(member_id);
+    public ScrollResponse<PostPhotoDto> getTimeLine(Long memberId, ScrollRequest scrollRequest) {
+        Member member = memberReadService.getMember(memberId);
         List<Post> findPostIdByCoveringIndex = timeLineReadService.getPostIdByMemberFromTimeLineCursor(member, scrollRequest);
         List<LocalDateTime> key = timeLineReadService.getTimeLineNextKey(scrollRequest, member);
         Long nextKey = timeLineReadService.getNextKey(scrollRequest, key);
@@ -112,7 +112,7 @@ public class MemberTimeLineUseCase {
         return new ScrollResponse<>(scrollRequest.next(nextKey),postPhotoDtos);
     }
 
-    private void blockCheck(Member member, Member myMember) {
+    private void getBlockMember(Member member, Member myMember) {
         memberBlockReadService.getBlockMember(myMember, member).ifPresent(m -> new MemberBlockException());
     }
 }
