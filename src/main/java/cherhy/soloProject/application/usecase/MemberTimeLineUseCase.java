@@ -37,10 +37,10 @@ public class MemberTimeLineUseCase {
     private final TimeLineReadService timeLineReadService;
     private final MemberBlockReadService memberBlockReadService;
 
-    public String createPost(PostRequestDto postRequestDto){
+    public ResponseEntity createPost(PostRequestDto postRequestDto){
         Member findMember = memberReadService.getMember(postRequestDto.memberId());
         Post addPost = postWriteService.buildPost(postRequestDto, findMember);
-        String result = timeLineWriteService.insertTimeLineValue(findMember, addPost);
+        ResponseEntity result = timeLineWriteService.insertTimeLineValue(findMember, addPost);
         postWriteService.addPostLikeToRedis(addPost);
         return result;
     }
@@ -102,11 +102,10 @@ public class MemberTimeLineUseCase {
         return new ScrollResponse<>(scrollRequest.next(nextKey) ,postPhotoDtos);
     }
 
-    // 차단 당한 사람은 팔로우를 해도 차단한 사람의 게시물이 타임라인에 생성 x
     public ScrollResponse<PostPhotoDto> getTimeLine(Long memberId, ScrollRequest scrollRequest) {
         Member member = memberReadService.getMember(memberId);
         List<Post> findPostIdByCoveringIndex = timeLineReadService.getPostIdByMemberFromTimeLineCursor(member, scrollRequest);
-        List<LocalDateTime> key = timeLineReadService.getTimeLineNextKey(scrollRequest, member);
+        List<Long> key = timeLineReadService.getTimeLineNextKey(scrollRequest, member);
         Long nextKey = timeLineReadService.getNextKey(scrollRequest, key);
         List<PostPhotoDto> postPhotoDtos = postReadService.changePostPhotoDto(findPostIdByCoveringIndex);
         return new ScrollResponse<>(scrollRequest.next(nextKey),postPhotoDtos);

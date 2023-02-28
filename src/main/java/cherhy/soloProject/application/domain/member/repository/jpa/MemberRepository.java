@@ -15,7 +15,7 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
     @Query("select m from Member m where m.userId = :userId")
     Optional<Member> findByUserId(@Param("userId") String userId);
 
-    @Query("select m from Member m where m.id in ( select f.following.id from Follow f where f.follower.id = :memberId) ")
+    @Query("select m from Member m where m.id in ( select f.follower.id from Follow f where f.following.id = :memberId) ")
     List<Member> findAllByFollowers(@Param("memberId") Long memberId);
 
     Optional<List<Member>> findByName(String searchMemberName);

@@ -29,7 +29,7 @@ public class PostController {
 
     @Operation(summary = "게시물 생성 // Push Model")
     @PostMapping("/create")
-    public String createPost(@RequestBody @Valid PostRequestDto postRequestDto){
+    public ResponseEntity createPost(@RequestBody @Valid PostRequestDto postRequestDto){
         return memberPostUseCase.createPost(postRequestDto);
     }
 

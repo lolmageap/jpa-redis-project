@@ -28,8 +28,8 @@ public class FollowReadService {
         return followRepository.findAllByFollower(member, scrollRequest);
     }
 
-    public Optional<Follow> getFollowExist(Member findMember, Member followMember) {
-        return followRepository.followCheck(findMember.getId(), followMember.getId());
+    public Optional<Follow> getFollowExist(Member myMember, Member followMember) {
+        return followRepository.followCheck(myMember.getId(), followMember.getId());
     }
 
     public ScrollResponse<ResponseFollowMemberDto> getResponseFollowerMemberDtoScroll(List<ResponseFollowMemberDto> follow, ScrollRequest scrollRequest) {

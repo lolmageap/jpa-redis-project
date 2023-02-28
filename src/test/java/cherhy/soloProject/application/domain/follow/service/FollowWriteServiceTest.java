@@ -49,10 +49,7 @@ class FollowWriteServiceTest {
     @Test
     @Rollback(value = false)
     public void testUnfollow(){
-        //given
-//        FollowMemberDto followMemberDto = new FollowMemberDto(1L, 2L);
-        //when
-//        followWriteService.unFollowMember(followMemberDto);
+
 
     }
 

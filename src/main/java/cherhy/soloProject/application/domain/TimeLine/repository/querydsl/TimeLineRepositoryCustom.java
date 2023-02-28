@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface TimeLineRepositoryCustom {
 
-    List<Post> findPostIdByMemberFromTimeLine(Member member, ScrollRequest scrollRequest);
-    List<LocalDateTime> getNextKey(Member member, ScrollRequest scrollRequest);
+    List<Post> findPostIdByMemberFromTimeLine(Member member, ScrollRequest scrollRequest); // id순
+    List<Post> findPostIdByMemberFromTimeLineSortModify(Member member, ScrollRequest scrollRequest); // 날짜순
+    List<Long> getNextKey(Member member, ScrollRequest scrollRequest);
 }

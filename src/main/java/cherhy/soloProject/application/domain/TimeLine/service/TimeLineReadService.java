@@ -18,7 +18,7 @@ import java.util.List;
 public class TimeLineReadService {
     private final TimeLineRepository timeLineRepository;
 
-    public List<LocalDateTime> getTimeLineNextKey(ScrollRequest scrollRequest, Member member) {
+    public List<Long> getTimeLineNextKey(ScrollRequest scrollRequest, Member member) {
         return timeLineRepository.getNextKey(member, scrollRequest);
     }
 
@@ -26,7 +26,11 @@ public class TimeLineReadService {
         return timeLineRepository.findPostIdByMemberFromTimeLine(member, scrollRequest);
     }
 
-    public long getNextKey(ScrollRequest scrollRequest, List<LocalDateTime> covering) {
+    public long getNextKey(ScrollRequest scrollRequest, List<Long> covering) {
+        return covering.stream().mapToLong(v -> v).min().orElse(scrollRequest.NONE_KEY);
+    }
+
+    public long getNextKeySortModifyDate(ScrollRequest scrollRequest, List<LocalDateTime> covering) {
         return covering.stream().mapToLong(v -> Long.parseLong(v.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSSS"))))
                 .min().orElse(scrollRequest.NONE_KEY);
     }

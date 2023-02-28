@@ -2,7 +2,6 @@ package cherhy.soloProject.application.domain.TimeLine.repository.repositoryImpl
 
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.application.domain.member.entity.Member;
-import cherhy.soloProject.application.domain.memberBlock.entity.QMemberBlock;
 import cherhy.soloProject.application.domain.post.entity.Post;
 import cherhy.soloProject.application.domain.TimeLine.repository.querydsl.TimeLineRepositoryCustom;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -10,7 +9,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -22,12 +20,30 @@ import static cherhy.soloProject.application.domain.TimeLine.entity.QTimeLine.*;
 @Repository
 @RequiredArgsConstructor
 public class TimeLineRepositoryImpl implements TimeLineRepositoryCustom {
-
-    private final EntityManager em;
     private final JPAQueryFactory queryFactory;
 
     @Override
     public List<Post> findPostIdByMemberFromTimeLine(Member myMember, ScrollRequest scrollRequest) {
+
+        List<Long> getPostIds = queryFactory.select(timeLine.post.id)
+                .from(timeLine)
+                .leftJoin(memberBlock)
+                .on(timeLine.member.id.eq(memberBlock.member.id),
+                        memberBlock.member.id.eq(myMember.getId()))
+                .where(timeLine.member.id.eq(myMember.getId()),
+                        memberBlock.member.id.isNull(),
+                        keyCheck(scrollRequest))
+                .orderBy(timeLine.id.desc())
+                .limit(ScrollRequest.size)
+                .fetch();
+
+        List<Post> postByCovering = getPostByCovering(getPostIds);
+
+        return postByCovering;
+    }
+
+    @Override
+    public List<Post> findPostIdByMemberFromTimeLineSortModify(Member myMember, ScrollRequest scrollRequest) {
         List<Long> getPostIds = queryFactory.select(timeLine.post.id)
                 .from(timeLine)
                 .leftJoin(memberBlock)
@@ -35,36 +51,50 @@ public class TimeLineRepositoryImpl implements TimeLineRepositoryCustom {
                         memberBlock.member.id.eq(myMember.getId()))
                 .where(timeLine.member.eq(myMember),
                         memberBlock.member.id.isNull(),
-                        keyCheck(scrollRequest))
+                        keyCheckModify(scrollRequest))
                 .orderBy(timeLine.lastModifiedDate.desc())
                 .limit(ScrollRequest.size)
                 .fetch();
+
         List<Post> postByCovering = getPostByCovering(getPostIds);
+
         return postByCovering;
     }
 
     @Override
-    public List<LocalDateTime> getNextKey(Member paramMember, ScrollRequest scrollRequest) {
-        List<LocalDateTime> keyOfLocalDateTimes = queryFactory.select(timeLine.lastModifiedDate)
+    public List<Long> getNextKey(Member myMember, ScrollRequest scrollRequest) {
+        List<Long> postIdForTimeLine = queryFactory.select(timeLine.id)
                 .from(timeLine)
-                .where(timeLine.member.eq(paramMember), keyCheck(scrollRequest))
-                .orderBy(timeLine.lastModifiedDate.desc())
+                .leftJoin(memberBlock)
+                .on(timeLine.member.id.eq(memberBlock.member.id),
+                        memberBlock.member.id.eq(myMember.getId()))
+                .where(timeLine.member.id.eq(myMember.getId()),
+                        memberBlock.member.id.isNull(),
+                        keyCheck(scrollRequest))
+                .orderBy(timeLine.id.desc())
                 .limit(ScrollRequest.size)
                 .fetch();
-        return keyOfLocalDateTimes;
+
+        return postIdForTimeLine;
     }
 
     public List<Post> getPostByCovering(List<Long> getPostIds) {
         List<Post> result = queryFactory.select(post)
                 .from(post)
                 .where(post.id.in(getPostIds))
+                .orderBy(post.id.desc())
                 .fetch();
         return result;
     }
 
     private BooleanExpression keyCheck(ScrollRequest scrollRequest) {
+        return scrollRequest.hasKey() ? timeLine.id.lt(scrollRequest.key()) : null;
+    }
+
+    private BooleanExpression keyCheckModify(ScrollRequest scrollRequest) {
         return scrollRequest.hasKey() ? timeLine.lastModifiedDate.loe(parseKey(scrollRequest)) : null;
     }
+
     private LocalDateTime parseKey(ScrollRequest scrollRequest) {
         String key = Long.toString(scrollRequest.key());
 

@@ -8,6 +8,8 @@ import cherhy.soloProject.application.domain.follow.service.FollowReadService;
 import cherhy.soloProject.application.domain.follow.service.FollowWriteService;
 import cherhy.soloProject.application.domain.member.entity.Member;
 import cherhy.soloProject.application.domain.member.service.MemberReadService;
+import cherhy.soloProject.application.domain.memberBlock.service.MemberBlockReadService;
+import cherhy.soloProject.application.domain.memberBlock.service.MemberBlockWriteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,15 +27,20 @@ public class MemberFollowUseCase {
     private final MemberReadService memberReadService;
     private final FollowWriteService followWriteService;
     private final FollowReadService followReadService;
+    private final MemberBlockReadService memberBlockReadService;
+    private final MemberBlockWriteService memberBlockWriteService;
 
     public ResponseEntity followMember(Long memberId, Long FollowingId){
         memberReadService.SameUserCheck(memberId, FollowingId);
-        Member findMember = memberReadService.getMember(memberId);
+        Member myMember = memberReadService.getMember(memberId);
         Member followMember = memberReadService.getMember(FollowingId);
-        Optional<Follow> follow = followReadService.getFollowExist(findMember, followMember);
+        Optional<Follow> follow = followReadService.getFollowExist(myMember, followMember);
 
         follow.ifPresentOrElse(f -> followWriteService.unfollow(f),
-                () -> followWriteService.follow(findMember, followMember));
+                () -> { memberBlockReadService.getBlockMember(myMember,followMember)
+                            .ifPresent(m -> memberBlockWriteService.unblock(m));
+                        followWriteService.follow(myMember, followMember);
+        });
 
         return ResponseEntity.ok(200);
     }
