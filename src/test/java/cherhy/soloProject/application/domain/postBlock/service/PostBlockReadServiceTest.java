@@ -1,11 +1,6 @@
-package cherhy.soloProject.application.domain.postBlock.service;
+package cherhy.soloProject.domain.postBlock.service;
 
-import cherhy.soloProject.application.domain.postBlock.dto.response.PostBlockResponseDto;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.List;
 
 @SpringBootTest
 class PostBlockReadServiceTest {

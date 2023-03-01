@@ -2,8 +2,10 @@ package cherhy.soloProject.application.controller;
 
 import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
-import cherhy.soloProject.application.domain.reply.dto.RequestReplyDto;
-import cherhy.soloProject.application.domain.reply.dto.response.ResponseReplyDto;
+import cherhy.soloProject.application.utilService.SessionReadService;
+import cherhy.soloProject.domain.member.entity.Member;
+import cherhy.soloProject.domain.reply.dto.RequestReplyDto;
+import cherhy.soloProject.domain.reply.dto.response.ResponseReplyDto;
 import cherhy.soloProject.application.usecase.MemberPostReplyUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -11,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -21,11 +24,13 @@ import java.util.List;
 public class ReplyController {
 
     private final MemberPostReplyUseCase memberPostReplyUseCase;
+    private final SessionReadService sessionReadService;
 
     @PostMapping
     @Operation(summary = "댓글 등록")
-    public ResponseEntity setReply(@RequestBody @Valid RequestReplyDto reply){
-        return memberPostReplyUseCase.setReply(reply);
+    public ResponseEntity setReply(@RequestBody @Valid RequestReplyDto reply, HttpSession session){
+        Member userData = sessionReadService.getUserData(session);
+        return memberPostReplyUseCase.setReply(reply, userData.getId());
     }
 
     @GetMapping("/{postId}")

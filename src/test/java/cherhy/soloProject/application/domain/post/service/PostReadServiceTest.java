@@ -1,11 +1,6 @@
-package cherhy.soloProject.application.domain.post.service;
+package cherhy.soloProject.domain.post.service;
 
-import cherhy.soloProject.application.domain.post.dto.PostPhotoDto;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.List;
 
 @SpringBootTest
 class PostReadServiceTest {

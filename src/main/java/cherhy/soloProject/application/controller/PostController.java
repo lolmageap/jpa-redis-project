@@ -2,8 +2,9 @@ package cherhy.soloProject.application.controller;
 
 import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
-import cherhy.soloProject.application.domain.post.dto.request.PostRequestDto;
-import cherhy.soloProject.application.domain.post.dto.PostPhotoDto;
+import cherhy.soloProject.domain.member.entity.Member;
+import cherhy.soloProject.domain.post.dto.request.PostRequestDto;
+import cherhy.soloProject.domain.post.dto.PostPhotoDto;
 import cherhy.soloProject.application.usecase.MemberTimeLineUseCase;
 import cherhy.soloProject.application.utilService.SessionReadService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,15 +29,17 @@ public class PostController {
     private final SessionReadService sessionReadService;
 
     @Operation(summary = "게시물 생성 // Push Model")
-    @PostMapping("/create")
-    public ResponseEntity createPost(@RequestBody @Valid PostRequestDto postRequestDto){
-        return memberPostUseCase.createPost(postRequestDto);
+    @PostMapping
+    public ResponseEntity createPost(@RequestBody @Valid PostRequestDto postRequestDto, HttpSession session){
+        Member userData = sessionReadService.getUserData(session);
+        return memberPostUseCase.createPost(postRequestDto, userData.getId());
     }
 
     @Operation(summary = "게시물 수정")
-    @PutMapping("/modify/{postId}")
-    public ResponseEntity modifyPost(@RequestBody @Valid PostRequestDto postRequestDto, @PathVariable Long postId){
-        return memberPostUseCase.modifyPost(postRequestDto, postId);
+    @PutMapping("/{postId}")
+    public ResponseEntity modifyPost(@RequestBody @Valid PostRequestDto postRequestDto, @PathVariable Long postId, HttpSession session){
+        Member userData = sessionReadService.getUserData(session);
+        return memberPostUseCase.modifyPost(postRequestDto, userData.getId(), postId);
     }
 
     @Operation(summary = "사용자의 게시물 불러오기, 전체 // 로그인 했으면 차단된 게시물 제외")

@@ -2,16 +2,16 @@ package cherhy.soloProject.application.usecase;
 
 import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
-import cherhy.soloProject.application.domain.TimeLine.service.TimeLineReadService;
-import cherhy.soloProject.application.domain.TimeLine.service.TimeLineWriteService;
-import cherhy.soloProject.application.domain.member.entity.Member;
-import cherhy.soloProject.application.domain.member.service.MemberReadService;
-import cherhy.soloProject.application.domain.memberBlock.service.MemberBlockReadService;
-import cherhy.soloProject.application.domain.post.dto.PostPhotoDto;
-import cherhy.soloProject.application.domain.post.dto.request.PostRequestDto;
-import cherhy.soloProject.application.domain.post.entity.Post;
-import cherhy.soloProject.application.domain.post.service.PostReadService;
-import cherhy.soloProject.application.domain.post.service.PostWriteService;
+import cherhy.soloProject.domain.TimeLine.service.TimeLineReadService;
+import cherhy.soloProject.domain.TimeLine.service.TimeLineWriteService;
+import cherhy.soloProject.domain.member.entity.Member;
+import cherhy.soloProject.domain.member.service.MemberReadService;
+import cherhy.soloProject.domain.memberBlock.service.MemberBlockReadService;
+import cherhy.soloProject.domain.post.dto.PostPhotoDto;
+import cherhy.soloProject.domain.post.dto.request.PostRequestDto;
+import cherhy.soloProject.domain.post.entity.Post;
+import cherhy.soloProject.domain.post.service.PostReadService;
+import cherhy.soloProject.domain.post.service.PostWriteService;
 import cherhy.soloProject.application.exception.MemberBlockException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,7 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -37,17 +36,19 @@ public class MemberTimeLineUseCase {
     private final TimeLineReadService timeLineReadService;
     private final MemberBlockReadService memberBlockReadService;
 
-    public ResponseEntity createPost(PostRequestDto postRequestDto){
-        Member findMember = memberReadService.getMember(postRequestDto.memberId());
+    public ResponseEntity createPost(PostRequestDto postRequestDto, Long memberId){
+        Member findMember = memberReadService.getMember(memberId);
         Post addPost = postWriteService.buildPost(postRequestDto, findMember);
         ResponseEntity result = timeLineWriteService.insertTimeLineValue(findMember, addPost);
         postWriteService.addPostLikeToRedis(addPost);
         return result;
     }
 
-    public ResponseEntity modifyPost(PostRequestDto postRequestDto, Long postId){
-        Post findPost = postReadService.getPost(postId);
-        postWriteService.modify(postRequestDto, findPost);
+    public ResponseEntity modifyPost(PostRequestDto postRequestDto, Long memberId, Long postId){
+        Member member = memberReadService.getMember(memberId);
+        Post findPost = postReadService.getPost(postId, member);
+        Post modifyPost = postWriteService.modify(postRequestDto, findPost);
+        postWriteService.save(modifyPost);
         return ResponseEntity.ok(200);
     }
 
@@ -61,7 +62,7 @@ public class MemberTimeLineUseCase {
     public List<PostPhotoDto> findPostByMemberId(Long memberId, Long memberSessionId){
         Member member = memberReadService.getMember(memberId);
         Member myMember = memberReadService.getMember(memberSessionId);
-        getBlockMember(member, myMember);
+        ifIBlock(myMember,member);
         List<Post> findPosts = postReadService.getPostByMemberId(member,myMember);
         List<PostPhotoDto> result = postReadService.changePostPhotoDto(findPosts);
         return result;
@@ -77,7 +78,7 @@ public class MemberTimeLineUseCase {
     public Page<PostPhotoDto> findPostByMemberIdPage(Long memberId, Long memberSessionId , Pageable pageable) {
         Member member = memberReadService.getMember(memberId);
         Member myMember = memberReadService.getMember(memberSessionId);
-        getBlockMember(member, myMember);
+        ifIBlock(myMember,member);
         List<Post> findPosts = postReadService.getPostByMemberIdPage(member, myMember, pageable);
         List<PostPhotoDto> postPhotoDtos = postReadService.changePostPhotoDto(findPosts);
         Long count = postReadService.getPostCountPage(memberId, memberSessionId);
@@ -95,7 +96,7 @@ public class MemberTimeLineUseCase {
     public ScrollResponse<PostPhotoDto> findPostByMemberIdCursor(Long memberId, Long memberSessionId, ScrollRequest scrollRequest) {
         Member member = memberReadService.getMember(memberId);
         Member myMember = memberReadService.getMember(memberSessionId);
-        getBlockMember(member, myMember);
+        ifIBlock(myMember,member);
         List<Post> findPosts = postReadService.getPostByMemberIdCursor(member, myMember, scrollRequest);
         List<PostPhotoDto> postPhotoDtos = postReadService.changePostPhotoDto(findPosts);
         long nextKey = postReadService.getNextKey(postPhotoDtos);
@@ -111,7 +112,9 @@ public class MemberTimeLineUseCase {
         return new ScrollResponse<>(scrollRequest.next(nextKey),postPhotoDtos);
     }
 
-    private void getBlockMember(Member member, Member myMember) {
-        memberBlockReadService.getBlockMember(myMember, member).ifPresent(m -> new MemberBlockException());
+    private void ifIBlock(Member myMember, Member blockMember) {
+        memberBlockReadService.ifIBlock(myMember, blockMember).ifPresent(m -> {
+            throw new MemberBlockException();
+        });
     }
 }

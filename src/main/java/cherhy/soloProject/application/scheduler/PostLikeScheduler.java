@@ -1,8 +1,8 @@
 package cherhy.soloProject.application.scheduler;
 
-import cherhy.soloProject.application.domain.post.entity.Post;
-import cherhy.soloProject.application.domain.post.service.PostReadService;
-import cherhy.soloProject.application.domain.post.service.PostWriteService;
+import cherhy.soloProject.domain.post.entity.Post;
+import cherhy.soloProject.domain.post.service.PostReadService;
+import cherhy.soloProject.domain.post.service.PostWriteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.ScanOptions;

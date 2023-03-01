@@ -2,8 +2,8 @@ package cherhy.soloProject.application.controller;
 
 import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
-import cherhy.soloProject.application.domain.follow.dto.response.ResponseFollowMemberDto;
-import cherhy.soloProject.application.domain.member.entity.Member;
+import cherhy.soloProject.domain.follow.dto.response.ResponseFollowMemberDto;
+import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.application.usecase.MemberFollowUseCase;
 import cherhy.soloProject.application.utilService.SessionReadService;
 import io.swagger.v3.oas.annotations.Operation;

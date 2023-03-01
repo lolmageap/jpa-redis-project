@@ -1,10 +1,11 @@
 package cherhy.soloProject.application.controller;
 
-import cherhy.soloProject.application.domain.member.dto.request.MemberRequestDto;
-import cherhy.soloProject.application.domain.member.dto.request.MemberSearchRequestDto;
-import cherhy.soloProject.application.domain.member.dto.request.SignInRequestDto;
-import cherhy.soloProject.application.domain.member.service.MemberReadService;
-import cherhy.soloProject.application.domain.member.service.MemberWriteService;
+import cherhy.soloProject.domain.member.dto.request.MemberRequestDto;
+import cherhy.soloProject.domain.member.dto.request.SignInRequestDto;
+import cherhy.soloProject.domain.member.dto.response.MemberSearchResponseDto;
+import cherhy.soloProject.domain.member.entity.Member;
+import cherhy.soloProject.domain.member.service.MemberReadService;
+import cherhy.soloProject.domain.member.service.MemberWriteService;
 import cherhy.soloProject.application.utilService.SessionReadService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -75,15 +76,17 @@ public class MemberController {
     }
 
     @Operation(summary = "회원정보 수정")
-    @PutMapping("/signUp/{memberId}")
-    public String modifyMember(@Valid MemberRequestDto memberRequestDto, @PathVariable Long memberId) {
-        return memberWriteService.modifyMember(memberRequestDto, memberId);
+    @PutMapping
+    public String modifyMember(@Valid MemberRequestDto memberRequestDto, HttpSession session) {
+        Member userData = sessionReadService.getUserData(session);
+        return memberWriteService.modifyMember(memberRequestDto, userData.getId());
     }
 
     @Operation(summary = "회원 검색")
     @GetMapping("/search/name")
-    public List<MemberSearchRequestDto> modifyMember(@Valid MemberSearchRequestDto memberSearchRequestDto) {
-        return memberReadService.searchMember(memberSearchRequestDto);
+    public List<MemberSearchResponseDto> modifyMember(@Valid @NotBlank(message = "검색어를 입력해주세요") String searchName, HttpSession session) {
+        Member userData = sessionReadService.getUserData(session);
+        return memberReadService.searchMember(searchName, userData.getId());
     }
 
     private void emailValid(String email) {

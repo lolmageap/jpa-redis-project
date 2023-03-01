@@ -1,6 +1,6 @@
 package cherhy.soloProject.application.utilService;
 
-import cherhy.soloProject.application.domain.member.entity.Member;
+import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.application.exception.SessionNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

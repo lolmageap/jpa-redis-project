@@ -1,10 +1,10 @@
 package cherhy.soloProject.domain.member.repository;
 
 
-import cherhy.soloProject.application.domain.member.dto.request.MemberRequestDto;
-import cherhy.soloProject.application.domain.member.entity.Member;
-import cherhy.soloProject.application.domain.member.repository.jpa.MemberRepository;
-import cherhy.soloProject.application.domain.member.service.MemberWriteService;
+import cherhy.soloProject.domain.member.dto.request.MemberRequestDto;
+import cherhy.soloProject.domain.member.entity.Member;
+import cherhy.soloProject.domain.member.repository.jpa.MemberRepository;
+import cherhy.soloProject.domain.member.service.MemberWriteService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

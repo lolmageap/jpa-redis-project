@@ -1,14 +1,14 @@
 package cherhy.soloProject.application.usecase;
 
-import cherhy.soloProject.application.domain.member.entity.Member;
-import cherhy.soloProject.application.domain.member.service.MemberReadService;
-import cherhy.soloProject.application.domain.post.entity.Post;
-import cherhy.soloProject.application.domain.post.service.PostReadService;
-import cherhy.soloProject.application.domain.post.service.PostWriteService;
-import cherhy.soloProject.application.domain.postLike.dto.PostLikeDto;
-import cherhy.soloProject.application.domain.postLike.entity.PostLike;
-import cherhy.soloProject.application.domain.postLike.service.PostLikeReadService;
-import cherhy.soloProject.application.domain.postLike.service.PostLikeWriteService;
+import cherhy.soloProject.domain.member.entity.Member;
+import cherhy.soloProject.domain.member.service.MemberReadService;
+import cherhy.soloProject.domain.post.entity.Post;
+import cherhy.soloProject.domain.post.service.PostReadService;
+import cherhy.soloProject.domain.post.service.PostWriteService;
+import cherhy.soloProject.domain.postLike.dto.PostLikeDto;
+import cherhy.soloProject.domain.postLike.entity.PostLike;
+import cherhy.soloProject.domain.postLike.service.PostLikeReadService;
+import cherhy.soloProject.domain.postLike.service.PostLikeWriteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;

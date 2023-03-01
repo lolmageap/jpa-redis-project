@@ -2,8 +2,8 @@ package cherhy.soloProject.application.controller;
 
 import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
-import cherhy.soloProject.application.domain.member.entity.Member;
-import cherhy.soloProject.application.domain.post.dto.PostPhotoDto;
+import cherhy.soloProject.domain.member.entity.Member;
+import cherhy.soloProject.domain.post.dto.PostPhotoDto;
 import cherhy.soloProject.application.usecase.MemberTimeLineUseCase;
 import cherhy.soloProject.application.utilService.SessionReadService;
 import io.swagger.v3.oas.annotations.Operation;

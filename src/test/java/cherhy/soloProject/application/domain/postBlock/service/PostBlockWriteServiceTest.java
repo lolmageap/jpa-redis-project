@@ -1,4 +1,4 @@
-package cherhy.soloProject.application.domain.postBlock.service;
+package cherhy.soloProject.domain.postBlock.service;
 
 import cherhy.soloProject.application.usecase.MemberPostBlockUseCase;
 import org.assertj.core.api.Assertions;

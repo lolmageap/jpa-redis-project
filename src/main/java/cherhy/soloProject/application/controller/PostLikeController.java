@@ -1,6 +1,6 @@
 package cherhy.soloProject.application.controller;
 
-import cherhy.soloProject.application.domain.postLike.dto.PostLikeDto;
+import cherhy.soloProject.domain.postLike.dto.PostLikeDto;
 import cherhy.soloProject.application.usecase.MemberPostLikeUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

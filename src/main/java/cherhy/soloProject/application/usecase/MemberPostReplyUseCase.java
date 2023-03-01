@@ -2,15 +2,15 @@ package cherhy.soloProject.application.usecase;
 
 import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
-import cherhy.soloProject.application.domain.member.entity.Member;
-import cherhy.soloProject.application.domain.member.service.MemberReadService;
-import cherhy.soloProject.application.domain.post.entity.Post;
-import cherhy.soloProject.application.domain.post.service.PostReadService;
-import cherhy.soloProject.application.domain.reply.dto.RequestReplyDto;
-import cherhy.soloProject.application.domain.reply.dto.response.ResponseReplyDto;
-import cherhy.soloProject.application.domain.reply.entity.Reply;
-import cherhy.soloProject.application.domain.reply.service.ReplyReadService;
-import cherhy.soloProject.application.domain.reply.service.ReplyWriteService;
+import cherhy.soloProject.domain.member.entity.Member;
+import cherhy.soloProject.domain.member.service.MemberReadService;
+import cherhy.soloProject.domain.post.entity.Post;
+import cherhy.soloProject.domain.post.service.PostReadService;
+import cherhy.soloProject.domain.reply.dto.RequestReplyDto;
+import cherhy.soloProject.domain.reply.dto.response.ResponseReplyDto;
+import cherhy.soloProject.domain.reply.entity.Reply;
+import cherhy.soloProject.domain.reply.service.ReplyReadService;
+import cherhy.soloProject.domain.reply.service.ReplyWriteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
@@ -34,9 +34,9 @@ public class MemberPostReplyUseCase {
     private final ReplyWriteService replyWriteService;
     private final StringRedisTemplate redisTemplate;
 
-    public ResponseEntity setReply(RequestReplyDto reply){
+    public ResponseEntity setReply(RequestReplyDto reply, Long memberId){
         ZSetOperations zSetOps = redisTemplate.opsForZSet(); //Sorted Set 선언
-        Member findMember = memberReadService.getMember(reply.memberId());
+        Member findMember = memberReadService.getMember(memberId);
         Post findPost = postReadService.getPost(reply.postId());
         Reply build = replyWriteService.buildReply(reply, findMember, findPost);
         Reply save = replyWriteService.save(build);

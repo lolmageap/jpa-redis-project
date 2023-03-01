@@ -1,4 +1,4 @@
-package cherhy.soloProject.application.domain.member.service;
+package cherhy.soloProject.domain.member.service;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;

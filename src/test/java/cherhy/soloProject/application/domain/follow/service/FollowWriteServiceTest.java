@@ -1,8 +1,9 @@
-package cherhy.soloProject.application.domain.follow.service;
+package cherhy.soloProject.domain.follow.service;
 
-import cherhy.soloProject.application.domain.follow.repository.jpa.FollowRepository;
-import cherhy.soloProject.application.domain.member.entity.Member;
-import cherhy.soloProject.application.domain.member.repository.jpa.MemberRepository;
+import cherhy.soloProject.domain.follow.repository.jpa.FollowRepository;
+import cherhy.soloProject.domain.follow.service.FollowWriteService;
+import cherhy.soloProject.domain.member.entity.Member;
+import cherhy.soloProject.domain.member.repository.jpa.MemberRepository;
 import cherhy.soloProject.application.usecase.MemberFollowUseCase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

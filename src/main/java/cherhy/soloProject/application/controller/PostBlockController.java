@@ -3,8 +3,8 @@ package cherhy.soloProject.application.controller;
 
 import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
-import cherhy.soloProject.application.domain.member.entity.Member;
-import cherhy.soloProject.application.domain.postBlock.dto.response.PostBlockResponseDto;
+import cherhy.soloProject.domain.member.entity.Member;
+import cherhy.soloProject.domain.postBlock.dto.response.PostBlockResponseDto;
 import cherhy.soloProject.application.usecase.MemberPostBlockUseCase;
 import cherhy.soloProject.application.utilService.SessionReadService;
 import io.swagger.v3.oas.annotations.Operation;

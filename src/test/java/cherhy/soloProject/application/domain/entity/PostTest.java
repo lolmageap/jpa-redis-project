@@ -1,12 +1,11 @@
-package cherhy.soloProject.application.domain.entity;
+package cherhy.soloProject.domain.entity;
 
-import cherhy.soloProject.application.domain.member.repository.jpa.MemberRepository;
-import cherhy.soloProject.application.domain.member.service.MemberWriteService;
-import cherhy.soloProject.application.domain.photo.repository.jpa.PhotoRepository;
-import cherhy.soloProject.application.domain.post.dto.request.PostRequestDto;
-import cherhy.soloProject.application.domain.post.repository.jpa.PostRepository;
-import cherhy.soloProject.application.domain.post.service.PostReadService;
-import cherhy.soloProject.application.domain.post.service.PostWriteService;
+import cherhy.soloProject.domain.member.repository.jpa.MemberRepository;
+import cherhy.soloProject.domain.member.service.MemberWriteService;
+import cherhy.soloProject.domain.photo.repository.jpa.PhotoRepository;
+import cherhy.soloProject.domain.post.repository.jpa.PostRepository;
+import cherhy.soloProject.domain.post.service.PostReadService;
+import cherhy.soloProject.domain.post.service.PostWriteService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.ArrayList;
 
 
 @SpringBootTest

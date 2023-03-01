@@ -1,9 +1,7 @@
-package cherhy.soloProject.application.domain.TimeLine.service;
+package cherhy.soloProject.domain.TimeLine.service;
 
-import cherhy.soloProject.application.domain.TimeLine.repository.jpa.TimeLineRepository;
-import cherhy.soloProject.application.domain.member.entity.Member;
-import cherhy.soloProject.application.domain.member.repository.jpa.MemberRepository;
-import cherhy.soloProject.application.domain.post.entity.Post;
+import cherhy.soloProject.domain.member.entity.Member;
+import cherhy.soloProject.domain.member.repository.jpa.MemberRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

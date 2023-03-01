@@ -1,4 +1,4 @@
-package cherhy.soloProject.application.domain.postLike.service;
+package cherhy.soloProject.domain.postLike.service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
