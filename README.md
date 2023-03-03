@@ -54,4 +54,4 @@ ops.reverseRange(key, 0, 4);
 
 지금 좋아요 순위가 가장 높은 게시물 확인
 
-
+event 추가
