@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static cherhy.soloProject.application.key.RedisKey.SEARCH_LOG;
+import static cherhy.soloProject.application.key.RedisKey.SEARCH_RANK;
 
 @Service
 @Transactional(readOnly = true)
@@ -53,23 +54,6 @@ public class MemberReadService {
         session.setAttribute("userData" , findMember);
         attendToday(ops, findMember);
         return ResponseEntity.ok(200);
-    }
-
-    public List<MemberSearchResponseDto> searchMember(String searchName, Long memberId) {
-        List<Member> findMemberList = getMemberList(searchName);
-        List<MemberSearchResponseDto> findMembers = changeMemberSearchResponseDto(findMemberList);
-        insertRedisSearchLog(searchName, memberId);
-        return findMembers;
-    }
-
-    private void insertRedisSearchLog(String searchName, Long memberId) {
-        ZSetOperations<String, String> ops = redisTemplate.opsForZSet();
-
-        LocalDateTime now = LocalDateTime.now();
-        Long score = now.toEpochSecond(ZoneOffset.UTC);
-        String key = String.format(SEARCH_LOG + memberId);
-        String value = searchName;
-        ops.add(key, value, score);
     }
 
     private String formatToday() {
@@ -107,12 +91,12 @@ public class MemberReadService {
         }
     }
 
-    private List<Member> getMemberList(String searchMemberName) {
+    public List<Member> getMemberList(String searchMemberName) {
         String formatSearchMemberName = String.format("%%%s%%", searchMemberName);
         return memberRepository.findTop3ByNameLikeOrderByIdAsc(formatSearchMemberName).orElseThrow(MemberNotFoundException::new);
     }
 
-    private List<MemberSearchResponseDto> changeMemberSearchResponseDto(List<Member> findMemberList) {
+    public List<MemberSearchResponseDto> changeMemberSearchResponseDto(List<Member> findMemberList) {
         return findMemberList.stream()
                 .map(m -> new MemberSearchResponseDto(m.getId(), m.getName()))
                 .collect(Collectors.toList());

@@ -5,10 +5,17 @@ import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.member.repository.jpa.MemberRepository;
 import cherhy.soloProject.application.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+
+import static cherhy.soloProject.application.key.RedisKey.SEARCH_LOG;
+import static cherhy.soloProject.application.key.RedisKey.SEARCH_RANK;
 
 @Service
 @Transactional
@@ -59,5 +66,19 @@ public class MemberWriteService {
         return member;
     }
 
+    public void insertRedisSearchLog(ZSetOperations<String, String> ops, String searchName, Long memberId) {
+        LocalDateTime now = LocalDateTime.now();
+        Long score = now.toEpochSecond(ZoneOffset.UTC);
+        String key = String.format(SEARCH_LOG + memberId);
+        String value = searchName;
+        ops.add(key, value, score);
+    }
+
+    public void insertRedisSearchRanking(ZSetOperations<String, String> ops, String searchName) {
+        // increase + 1
+        String key = String.format(SEARCH_RANK + searchName);
+        String value = searchName;
+        ops.incrementScore(key, value, 1);
+    }
 
 }
