@@ -1,9 +1,7 @@
 package cherhy.soloProject.application.controller;
 
-import cherhy.soloProject.application.usecase.MemberSearchUsecase;
 import cherhy.soloProject.domain.member.dto.request.MemberRequestDto;
 import cherhy.soloProject.domain.member.dto.request.SignInRequestDto;
-import cherhy.soloProject.domain.member.dto.response.MemberSearchResponseDto;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.member.service.MemberReadService;
 import cherhy.soloProject.domain.member.service.MemberWriteService;
@@ -24,15 +22,12 @@ import javax.validation.ValidationException;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.Collection;
-import java.util.List;
 
 @Tag(name = "회원정보")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/member")
 public class MemberController {
-
-    private final MemberSearchUsecase memberSearchUsecase;
     private final MemberReadService memberReadService;
     private final MemberWriteService memberWriteService;
     private final SessionReadService sessionReadService;
@@ -83,27 +78,6 @@ public class MemberController {
         Member userData = sessionReadService.getUserData(session);
         return memberWriteService.modifyMember(memberRequestDto, userData.getId());
     }
-
-    @Operation(summary = "회원 검색")
-    @GetMapping("/search/{name}")
-    public List<MemberSearchResponseDto> modifyMember(@PathVariable @Valid @NotBlank(message = "검색어를 입력해주세요") String name, HttpSession session) {
-        Member userData = sessionReadService.getUserData(session);
-        return memberSearchUsecase.searchMember(name, userData.getId());
-    }
-
-//    @Operation(summary = "회원 검색 기록")
-//    @GetMapping("/search/{name}")
-//    public List<MemberSearchResponseDto> memberHistoryLog(HttpSession session) {
-//        Member userData = sessionReadService.getUserData(session);
-//        return ;
-//    }
-//
-//    @Operation(summary = "검색에서 타자 칠 때 like 'x%' 연산으로 검색 순위가 가장 높은 데이터 5개 Get")
-//    @GetMapping("/search/{name}")
-//    public List<MemberSearchResponseDto> memberHistoryLog(HttpSession session) {
-//        Member userData = sessionReadService.getUserData(session);
-//        return ;
-//    }
 
     private void emailValid(String email) {
         if (StringUtils.isEmpty(email) || !email.contains("@")) {

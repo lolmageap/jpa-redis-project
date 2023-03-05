@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
+
+import static cherhy.soloProject.application.key.RedisKey.SEARCH_LOG;
 
 @Service
 @Transactional
@@ -19,6 +22,7 @@ public class MemberSearchUsecase {
     private final MemberReadService memberReadService;
     private final MemberWriteService memberWriteService;
     private final StringRedisTemplate redisTemplate;
+
 
     public List<MemberSearchResponseDto> searchMember(String searchName, Long memberId) {
         ZSetOperations<String, String> ops = redisTemplate.opsForZSet();
@@ -29,4 +33,13 @@ public class MemberSearchUsecase {
         return findMembers;
     }
 
+    public Set<String> getSearchHistoryLog(Long memberId) {
+        ZSetOperations<String, String> ops = redisTemplate.opsForZSet();
+        return memberReadService.getSearchHistoryLog(ops, memberId);
+    }
+
+    public Set<String> getHighScoreSearchWord(String searchName) {
+        ZSetOperations<String, String> ops = redisTemplate.opsForZSet();
+        return memberReadService.getHighScoreSearchWord(ops, searchName);
+    }
 }

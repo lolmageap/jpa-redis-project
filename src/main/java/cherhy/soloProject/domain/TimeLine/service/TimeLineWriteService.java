@@ -1,5 +1,6 @@
 package cherhy.soloProject.domain.TimeLine.service;
 
+import cherhy.soloProject.application.exception.MemberNotFoundException;
 import cherhy.soloProject.domain.TimeLine.entity.TimeLine;
 import cherhy.soloProject.domain.TimeLine.repository.jpa.TimeLineRepository;
 import cherhy.soloProject.domain.member.entity.Member;
@@ -21,7 +22,7 @@ public class TimeLineWriteService {
     private final TimeLineRepository timeLineRepository;
 
     public ResponseEntity insertTimeLineValue(Member findMember, Post post) {
-        List<Member> findAllByFollower = memberRepository.findAllByFollowers(findMember.getId());
+        List<Member> findAllByFollower = memberRepository.findAllByFollowers(findMember.getId()).orElseThrow(MemberNotFoundException::new);
         return createTimeLine(post, findAllByFollower);
     }
 

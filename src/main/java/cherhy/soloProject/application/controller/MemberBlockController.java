@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Tag(name = "회원 차단")
 @RestController
@@ -35,5 +36,12 @@ public class MemberBlockController {
         Member userData = sessionReadService.getUserData(session);
         return memberBlockUseCase.getBlockMember(userData.getId(),scrollRequest);
     }
+
+//    @Operation(summary = "차단한 회원 보기")
+//    @GetMapping("/blockList2")
+//    public List<Long> getBlockMember(HttpSession session){
+//        Member userData = sessionReadService.getUserData(session);
+//        return memberBlockUseCase.getBlockMember(userData.getId());
+//    }
 
 }

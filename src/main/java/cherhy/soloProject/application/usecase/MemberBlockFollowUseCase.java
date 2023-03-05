@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -51,6 +52,11 @@ public class MemberBlockFollowUseCase {
         long nextKey = memberBlockReadService.getNextKey(memberBlocks);
         return new ScrollResponse(scrollRequest.next(nextKey),memberBlocks);
     }
+
+//    public List<Long> getBlockMember(Long memberId) {
+//        List<Member> blockMember = memberReadService.getBlockMember(memberId);
+//        return blockMember.stream().map(m -> m.getId()).collect(Collectors.toList());
+//    }
 
 
 }

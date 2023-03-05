@@ -1,5 +1,6 @@
 package cherhy.soloProject.domain.TimeLine.service;
 
+import cherhy.soloProject.application.exception.MemberNotFoundException;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.member.repository.jpa.MemberRepository;
 import org.assertj.core.api.Assertions;
@@ -17,7 +18,7 @@ class TimeLineReadServiceTest {
 
     @Test
     public void test(){
-        List<Member> allByFollowers = memberRepository.findAllByFollowers(18L);
+        List<Member> allByFollowers = memberRepository.findAllByFollowers(18L).orElseThrow(() -> new MemberNotFoundException());
         for (Member allByFollower : allByFollowers) {
             System.out.println("allByFollower.getId() = " + allByFollower.getId());
         }

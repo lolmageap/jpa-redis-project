@@ -75,8 +75,7 @@ public class MemberWriteService {
     }
 
     public void insertRedisSearchRanking(ZSetOperations<String, String> ops, String searchName) {
-        // increase + 1
-        String key = String.format(SEARCH_RANK + searchName);
+        String key = String.format(SEARCH_RANK);
         String value = searchName;
         ops.incrementScore(key, value, 1);
     }

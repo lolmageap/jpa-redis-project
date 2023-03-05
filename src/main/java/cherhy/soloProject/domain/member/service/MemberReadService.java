@@ -10,6 +10,7 @@ import cherhy.soloProject.application.exception.PasswordNotMatchException;
 import cherhy.soloProject.application.exception.SameMemberException;
 import cherhy.soloProject.application.exception.enums.ExceptionKey;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.connection.RedisZSetCommands;
 import org.springframework.data.redis.core.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static cherhy.soloProject.application.key.RedisKey.SEARCH_LOG;
@@ -48,7 +50,7 @@ public class MemberReadService {
 
     public ResponseEntity signIn(SignInRequestDto signInRequestDto, HttpSession session){
         ValueOperations<String, String> ops = redisTemplate.opsForValue();
-        Member findMember = getMember(signInRequestDto);
+        Member findMember = getMember(signInRequestDto.userId());
 
         passwordComparison(signInRequestDto, findMember);
         session.setAttribute("userData" , findMember);
@@ -64,9 +66,13 @@ public class MemberReadService {
         return memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
     }
 
-    public Member getMember(SignInRequestDto signInRequestDto) {
-        return memberRepository.findByUserId(signInRequestDto.userId()).orElseThrow(MemberNotFoundException::new);
+    public Member getMember(String userId) {
+        return memberRepository.findByUserId(userId).orElseThrow(MemberNotFoundException::new);
     }
+
+//    public List<Member> getBlockMember(Long memberId) {
+//        return memberRepository.findAllMemberByBlocked(memberId).orElseThrow(MemberNotFoundException::new);
+//    }
 
     private void duplicateCheckEmail(String email) {
         memberRepository.findByEmail(email).ifPresent(m -> {
@@ -104,5 +110,20 @@ public class MemberReadService {
 
     public void SameUserCheck(Long memberId, Long blockMemberId) {
          if (memberId == blockMemberId) throw new SameMemberException();
+    }
+
+    public Set<String> getSearchHistoryLog(ZSetOperations<String, String> ops, Long memberId) {
+        String key = String.format(SEARCH_LOG + memberId);
+        return ops.reverseRange(key, 0, 4);
+    }
+
+    public Set<String> getHighScoreSearchWord(ZSetOperations<String, String> ops, String searchName) {
+
+        char lastChar = searchName.charAt(searchName.length() - 1);
+        char nextChar = (char) (lastChar + 1);
+
+        return ops.reverseRangeByLex(SEARCH_RANK, RedisZSetCommands.Range.range()
+                .gte(searchName).lt(searchName.substring(0, searchName.length() - 1) + nextChar), RedisZSetCommands.Limit.limit().count(5));
+
     }
 }
