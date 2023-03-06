@@ -1,5 +1,6 @@
 package cherhy.soloProject.domain.reply.service;
 
+import cherhy.soloProject.application.key.RedisKey;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.post.entity.Post;
 import cherhy.soloProject.domain.reply.dto.RequestReplyDto;
@@ -12,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.format.DateTimeFormatter;
 
-import static cherhy.soloProject.application.key.RedisKey.REPLY_MODIFY_DESC;
+import static cherhy.soloProject.application.key.RedisKey.*;
 
 @Service
 @Transactional
@@ -26,7 +27,7 @@ public class ReplyWriteService {
 
     public Boolean addRedis(ZSetOperations zSetOps, Post findPost, Reply save) {
         String key = String.valueOf(save.getId());
-        String postRedis = REPLY_MODIFY_DESC + findPost.getId();
+        String postRedis = REPLY_MODIFY_DESC.name() + findPost.getId();
         Long format = formatScore(save);
         Boolean add = zSetOps.add(postRedis, key, format);// sorted set에 입력
         return add;

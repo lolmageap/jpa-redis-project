@@ -1,10 +1,14 @@
 package cherhy.soloProject.application.key;
 
-public interface RedisKey {
+import lombok.Getter;
 
-    String REPLY_MODIFY_DESC = "postReplyOrderByLastModifyDate:";
-    String SEARCH_LOG = "SearchLog:";
-    String SEARCH_RANK = "SearchRank";
-    String POST_LIKE = "postLike:";
+@Getter
+public enum RedisKey {
 
+    REPLY_MODIFY_DESC("postReplyOrderByLastModifyDate:"),
+    SEARCH_LOG("SearchLog:"),
+    SEARCH_RANK("SearchRank"),
+    POST_LIKE("postLike:");
+
+    RedisKey(String value) {}
 }

@@ -1,5 +1,6 @@
 package cherhy.soloProject.domain.member.service;
 
+import cherhy.soloProject.application.key.RedisKey;
 import cherhy.soloProject.domain.member.dto.request.MemberRequestDto;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.member.repository.jpa.MemberRepository;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
+import static cherhy.soloProject.application.key.RedisKey.*;
 import static cherhy.soloProject.application.key.RedisKey.SEARCH_LOG;
 import static cherhy.soloProject.application.key.RedisKey.SEARCH_RANK;
 
@@ -69,13 +71,13 @@ public class MemberWriteService {
     public void insertRedisSearchLog(ZSetOperations<String, String> ops, String searchName, Long memberId) {
         LocalDateTime now = LocalDateTime.now();
         Long score = now.toEpochSecond(ZoneOffset.UTC);
-        String key = String.format(SEARCH_LOG + memberId);
+        String key = String.format(SEARCH_LOG.name() + memberId);
         String value = searchName;
         ops.add(key, value, score);
     }
 
     public void insertRedisSearchRanking(ZSetOperations<String, String> ops, String searchName) {
-        String key = String.format(SEARCH_RANK);
+        String key = String.format(SEARCH_RANK.name());
         String value = searchName;
         ops.incrementScore(key, value, 1);
     }

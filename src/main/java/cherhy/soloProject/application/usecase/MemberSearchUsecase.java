@@ -13,8 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Set;
 
-import static cherhy.soloProject.application.key.RedisKey.SEARCH_LOG;
-
 @Service
 @Transactional
 @RequiredArgsConstructor

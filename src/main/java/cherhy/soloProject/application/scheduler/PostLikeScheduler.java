@@ -43,7 +43,7 @@ public class PostLikeScheduler {
 
     private Long extractPostId(String key) {
         Long postId;
-        if (key.contains(POST_LIKE)){
+        if (key.contains(POST_LIKE.name())){
             int index = key.indexOf(":");
             postId = Long.valueOf(key.substring(index + 1));
         }else {
@@ -53,7 +53,7 @@ public class PostLikeScheduler {
     }
 
     private void deleteRedisKey(Post savePost) {
-        String formatPost = String.format(POST_LIKE + savePost.getId());
+        String formatPost = String.format(POST_LIKE.name() + savePost.getId());
         redisTemplate.delete(formatPost);
     }
 

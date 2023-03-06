@@ -47,7 +47,7 @@ public class MemberPostLikeUseCase {
 
         Member findMember = memberReadService.getMember(postLikeDto.memberId());
         Post findPost = postReadService.getPost(postLikeDto.PostId());
-        String formatPost = String.format(POST_LIKE + findPost.getId()); //format 문법 변경
+        String formatPost = String.format(POST_LIKE.name() + findPost.getId()); //format 문법 변경
         Optional<PostLike> postLike = postLikeReadService.getMemberIdAndPostId(findMember, findPost);
         postLikeWriteService.likeOrLikeCancel(ops, findMember, findPost, formatPost, postLike);
 

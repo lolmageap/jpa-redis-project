@@ -28,7 +28,7 @@ public class PostWriteService {
 
     public void addPostLikeToRedis(Post savePost) {
         ValueOperations<String, String> ops = redisTemplate.opsForValue();
-        String formatPost = String.format(POST_LIKE + savePost.getId());
+        String formatPost = String.format(POST_LIKE.name() + savePost.getId());
         ops.set(formatPost, "0");
     }
 

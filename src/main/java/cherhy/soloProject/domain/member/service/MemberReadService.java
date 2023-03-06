@@ -1,17 +1,19 @@
 package cherhy.soloProject.domain.member.service;
 
-import cherhy.soloProject.domain.member.dto.request.SignInRequestDto;
-import cherhy.soloProject.domain.member.dto.response.MemberSearchResponseDto;
-import cherhy.soloProject.domain.member.entity.Member;
-import cherhy.soloProject.domain.member.repository.jpa.MemberRepository;
 import cherhy.soloProject.application.exception.ExistException;
 import cherhy.soloProject.application.exception.MemberNotFoundException;
 import cherhy.soloProject.application.exception.PasswordNotMatchException;
 import cherhy.soloProject.application.exception.SameMemberException;
 import cherhy.soloProject.application.exception.enums.ExceptionKey;
+import cherhy.soloProject.domain.member.dto.request.SignInRequestDto;
+import cherhy.soloProject.domain.member.dto.response.MemberSearchResponseDto;
+import cherhy.soloProject.domain.member.entity.Member;
+import cherhy.soloProject.domain.member.repository.jpa.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.RedisZSetCommands;
-import org.springframework.data.redis.core.*;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 
 import static cherhy.soloProject.application.key.RedisKey.SEARCH_LOG;
 import static cherhy.soloProject.application.key.RedisKey.SEARCH_RANK;
+
 
 @Service
 @Transactional(readOnly = true)
@@ -113,7 +115,7 @@ public class MemberReadService {
     }
 
     public Set<String> getSearchHistoryLog(ZSetOperations<String, String> ops, Long memberId) {
-        String key = String.format(SEARCH_LOG + memberId);
+        String key = String.format(SEARCH_LOG.name() + memberId);
         return ops.reverseRange(key, 0, 4);
     }
 
@@ -122,7 +124,7 @@ public class MemberReadService {
         char lastChar = searchName.charAt(searchName.length() - 1);
         char nextChar = (char) (lastChar + 1);
 
-        return ops.reverseRangeByLex(SEARCH_RANK, RedisZSetCommands.Range.range()
+        return ops.reverseRangeByLex(SEARCH_RANK.name(), RedisZSetCommands.Range.range()
                 .gte(searchName).lt(searchName.substring(0, searchName.length() - 1) + nextChar), RedisZSetCommands.Limit.limit().count(5));
 
     }

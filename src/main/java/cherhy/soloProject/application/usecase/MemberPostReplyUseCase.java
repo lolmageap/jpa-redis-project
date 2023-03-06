@@ -2,6 +2,7 @@ package cherhy.soloProject.application.usecase;
 
 import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
+import cherhy.soloProject.application.key.RedisKey;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.member.service.MemberReadService;
 import cherhy.soloProject.domain.post.entity.Post;
@@ -20,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static cherhy.soloProject.application.key.RedisKey.REPLY_MODIFY_DESC;
+import static cherhy.soloProject.application.key.RedisKey.*;
 
 
 @Service
@@ -54,7 +55,7 @@ public class MemberPostReplyUseCase {
     public ScrollResponse<ResponseReplyDto> getReplyScrollInRedis(Long postId, ScrollRequest scrollRequest) {
         ZSetOperations zSetOps = redisTemplate.opsForZSet();
         Post findPost = postReadService.getPost(postId);
-        String postRedis = String.format(REPLY_MODIFY_DESC + findPost.getId()); // redis key 값
+        String postRedis = String.format(REPLY_MODIFY_DESC.name() + findPost.getId()); // redis key 값
         List<Long> sortedKeys = replyReadService.getSortedKeys(scrollRequest, zSetOps, postRedis); // scrollRequest 정렬 되어있는 키 가져오기
         Long getNextKey = replyReadService.NextKeyCheck(scrollRequest, sortedKeys); // 다음 키값을 가져옴
         List<Reply> repliesScroll = replyReadService.getPostIdScroll(postId, sortedKeys); // 정렬된 값을 기준으로 값 가져오기
