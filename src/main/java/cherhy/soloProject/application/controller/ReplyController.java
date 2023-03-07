@@ -1,12 +1,11 @@
 package cherhy.soloProject.application.controller;
 
-import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
+import cherhy.soloProject.Util.scrollDto.ScrollResponse;
+import cherhy.soloProject.application.usecase.MemberPostReplyUseCase;
 import cherhy.soloProject.application.utilService.SessionReadService;
-import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.reply.dto.RequestReplyDto;
 import cherhy.soloProject.domain.reply.dto.response.ResponseReplyDto;
-import cherhy.soloProject.application.usecase.MemberPostReplyUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -22,15 +21,15 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/reply")
 public class ReplyController {
-
+    private final HttpSession session;
     private final MemberPostReplyUseCase memberPostReplyUseCase;
     private final SessionReadService sessionReadService;
 
     @PostMapping
     @Operation(summary = "댓글 등록")
-    public ResponseEntity setReply(@RequestBody @Valid RequestReplyDto reply, HttpSession session){
-        Member userData = sessionReadService.getUserData(session);
-        return memberPostReplyUseCase.setReply(reply, userData.getId());
+    public ResponseEntity setReply(@RequestBody @Valid RequestReplyDto reply){
+        Long memberId = sessionReadService.getUserData(session);
+        return memberPostReplyUseCase.setReply(reply, memberId);
     }
 
     @GetMapping("/{postId}")

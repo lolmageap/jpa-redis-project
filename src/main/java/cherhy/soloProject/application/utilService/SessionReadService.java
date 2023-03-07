@@ -13,11 +13,12 @@ import javax.servlet.http.HttpSession;
 @Transactional
 @RequiredArgsConstructor
 public class SessionReadService {
-    public Member getUserData(HttpSession session) {
+    public Long getUserData(HttpSession session) {
         if (session.getAttribute("userData") == null){
             throw new SessionNotFoundException();
         }
-        return (Member) session.getAttribute("userData");
+        Member userData = (Member) session.getAttribute("userData");
+        return userData.getId();
     }
 
     public Long getUserDataNoThrow(HttpSession session) {

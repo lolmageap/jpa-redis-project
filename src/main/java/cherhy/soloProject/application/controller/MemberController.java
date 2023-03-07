@@ -1,11 +1,10 @@
 package cherhy.soloProject.application.controller;
 
+import cherhy.soloProject.application.utilService.SessionReadService;
 import cherhy.soloProject.domain.member.dto.request.MemberRequestDto;
 import cherhy.soloProject.domain.member.dto.request.SignInRequestDto;
-import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.member.service.MemberReadService;
 import cherhy.soloProject.domain.member.service.MemberWriteService;
-import cherhy.soloProject.application.utilService.SessionReadService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -28,6 +28,7 @@ import java.util.Collection;
 @RequiredArgsConstructor
 @RequestMapping("/member")
 public class MemberController {
+    private final HttpSession session;
     private final MemberReadService memberReadService;
     private final MemberWriteService memberWriteService;
     private final SessionReadService sessionReadService;
@@ -51,13 +52,14 @@ public class MemberController {
 
     @Operation(summary = "로그인")
     @GetMapping("/signIn")
-    public ResponseEntity signIn(@Valid SignInRequestDto signInRequestDto, HttpSession session){
+    public ResponseEntity signIn(@Valid SignInRequestDto signInRequestDto){
         return memberReadService.signIn(signInRequestDto, session);
     }
 
     @Operation(summary = "시큐리티 로그인 연습")
     @GetMapping("/signIn/exam")
     public String signInExam(Authentication authentication){
+
         if (authentication != null && authentication.isAuthenticated()) {
             String username = authentication.getName();
             Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
@@ -68,15 +70,15 @@ public class MemberController {
 
     @Operation(summary = "로그아웃")
     @PostMapping("/signOut")
-    public ResponseEntity signOut(HttpSession session){
+    public ResponseEntity signOut(){
         return sessionReadService.signOut(session);
     }
 
     @Operation(summary = "회원정보 수정")
     @PutMapping
-    public String modifyMember(@Valid MemberRequestDto memberRequestDto, HttpSession session) {
-        Member userData = sessionReadService.getUserData(session);
-        return memberWriteService.modifyMember(memberRequestDto, userData.getId());
+    public String modifyMember(@Valid MemberRequestDto memberRequestDto) {
+        Long memberId = sessionReadService.getUserData(session);
+        return memberWriteService.modifyMember(memberRequestDto, memberId);
     }
 
     private void emailValid(String email) {

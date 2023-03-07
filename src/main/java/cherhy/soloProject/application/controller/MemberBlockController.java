@@ -2,7 +2,6 @@ package cherhy.soloProject.application.controller;
 
 import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
-import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.application.usecase.MemberBlockFollowUseCase;
 import cherhy.soloProject.application.utilService.SessionReadService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,36 +11,35 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 @Tag(name = "회원 차단")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/memberBlock")
 public class MemberBlockController {
-
+    private final HttpSession session;
     private final SessionReadService sessionReadService;
     private final MemberBlockFollowUseCase memberBlockUseCase;
 
     @Operation(summary = "회원 차단하기")
     @PostMapping("/{blockMemberId}")
-    public ResponseEntity blockMember(@PathVariable Long blockMemberId, HttpSession session){
-        Member userData = sessionReadService.getUserData(session);
-        return memberBlockUseCase.blockMember(userData.getId(), blockMemberId);
+    public ResponseEntity blockMember(@PathVariable Long blockMemberId){
+        Long memberId = sessionReadService.getUserData(session);
+        return memberBlockUseCase.blockMember(memberId, blockMemberId);
     }
 
     @Operation(summary = "차단한 회원 보기")
-    @GetMapping("/blockList")
-    public ScrollResponse getBlockMember(ScrollRequest scrollRequest, HttpSession session){
-        Member userData = sessionReadService.getUserData(session);
-        return memberBlockUseCase.getBlockMember(userData.getId(),scrollRequest);
+    @GetMapping
+    public ScrollResponse getBlockMember(ScrollRequest scrollRequest){
+        Long memberId = sessionReadService.getUserData(session);
+        return memberBlockUseCase.getBlockMember(memberId,scrollRequest);
     }
 
 //    @Operation(summary = "차단한 회원 보기")
-//    @GetMapping("/blockList2")
-//    public List<Long> getBlockMember(HttpSession session){
-//        Member userData = sessionReadService.getUserData(session);
-//        return memberBlockUseCase.getBlockMember(userData.getId());
+//    @GetMapping
+//    public List<Long> getBlockMember(){
+//        Long memberId = sessionReadService.getUserData(session);
+//        return memberBlockUseCase.getBlockMember(memberId);
 //    }
 
 }

@@ -24,6 +24,12 @@ public class PostLikeController {
         return memberPostPostLikeUseCase.postLike(postLikeDto);
     }
 
+//    @Operation(summary = "좋아요 누른 게시물 확인")
+//    @GetMapping
+//    public ResponseEntity getPostLike(@Valid @RequestBody PostLikeDto postLikeDto){
+//        return memberPostPostLikeUseCase.postLike(postLikeDto);
+//    }
+
     @Operation(summary = "breakpoint, 좋아요 동시성 테스트")
     @PostMapping("/example")
     public ResponseEntity postExample(@Valid @RequestBody PostLikeDto postLikeDto){

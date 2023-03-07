@@ -41,12 +41,16 @@ public class MemberReadService {
 
 
     public ResponseEntity emailCheck(String email){
-        duplicateCheckEmail(email);
+        memberRepository.findByEmail(email).ifPresent(m -> {
+            throw new ExistException(ExceptionKey.EMAIL);
+        });
         return ResponseEntity.ok(200);
     }
 
     public ResponseEntity idCheck(String userId){
-        duplicateCheckUserId(userId);
+        memberRepository.findByUserId(userId).ifPresent(m -> {
+            throw new ExistException(ExceptionKey.ID);
+        });
         return ResponseEntity.ok(200);
     }
 
@@ -75,18 +79,6 @@ public class MemberReadService {
 //    public List<Member> getBlockMember(Long memberId) {
 //        return memberRepository.findAllMemberByBlocked(memberId).orElseThrow(MemberNotFoundException::new);
 //    }
-
-    private void duplicateCheckEmail(String email) {
-        memberRepository.findByEmail(email).ifPresent(m -> {
-            throw new ExistException(ExceptionKey.EMAIL);
-        });
-    }
-
-    private void duplicateCheckUserId(String userId) {
-        memberRepository.findByUserId(userId).ifPresent(m -> {
-            throw new ExistException(ExceptionKey.ID);
-        });
-    }
 
     private void attendToday(ValueOperations<String, String> ops, Member findMember) {
         String format = formatToday();

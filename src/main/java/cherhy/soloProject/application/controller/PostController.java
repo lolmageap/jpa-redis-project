@@ -1,12 +1,11 @@
 package cherhy.soloProject.application.controller;
 
-import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
-import cherhy.soloProject.domain.member.entity.Member;
-import cherhy.soloProject.domain.post.dto.request.PostRequestDto;
-import cherhy.soloProject.domain.post.dto.PostPhotoDto;
+import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.application.usecase.MemberTimeLineUseCase;
 import cherhy.soloProject.application.utilService.SessionReadService;
+import cherhy.soloProject.domain.post.dto.PostPhotoDto;
+import cherhy.soloProject.domain.post.dto.request.PostRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -24,27 +23,27 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/post")
 public class PostController {
-
+    private final HttpSession session;
     private final MemberTimeLineUseCase memberPostUseCase;
     private final SessionReadService sessionReadService;
 
     @Operation(summary = "게시물 생성 // Push Model")
     @PostMapping
-    public ResponseEntity createPost(@RequestBody @Valid PostRequestDto postRequestDto, HttpSession session){
-        Member userData = sessionReadService.getUserData(session);
-        return memberPostUseCase.createPost(postRequestDto, userData.getId());
+    public ResponseEntity createPost(@RequestBody @Valid PostRequestDto postRequestDto){
+        Long memberId = sessionReadService.getUserData(session);
+        return memberPostUseCase.createPost(postRequestDto, memberId);
     }
 
     @Operation(summary = "게시물 수정")
     @PutMapping("/{postId}")
-    public ResponseEntity modifyPost(@RequestBody @Valid PostRequestDto postRequestDto, @PathVariable Long postId, HttpSession session){
-        Member userData = sessionReadService.getUserData(session);
-        return memberPostUseCase.modifyPost(postRequestDto, userData.getId(), postId);
+    public ResponseEntity modifyPost(@RequestBody @Valid PostRequestDto postRequestDto, @PathVariable Long postId){
+        Long memberId = sessionReadService.getUserData(session);
+        return memberPostUseCase.modifyPost(postRequestDto, memberId, postId);
     }
 
     @Operation(summary = "사용자의 게시물 불러오기, 전체 // 로그인 했으면 차단된 게시물 제외")
     @GetMapping("/{memberId}")
-    public List<PostPhotoDto> getPost(@PathVariable("memberId") Long memberId, HttpSession session){
+    public List<PostPhotoDto> getPost(@PathVariable("memberId") Long memberId){
         Long memberSessionId = sessionReadService.getUserDataNoThrow(session);
         if (memberSessionId == null){
             return memberPostUseCase.findPostByMemberId(memberId);
@@ -54,7 +53,7 @@ public class PostController {
 
     @Operation(summary = "사용자의 게시물 불러오기, 페이징 // 로그인 했으면 차단된 게시물 제외")
     @GetMapping("/{memberId}/page")
-    public Page<PostPhotoDto> getPostPage(@PathVariable Long memberId, Pageable pageable, HttpSession session){
+    public Page<PostPhotoDto> getPostPage(@PathVariable Long memberId, Pageable pageable){
         Long memberSessionId = sessionReadService.getUserDataNoThrow(session);
         if (memberSessionId == null){
             return memberPostUseCase.findPostByMemberIdPage(memberId, pageable);
@@ -64,13 +63,13 @@ public class PostController {
     }
 
     @Operation(summary = "사용자의 게시물 불러오기 , 무한 스크롤 // 로그인 했으면 차단된 게시물 제외")
-    @GetMapping("/{member_id}/scroll")
-    public ScrollResponse<PostPhotoDto> getPostScroll(@PathVariable Long member_id, ScrollRequest scrollRequest, HttpSession session){
+    @GetMapping("/{memberId}/scroll")
+    public ScrollResponse<PostPhotoDto> getPostScroll(@PathVariable Long memberId, ScrollRequest scrollRequest){
         Long memberSessionId = sessionReadService.getUserDataNoThrow(session);
         if (memberSessionId == null){
-            return memberPostUseCase.findPostByMemberIdCursor(member_id, scrollRequest);
+            return memberPostUseCase.findPostByMemberIdCursor(memberId, scrollRequest);
         }
-        return memberPostUseCase.findPostByMemberIdCursor(member_id, memberSessionId, scrollRequest);
+        return memberPostUseCase.findPostByMemberIdCursor(memberId, memberSessionId, scrollRequest);
     }
 
 }
