@@ -23,8 +23,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http
-                .headers()
+        http.headers()
                 .frameOptions()
                 .disable()
                 .and()
@@ -32,21 +31,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .disable();
 
         http.authorizeRequests()
-                .antMatchers("/**")
+                .antMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**")
                 .permitAll()
                 .and()
                 .formLogin()
                 .loginPage("/member/signIn")
+                .loginProcessingUrl("/member/signIn")
                 .defaultSuccessUrl("/")
                 .permitAll()
                 .and()
                 .logout()
                 .logoutSuccessUrl("/")
                 .permitAll();
-
-//        http.exceptionHandling()
-//                .accessDeniedPage("/denied");
-
     }
 
 }

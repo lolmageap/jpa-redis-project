@@ -52,7 +52,7 @@ public class MemberController {
 
     @Operation(summary = "로그인")
     @GetMapping("/signIn")
-    public ResponseEntity signIn(@Valid SignInRequestDto signInRequestDto){
+    public ResponseEntity signIn(@Valid @RequestBody SignInRequestDto signInRequestDto){
         return memberReadService.signIn(signInRequestDto, session);
     }
 
