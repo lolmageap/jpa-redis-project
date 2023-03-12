@@ -43,19 +43,16 @@ public class MemberController {
     public ResponseEntity idCheck(@PathVariable @NotBlank String userId){
         return memberReadService.idCheck(userId);
     }
-
     @Operation(summary = "회원가입")
     @PostMapping("/signUp")
     public ResponseEntity signUp(@RequestBody @Valid MemberRequestDto memberRequestDto) {
         return memberWriteService.signUp(memberRequestDto);
     }
-
     @Operation(summary = "로그인")
     @GetMapping("/signIn")
     public ResponseEntity signIn(@Valid @RequestBody SignInRequestDto signInRequestDto){
         return memberReadService.signIn(signInRequestDto, session);
     }
-
     @Operation(summary = "시큐리티 로그인 연습")
     @GetMapping("/signIn/exam")
     public String signInExam(Authentication authentication){

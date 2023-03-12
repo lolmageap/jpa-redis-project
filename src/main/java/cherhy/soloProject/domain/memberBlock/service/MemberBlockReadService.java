@@ -1,6 +1,7 @@
 package cherhy.soloProject.domain.memberBlock.service;
 
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
+import cherhy.soloProject.application.exception.MemberBlockException;
 import cherhy.soloProject.domain.memberBlock.dto.response.MemberBlockResponseDto;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.memberBlock.entity.MemberBlock;
@@ -23,9 +24,10 @@ public class MemberBlockReadService {
     public Optional<MemberBlock> getBlockMember(Member myMember, Member blockMember) {
         return memberBlockRepository.getBlockMember(myMember, blockMember);
     }
-    public Optional<MemberBlock> ifIBlock(Member myMember, Member blockedMember) {
-        Optional<MemberBlock> memberBlock = memberBlockRepository.ifIBlock(myMember, blockedMember);
-        return memberBlock;
+    public void ifIBlock(Member myMember, Member blockedMember) {
+        memberBlockRepository.ifIBlock(myMember, blockedMember).ifPresent(m -> {
+            throw new MemberBlockException();
+        });;
     }
 
     public List<MemberBlockResponseDto> getMemberBlocks(Member member, ScrollRequest scrollRequest) {

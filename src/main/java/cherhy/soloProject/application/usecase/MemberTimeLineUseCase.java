@@ -62,7 +62,7 @@ public class MemberTimeLineUseCase {
     public List<PostPhotoDto> findPostByMemberId(Long memberId, Long memberSessionId){
         Member member = memberReadService.getMember(memberId);
         Member myMember = memberReadService.getMember(memberSessionId);
-        ifIBlock(myMember,member);
+        memberBlockReadService.ifIBlock(myMember,member);
         List<Post> findPosts = postReadService.getPostByMemberId(member,myMember);
         List<PostPhotoDto> result = postReadService.changePostPhotoDto(findPosts);
         return result;
@@ -78,7 +78,7 @@ public class MemberTimeLineUseCase {
     public Page<PostPhotoDto> findPostByMemberIdPage(Long memberId, Long memberSessionId , Pageable pageable) {
         Member member = memberReadService.getMember(memberId);
         Member myMember = memberReadService.getMember(memberSessionId);
-        ifIBlock(myMember,member);
+        memberBlockReadService.ifIBlock(myMember,member);
         List<Post> findPosts = postReadService.getPostByMemberIdPage(member, myMember, pageable);
         List<PostPhotoDto> postPhotoDtos = postReadService.changePostPhotoDto(findPosts);
         Long count = postReadService.getPostCountPage(memberId, memberSessionId);
@@ -96,7 +96,7 @@ public class MemberTimeLineUseCase {
     public ScrollResponse<PostPhotoDto> findPostByMemberIdCursor(Long memberId, Long memberSessionId, ScrollRequest scrollRequest) {
         Member member = memberReadService.getMember(memberId);
         Member myMember = memberReadService.getMember(memberSessionId);
-        ifIBlock(myMember,member);
+        memberBlockReadService.ifIBlock(myMember,member);
         List<Post> findPosts = postReadService.getPostByMemberIdCursor(member, myMember, scrollRequest);
         List<PostPhotoDto> postPhotoDtos = postReadService.changePostPhotoDto(findPosts);
         long nextKey = postReadService.getNextKey(postPhotoDtos);
@@ -112,9 +112,4 @@ public class MemberTimeLineUseCase {
         return new ScrollResponse<>(scrollRequest.next(nextKey),postPhotoDtos);
     }
 
-    private void ifIBlock(Member myMember, Member blockMember) {
-        memberBlockReadService.ifIBlock(myMember, blockMember).ifPresent(m -> {
-            throw new MemberBlockException();
-        });
-    }
 }

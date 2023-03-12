@@ -72,4 +72,12 @@ public class PostController {
         return memberPostUseCase.findPostByMemberIdCursor(memberId, memberSessionId, scrollRequest);
     }
 
+//    @Operation(summary = "추천 게시물")
+//    @GetMapping("/{memberId}")
+//    public ScrollResponse<PostPhotoDto> hi(ScrollRequest scrollRequest){
+//        Long memberSessionId = sessionReadService.getUserData(session);
+//        memberPostUseCase.getFeaturedPosts(memberSessionId,scrollRequest);
+//        return ;
+//    }
+
 }
