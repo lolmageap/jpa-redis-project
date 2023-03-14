@@ -50,7 +50,7 @@ public class MemberController {
     }
     @Operation(summary = "로그인")
     @GetMapping("/signIn")
-    public ResponseEntity signIn(@Valid @RequestBody SignInRequestDto signInRequestDto){
+    public ResponseEntity signIn(@Valid SignInRequestDto signInRequestDto){
         return memberReadService.signIn(signInRequestDto, session);
     }
     @Operation(summary = "시큐리티 로그인 연습")
@@ -64,7 +64,6 @@ public class MemberController {
         }
         return "";
     }
-
     @Operation(summary = "로그아웃")
     @PostMapping("/signOut")
     public ResponseEntity signOut(){

@@ -14,6 +14,7 @@ import cherhy.soloProject.domain.post.service.PostReadService;
 import cherhy.soloProject.domain.post.service.PostWriteService;
 import cherhy.soloProject.application.exception.MemberBlockException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -103,6 +104,10 @@ public class MemberTimeLineUseCase {
         return new ScrollResponse<>(scrollRequest.next(nextKey) ,postPhotoDtos);
     }
 
+    // 다시
+    @Cacheable(cacheNames = "timeLineCache", key = "#memberId.toString() + '_' + ( #scrollRequest.key() != null ? #scrollRequest.key() : '' )"
+//            , cacheManager = "cacheManager"
+    )
     public ScrollResponse<PostPhotoDto> getTimeLine(Long memberId, ScrollRequest scrollRequest) {
         Member member = memberReadService.getMember(memberId);
         List<Post> findPostIdByCoveringIndex = timeLineReadService.getPostIdByMemberFromTimeLineCursor(member, scrollRequest);
