@@ -24,15 +24,6 @@ import static cherhy.soloProject.domain.postBlock.entity.QPostBlock.*;
 public class TimeLineRepositoryImpl implements TimeLineRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
-//    select a.* from
-//            (select * from timeline t where member_id = 1) as a
-//    left join
-//            (select p.post_id from member_block mb left join post p
-//                    on mb.block_member_member_id = p.member_id
-//                    where mb.member_member_id = 1) as b
-//    on a.post_id = b.post_id
-//    where b.post_id is null;
-
     @Override
     public List<Post> findPostIdByMemberFromTimeLine(Member myMember, ScrollRequest scrollRequest) {
 

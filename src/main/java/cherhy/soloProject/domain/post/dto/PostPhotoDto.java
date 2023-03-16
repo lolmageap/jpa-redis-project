@@ -7,12 +7,13 @@ import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 
 @Data
-public class PostPhotoDto{
+public class PostPhotoDto implements Serializable {
     private Long id;
     private Long memberId;
     private String title;

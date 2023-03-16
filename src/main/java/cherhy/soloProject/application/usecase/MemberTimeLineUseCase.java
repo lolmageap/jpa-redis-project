@@ -12,7 +12,6 @@ import cherhy.soloProject.domain.post.dto.request.PostRequestDto;
 import cherhy.soloProject.domain.post.entity.Post;
 import cherhy.soloProject.domain.post.service.PostReadService;
 import cherhy.soloProject.domain.post.service.PostWriteService;
-import cherhy.soloProject.application.exception.MemberBlockException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -60,6 +59,7 @@ public class MemberTimeLineUseCase {
         return result;
     }
 
+
     public List<PostPhotoDto> findPostByMemberId(Long memberId, Long memberSessionId){
         Member member = memberReadService.getMember(memberId);
         Member myMember = memberReadService.getMember(memberSessionId);
@@ -86,6 +86,8 @@ public class MemberTimeLineUseCase {
         return new PageImpl<>(postPhotoDtos,pageable,count);
     }
 
+    @Cacheable(cacheNames = "postCursor1", key = "#memberId.toString() + '_' + ( #scrollRequest.key() != null ? #scrollRequest.key() : '' )"
+            , cacheManager = "cacheManager")
     public ScrollResponse<PostPhotoDto> findPostByMemberIdCursor(Long memberId, ScrollRequest scrollRequest) {
         Member member = memberReadService.getMember(memberId);
         List<Post> findPosts = postReadService.getPostByMemberIdCursor(member, scrollRequest);
@@ -94,6 +96,8 @@ public class MemberTimeLineUseCase {
         return new ScrollResponse<>(scrollRequest.next(nextKey) ,postPhotoDtos);
     }
 
+    @Cacheable(cacheNames = "postCursor2", key = "#memberId.toString() + '_' + #memberSessionId.toString()" +
+            " + '_' + ( #scrollRequest.key() != null ? #scrollRequest.key() : '' )", cacheManager = "cacheManager")
     public ScrollResponse<PostPhotoDto> findPostByMemberIdCursor(Long memberId, Long memberSessionId, ScrollRequest scrollRequest) {
         Member member = memberReadService.getMember(memberId);
         Member myMember = memberReadService.getMember(memberSessionId);
@@ -106,8 +110,6 @@ public class MemberTimeLineUseCase {
 
     // 다시
 //    @Cacheable(cacheNames = "timeLineCache", key = "#memberId.toString() + '_' + ( #scrollRequest.key() != null ? #scrollRequest.key() : '' )"
-//            , cacheManager = "cacheManager"
-//    )
     public ScrollResponse<PostPhotoDto> getTimeLine(Long memberId, ScrollRequest scrollRequest) {
         Member member = memberReadService.getMember(memberId);
         List<Post> findPostIdByCoveringIndex = timeLineReadService.getPostIdByMemberFromTimeLineCursor(member, scrollRequest);
