@@ -25,7 +25,7 @@ public class TimeLine extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
-    private Post post;
+    private Post post; //List
 
     @Builder
     public TimeLine(Member member, Post post) {
