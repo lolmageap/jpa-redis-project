@@ -35,4 +35,6 @@ public class TimeLineReadService {
                 .min().orElse(scrollRequest.NONE_KEY);
     }
 
+    public void getTimeLinePost(Member member, ScrollRequest scrollRequest) {
+    }
 }

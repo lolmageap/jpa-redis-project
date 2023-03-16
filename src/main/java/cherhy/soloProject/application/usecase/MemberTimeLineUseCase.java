@@ -105,12 +105,13 @@ public class MemberTimeLineUseCase {
     }
 
     // 다시
-    @Cacheable(cacheNames = "timeLineCache", key = "#memberId.toString() + '_' + ( #scrollRequest.key() != null ? #scrollRequest.key() : '' )"
+//    @Cacheable(cacheNames = "timeLineCache", key = "#memberId.toString() + '_' + ( #scrollRequest.key() != null ? #scrollRequest.key() : '' )"
 //            , cacheManager = "cacheManager"
-    )
+//    )
     public ScrollResponse<PostPhotoDto> getTimeLine(Long memberId, ScrollRequest scrollRequest) {
         Member member = memberReadService.getMember(memberId);
         List<Post> findPostIdByCoveringIndex = timeLineReadService.getPostIdByMemberFromTimeLineCursor(member, scrollRequest);
+        timeLineReadService.getTimeLinePost(member, scrollRequest);
         List<Long> key = timeLineReadService.getTimeLineNextKey(scrollRequest, member);
         Long nextKey = timeLineReadService.getNextKey(scrollRequest, key);
         List<PostPhotoDto> postPhotoDtos = postReadService.changePostPhotoDto(findPostIdByCoveringIndex);

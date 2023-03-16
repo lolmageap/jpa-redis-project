@@ -4,6 +4,7 @@ import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.post.entity.Post;
 import cherhy.soloProject.domain.TimeLine.repository.querydsl.TimeLineRepositoryCustom;
+import cherhy.soloProject.domain.postBlock.entity.QPostBlock;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -16,30 +17,43 @@ import java.util.List;
 import static cherhy.soloProject.domain.memberBlock.entity.QMemberBlock.*;
 import static cherhy.soloProject.domain.post.entity.QPost.post;
 import static cherhy.soloProject.domain.TimeLine.entity.QTimeLine.*;
+import static cherhy.soloProject.domain.postBlock.entity.QPostBlock.*;
 
 @Repository
 @RequiredArgsConstructor
 public class TimeLineRepositoryImpl implements TimeLineRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
+//    select a.* from
+//            (select * from timeline t where member_id = 1) as a
+//    left join
+//            (select p.post_id from member_block mb left join post p
+//                    on mb.block_member_member_id = p.member_id
+//                    where mb.member_member_id = 1) as b
+//    on a.post_id = b.post_id
+//    where b.post_id is null;
+
     @Override
     public List<Post> findPostIdByMemberFromTimeLine(Member myMember, ScrollRequest scrollRequest) {
 
-        List<Long> getPostIds = queryFactory.select(timeLine.post.id)
+        List<Post> posts = queryFactory.select(timeLine.post)
                 .from(timeLine)
                 .leftJoin(memberBlock)
                 .on(timeLine.member.id.eq(memberBlock.member.id),
                         memberBlock.member.id.eq(myMember.getId()))
+                .on(timeLine.member.id.eq(postBlock.member.id),
+                        postBlock.member.id.eq(myMember.getId()))
                 .where(timeLine.member.id.eq(myMember.getId()),
                         memberBlock.member.id.isNull(),
+                        postBlock.member.id.isNull(),
                         keyCheck(scrollRequest))
                 .orderBy(timeLine.id.desc())
                 .limit(ScrollRequest.size)
                 .fetch();
 
-        List<Post> postByCovering = getPostByCovering(getPostIds);
+//        List<Post> postByCovering = getPostByCovering(getPostIds);
 
-        return postByCovering;
+        return posts;
     }
 
     @Override
