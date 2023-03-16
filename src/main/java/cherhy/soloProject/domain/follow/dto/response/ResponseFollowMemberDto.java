@@ -1,3 +1,5 @@
 package cherhy.soloProject.domain.follow.dto.response;
 
-public record ResponseFollowMemberDto(Long id, Long followId, String name, String email){}
+import java.io.Serializable;
+
+public record ResponseFollowMemberDto(Long id, Long followId, String name, String email) implements Serializable {}

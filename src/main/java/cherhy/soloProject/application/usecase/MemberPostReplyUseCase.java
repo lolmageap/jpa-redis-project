@@ -1,8 +1,7 @@
 package cherhy.soloProject.application.usecase;
 
-import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
-import cherhy.soloProject.application.key.RedisKey;
+import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.member.service.MemberReadService;
 import cherhy.soloProject.domain.post.entity.Post;
@@ -13,6 +12,7 @@ import cherhy.soloProject.domain.reply.entity.Reply;
 import cherhy.soloProject.domain.reply.service.ReplyReadService;
 import cherhy.soloProject.domain.reply.service.ReplyWriteService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static cherhy.soloProject.application.key.RedisKey.*;
+import static cherhy.soloProject.application.key.RedisKey.REPLY_MODIFY_DESC;
 
 
 @Service
@@ -44,7 +44,7 @@ public class MemberPostReplyUseCase {
         replyWriteService.addRedis(zSetOps, findPost, save);
         return ResponseEntity.ok(200);
     }
-
+    @Cacheable(cacheNames = "reply", key = "#postId", cacheManager = "cacheManager")
     public List<ResponseReplyDto> getReply(Long postId) {
         Post findPost = postReadService.getPost(postId);
         List<Reply> replies = findPost.getReplies();
@@ -52,6 +52,8 @@ public class MemberPostReplyUseCase {
     }
 
     // 레디스를 사용한 무한 스크롤
+    @Cacheable(cacheNames = "replyCursor", key = "#postId.toString() + '_' + ( #scrollRequest.key() != null ? #scrollRequest.key() : '' )"
+            , cacheManager = "cacheManager")
     public ScrollResponse<ResponseReplyDto> getReplyScrollInRedis(Long postId, ScrollRequest scrollRequest) {
         ZSetOperations zSetOps = redisTemplate.opsForZSet();
         Post findPost = postReadService.getPost(postId);

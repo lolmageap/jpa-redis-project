@@ -26,7 +26,6 @@ public class MemberSearchController {
     private final MemberSearchUsecase memberSearchUsecase;
     private final SessionReadService sessionReadService;
 
-
     @Operation(summary = "회원 검색")
     @GetMapping("/{name}")
     public List<MemberSearchResponseDto> modifyMember(@PathVariable @Valid @NotBlank(message = "검색어를 입력해주세요") String name) {

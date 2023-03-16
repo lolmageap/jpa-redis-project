@@ -11,13 +11,13 @@ import cherhy.soloProject.domain.memberBlock.entity.MemberBlock;
 import cherhy.soloProject.domain.memberBlock.service.MemberBlockReadService;
 import cherhy.soloProject.domain.memberBlock.service.MemberBlockWriteService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -46,6 +46,8 @@ public class MemberBlockFollowUseCase {
         return ResponseEntity.ok(200);
     }
 
+    @Cacheable(cacheNames = "memberBlock", key = "#memberId.toString() + '_' + ( #scrollRequest.key() != null ? #scrollRequest.key() : '' )"
+            , cacheManager = "cacheManager")
     public ScrollResponse getBlockMember(Long memberId, ScrollRequest scrollRequest) {
         Member member = memberReadService.getMember(memberId);
         List<MemberBlockResponseDto> memberBlocks = memberBlockReadService.getMemberBlocks(member, scrollRequest);

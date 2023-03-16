@@ -51,7 +51,7 @@ public class MemberTimeLineUseCase {
         postWriteService.save(modifyPost);
         return ResponseEntity.ok(200);
     }
-
+    @Cacheable(cacheNames = "postAll1", key = "#memberId", cacheManager = "cacheManager")
     public List<PostPhotoDto> findPostByMemberId(Long memberId){
         Member member = memberReadService.getMember(memberId);
         List<Post> findPosts = postReadService.getPostByMemberId(member);
@@ -59,7 +59,7 @@ public class MemberTimeLineUseCase {
         return result;
     }
 
-
+    @Cacheable(cacheNames = "postAll2", key = "#memberId", cacheManager = "cacheManager")
     public List<PostPhotoDto> findPostByMemberId(Long memberId, Long memberSessionId){
         Member member = memberReadService.getMember(memberId);
         Member myMember = memberReadService.getMember(memberSessionId);
@@ -68,7 +68,7 @@ public class MemberTimeLineUseCase {
         List<PostPhotoDto> result = postReadService.changePostPhotoDto(findPosts);
         return result;
     }
-
+    @Cacheable(cacheNames = "postPage1", key = "#memberId + #pageable.pageNumber", cacheManager = "cacheManager")
     public Page<PostPhotoDto> findPostByMemberIdPage(Long memberId, Pageable pageable) {
         Member member = memberReadService.getMember(memberId);
         List<Post> findPosts = postReadService.getPostByMemberIdPage(member, pageable);
@@ -76,6 +76,7 @@ public class MemberTimeLineUseCase {
         Long count = postReadService.getPostCountPage(memberId);
         return new PageImpl<>(postPhotoDtos,pageable,count);
     }
+    @Cacheable(cacheNames = "postPage2", key = "#memberId + #pageable.pageNumber", cacheManager = "cacheManager")
     public Page<PostPhotoDto> findPostByMemberIdPage(Long memberId, Long memberSessionId , Pageable pageable) {
         Member member = memberReadService.getMember(memberId);
         Member myMember = memberReadService.getMember(memberSessionId);
@@ -108,12 +109,10 @@ public class MemberTimeLineUseCase {
         return new ScrollResponse<>(scrollRequest.next(nextKey) ,postPhotoDtos);
     }
 
-    // 다시
-//    @Cacheable(cacheNames = "timeLineCache", key = "#memberId.toString() + '_' + ( #scrollRequest.key() != null ? #scrollRequest.key() : '' )"
+    @Cacheable(cacheNames = "timeLineCache", key = "#memberId.toString() + '_' + ( #scrollRequest.key() != null ? #scrollRequest.key() : '' )")
     public ScrollResponse<PostPhotoDto> getTimeLine(Long memberId, ScrollRequest scrollRequest) {
         Member member = memberReadService.getMember(memberId);
         List<Post> findPostIdByCoveringIndex = timeLineReadService.getPostIdByMemberFromTimeLineCursor(member, scrollRequest);
-        timeLineReadService.getTimeLinePost(member, scrollRequest);
         List<Long> key = timeLineReadService.getTimeLineNextKey(scrollRequest, member);
         Long nextKey = timeLineReadService.getNextKey(scrollRequest, key);
         List<PostPhotoDto> postPhotoDtos = postReadService.changePostPhotoDto(findPostIdByCoveringIndex);

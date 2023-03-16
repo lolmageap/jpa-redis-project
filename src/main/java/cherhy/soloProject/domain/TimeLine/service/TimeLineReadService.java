@@ -30,11 +30,9 @@ public class TimeLineReadService {
         return covering.stream().mapToLong(v -> v).min().orElse(scrollRequest.NONE_KEY);
     }
 
-    public long getNextKeySortModifyDate(ScrollRequest scrollRequest, List<LocalDateTime> covering) {
-        return covering.stream().mapToLong(v -> Long.parseLong(v.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSSS"))))
-                .min().orElse(scrollRequest.NONE_KEY);
-    }
+//    public long getNextKeySortModifyDate(ScrollRequest scrollRequest, List<LocalDateTime> covering) {
+//        return covering.stream().mapToLong(v -> Long.parseLong(v.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSSSS"))))
+//                .min().orElse(scrollRequest.NONE_KEY);
+//    }
 
-    public void getTimeLinePost(Member member, ScrollRequest scrollRequest) {
-    }
 }

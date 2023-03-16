@@ -38,7 +38,7 @@ public class FollowController {
 
     @Operation(summary = "내 팔로워")
     @GetMapping("/follower")
-    public ScrollResponse<ResponseFollowMemberDto> myFollowerList( ScrollRequest scrollRequest){
+    public ScrollResponse<ResponseFollowMemberDto> myFollowerList(ScrollRequest scrollRequest){
         Long memberId = sessionReadService.getUserData(session);
         return memberFollowUseCase.followerList(memberId, scrollRequest);
     }

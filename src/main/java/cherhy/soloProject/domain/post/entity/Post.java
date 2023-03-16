@@ -31,8 +31,10 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<Reply> replies = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
-    private List<TimeLine> timeLines = new ArrayList<>();
+//    @OneToMany
+//    private List<TimeLine> timeLines = new ArrayList<>();
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private TimeLine timeLine;
 
     private Integer likeCount;
 

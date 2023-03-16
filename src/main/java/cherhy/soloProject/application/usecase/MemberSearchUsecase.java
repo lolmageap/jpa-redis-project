@@ -5,6 +5,7 @@ import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.member.service.MemberReadService;
 import cherhy.soloProject.domain.member.service.MemberWriteService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ public class MemberSearchUsecase {
     private final MemberWriteService memberWriteService;
     private final StringRedisTemplate redisTemplate;
 
-
+    @Cacheable(cacheNames = "SearchMember", key = "#memberId + #searchName", cacheManager = "cacheManager")
     public List<MemberSearchResponseDto> searchMember(String searchName, Long memberId) {
         ZSetOperations<String, String> ops = redisTemplate.opsForZSet();
         List<Member> findMemberList = memberReadService.getMemberList(searchName);

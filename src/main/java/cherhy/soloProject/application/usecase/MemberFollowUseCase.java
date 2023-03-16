@@ -11,6 +11,7 @@ import cherhy.soloProject.domain.member.service.MemberReadService;
 import cherhy.soloProject.domain.memberBlock.service.MemberBlockReadService;
 import cherhy.soloProject.domain.memberBlock.service.MemberBlockWriteService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,15 +45,17 @@ public class MemberFollowUseCase {
 
         return ResponseEntity.ok(200);
     }
-
-    public ScrollResponse<ResponseFollowMemberDto> followList(Long id, ScrollRequest scrollRequest) {
-        Member member = memberReadService.getMember(id);
+    @Cacheable(cacheNames = "followList", key = "#memberId.toString() + '_' + ( #scrollRequest.key() != null ? #scrollRequest.key() : '' )"
+            , cacheManager = "cacheManager")
+    public ScrollResponse<ResponseFollowMemberDto> followList(Long memberId, ScrollRequest scrollRequest) {
+        Member member = memberReadService.getMember(memberId);
         List<ResponseFollowMemberDto> getFollowing = followReadService.getFollowing(scrollRequest, member);
         return followReadService.getResponseFollowerMemberDtoScroll(getFollowing, scrollRequest);
     }
-
-    public ScrollResponse<ResponseFollowMemberDto> followerList(Long id, ScrollRequest scrollRequest) {
-        Member member = memberReadService.getMember(id);
+    @Cacheable(cacheNames = "followerList", key = "#memberId.toString() + '_' + ( #scrollRequest.key() != null ? #scrollRequest.key() : '' )"
+            , cacheManager = "cacheManager")
+    public ScrollResponse<ResponseFollowMemberDto> followerList(Long memberId, ScrollRequest scrollRequest) {
+        Member member = memberReadService.getMember(memberId);
         List<ResponseFollowMemberDto> getFollow = followReadService.getFollower(scrollRequest, member);
         return followReadService.getResponseFollowerMemberDtoScroll(getFollow, scrollRequest);
     }

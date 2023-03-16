@@ -11,6 +11,7 @@ import cherhy.soloProject.domain.postBlock.entity.PostBlock;
 import cherhy.soloProject.domain.postBlock.service.PostBlockReadService;
 import cherhy.soloProject.domain.postBlock.service.PostBlockWriteService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,13 +38,14 @@ public class MemberPostBlockUseCase {
                 () -> postBlockWriteService.block(member, post));
         return ResponseEntity.ok(200);
     }
-
+    @Cacheable(cacheNames = "blockPost", key = "#memberId", cacheManager = "cacheManager")
     public List<PostBlockResponseDto> getBlockPost(Long memberId) {
         Member member = memberReadService.getMember(memberId);
         List<PostBlock> postBlocks = postBlockReadService.getPostBlocks(member);
         return  postBlockReadService.changePostBlockResponseDto(postBlocks);
     }
-
+    @Cacheable(cacheNames = "blockPostCursor", key = "#memberId.toString() + '_' + ( #scrollRequest.key() != null ? #scrollRequest.key() : '' )"
+            , cacheManager = "cacheManager")
     public ScrollResponse getBlockPost(Long memberId, ScrollRequest scrollRequest) {
         Member member = memberReadService.getMember(memberId);
         List<PostBlock> postBlocks = postBlockReadService.getPostBlocks(member, scrollRequest);
