@@ -32,6 +32,7 @@ public class MemberController {
     private final MemberReadService memberReadService;
     private final MemberWriteService memberWriteService;
     private final SessionReadService sessionReadService;
+
     @Operation(summary = "이메일 체크")
     @GetMapping("/check/email")
     public ResponseEntity emailCheck(@Email @RequestParam("email") String email){
@@ -53,17 +54,7 @@ public class MemberController {
     public ResponseEntity signIn(@Valid SignInRequestDto signInRequestDto){
         return memberReadService.signIn(signInRequestDto, session);
     }
-    @Operation(summary = "시큐리티 로그인 연습")
-    @GetMapping("/signIn/exam")
-    public String signInExam(Authentication authentication){
 
-        if (authentication != null && authentication.isAuthenticated()) {
-            String username = authentication.getName();
-            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        }
-        return "";
-    }
     @Operation(summary = "로그아웃")
     @PostMapping("/signOut")
     public ResponseEntity signOut(){

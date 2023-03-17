@@ -6,14 +6,13 @@ import cherhy.soloProject.domain.post.entity.Post;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "TIMELINE",
-        indexes = {@Index(name = "timeline__index__member_id", columnList = "member_id")})
+        indexes = {@Index(name = "timeline__index__member_id", columnList = "member_id")
+                , @Index(name = "timeline__index__post_id", columnList = "post_id")})
 public class TimeLine extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,10 +23,9 @@ public class TimeLine extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
     private Post post;
-//    @OneToMany
-//    private List<Post> posts = new ArrayList<>(); //List
 
     @Builder
     public TimeLine(Member member, Post post) {
