@@ -1,5 +1,6 @@
 package cherhy.soloProject.domain.follow.service;
 
+import cherhy.soloProject.domain.follow.entity.Follow;
 import cherhy.soloProject.domain.follow.repository.jpa.FollowRepository;
 import cherhy.soloProject.domain.follow.service.FollowWriteService;
 import cherhy.soloProject.domain.member.entity.Member;
@@ -11,6 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,21 +40,14 @@ class FollowWriteServiceTest {
     @Test
     @Rollback(value = false)
     public void testFollow() throws Exception{
-//        //given
-//        FollowMemberDto followMemberDto = new FollowMemberDto(1L, 2L);
-//        //when
-//        memberFollowUseCase.followMember(followMemberDto);
-//
-//        List<Follow> all = followRepository.findAll();
-//        //then
-//        assertThat(all.size()).isEqualTo(1);
+        //when
+        memberFollowUseCase.followMember(1L, 2L);
+
+        List<Follow> all = followRepository.findAll();
+        //then
+        assertThat(all.size()).isEqualTo(1);
     }
 
-    @Test
-    @Rollback(value = false)
-    public void testUnfollow(){
 
-
-    }
 
 }

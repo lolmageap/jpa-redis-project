@@ -24,10 +24,4 @@ class MemberReadServiceTest {
         memberWriteService.signUp(new MemberRequestDto("abcdef", "정철희", "ekxk1234@gmail.com", "ss012012"));
     }
 
-    @Test
-    public void testMember() throws Exception{
-//        List<MemberSearchRequestDto> find = memberReadService.searchMember(new MemberSearchRequestDto(1L,"정철희"));
-//        assertThat(find.size()).isEqualTo(2);
-    }
-
 }

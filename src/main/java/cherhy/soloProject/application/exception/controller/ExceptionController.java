@@ -1,4 +1,4 @@
-package cherhy.soloProject.application.controller;
+package cherhy.soloProject.application.exception.controller;
 
 import cherhy.soloProject.application.exception.SnsException;
 import cherhy.soloProject.application.exception.dto.ExceptionDto;

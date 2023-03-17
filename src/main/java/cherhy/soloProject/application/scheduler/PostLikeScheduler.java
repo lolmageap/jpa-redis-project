@@ -28,9 +28,8 @@ public class PostLikeScheduler {
         Cursor<String> cursor = redisTemplate.scan(scanOptions);
 
         while (cursor.hasNext()){
-            String key = new String(cursor.next());
-            Long postId = 0L;
-            postId = extractPostId(key);
+            String key = cursor.next().toString();
+            Long postId = extractPostId(key);
             if (postId == null) continue;
 
             String value = redisTemplate.opsForValue().get(key);
@@ -42,14 +41,13 @@ public class PostLikeScheduler {
     }
 
     private Long extractPostId(String key) {
-        Long postId;
         if (key.contains(POST_LIKE.name())){
             int index = key.indexOf(":");
-            postId = Long.valueOf(key.substring(index + 1));
+            Long postId = Long.valueOf(key.substring(index + 1));
+            return postId;
         }else {
             return null;
         }
-        return postId;
     }
 
     private void deleteRedisKey(Post savePost) {
