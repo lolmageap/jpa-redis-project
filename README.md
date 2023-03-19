@@ -125,5 +125,6 @@
 
 
 ### ERD
-![ERD.jpg](..%2FERD.jpg)
+![ERD](https://user-images.githubusercontent.com/96738163/226175229-d8d543d4-b4b4-428d-9f5a-6667498cf2c8.jpg)
+
 
