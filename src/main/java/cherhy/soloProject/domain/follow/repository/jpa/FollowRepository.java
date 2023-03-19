@@ -9,9 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-public interface FollowRepository extends JpaRepository<Follow, Long>, FollowRepositoryCustom
-//        , FollowMapper
-{
+public interface FollowRepository extends JpaRepository<Follow, Long>, FollowRepositoryCustom {
     @Query("select f from Follow f where f.follower.id = :memberId and f.following.id = :followerId")
     Optional<Follow> followCheck(@Param("memberId") Long memberId, @Param("followerId") Long followerId);
 

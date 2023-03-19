@@ -1,5 +1,6 @@
 package cherhy.soloProject.domain.postLike.entity;
 
+import cherhy.soloProject.Util.BaseTimeEntity;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.post.entity.Post;
 import lombok.Builder;
@@ -11,7 +12,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor
-public class PostLike {
+public class PostLike extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

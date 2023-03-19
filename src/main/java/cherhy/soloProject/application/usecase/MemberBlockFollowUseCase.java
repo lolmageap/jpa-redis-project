@@ -43,7 +43,7 @@ public class MemberBlockFollowUseCase {
             memberBlockWriteService.buildMemberBlock(member,blockMember);
             followReadService.getFollowExist(member, blockMember).ifPresent(f -> followWriteService.unfollow(f));
         });
-        return ResponseEntity.ok(200);
+        return ResponseEntity.ok("성공");
     }
 
     @Cacheable(cacheNames = "memberBlock", key = "#memberId.toString() + '_' + ( #scrollRequest.key() != null ? #scrollRequest.key() : '' )"

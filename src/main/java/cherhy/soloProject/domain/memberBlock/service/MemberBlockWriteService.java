@@ -14,15 +14,18 @@ public class MemberBlockWriteService {
 
     private final MemberBlockRepository memberBlockRepository;
 
+    // TODO : 차단 빌드
     public void buildMemberBlock(Member member, Member blockMember) {
         MemberBlock buildMemberBlock = MemberBlock.builder().member(member).blockMember(blockMember).build();
         block(buildMemberBlock);
     }
 
+    // TODO : 차단
     public void block(MemberBlock memberBlock) {
         memberBlockRepository.save(memberBlock);
     }
 
+    // TODO : 차단 해제
     public void unblock(MemberBlock memberBlock) {
         memberBlockRepository.delete(memberBlock);
     }

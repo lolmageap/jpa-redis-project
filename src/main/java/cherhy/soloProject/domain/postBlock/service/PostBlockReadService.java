@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,20 +21,28 @@ import java.util.stream.Collectors;
 public class PostBlockReadService {
     private final PostBlockRepository postBlockRepository;
 
+    // TODO : 게시글 차단 목록 조회
     public List<PostBlock> getPostBlocks(Member member) {
         return postBlockRepository.findByMemberIdOrderByPostAsc(member.getId()).orElseThrow(PostBlockNotFoundException::new);
     }
 
+    // TODO : 무한스크롤 게시글 차단 목록 조회
+    public List<PostBlock> getPostBlocks(Member member, ScrollRequest scrollRequest) {
+        return postBlockRepository.findByPostBlockScroll(member, scrollRequest).orElseThrow(PostBlockNotFoundException::new);
+    }
+
+    // TODO : PostBlockResponseDto로 변환
     public List<PostBlockResponseDto> changePostBlockResponseDto(List<PostBlock> postBlocks) {
         return postBlocks.stream().map(p -> new PostBlockResponseDto(p.getId(),new PostPhotoDto(p.getPost())))
                 .collect(Collectors.toList());
     }
 
-    // 여기 스크롤 페이징 처리해야함
-    public List<PostBlock> getPostBlocks(Member member, ScrollRequest scrollRequest) {
-        return postBlockRepository.findByPostBlockScroll(member, scrollRequest).orElseThrow(PostBlockNotFoundException::new);
+    // TODO : 회원 Id와 게시글 Id로 차단 조회
+    public Optional<PostBlock> getPostBlockByMemberIdAndPostId(Long memberId, Long postId) {
+        return postBlockRepository.findByMemberIdAndPostId(memberId, postId);
     }
 
+    // TODO : 무한스크롤 다음 키 조회
     public long getNextKey(List<PostBlockResponseDto> postBlockResponseDtos) {
         return postBlockResponseDtos.stream().mapToLong(v -> v.post().getId())
                 .max().orElse(ScrollRequest.NONE_KEY);

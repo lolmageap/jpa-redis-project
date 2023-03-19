@@ -13,6 +13,8 @@ import javax.servlet.http.HttpSession;
 @Transactional
 @RequiredArgsConstructor
 public class SessionReadService {
+
+    // TODO : 로그인 확인
     public Long getUserData(HttpSession session) {
         if (session.getAttribute("userData") == null){
             throw new SessionNotFoundException();
@@ -21,6 +23,7 @@ public class SessionReadService {
         return userData.getId();
     }
 
+    // TODO : 로그인 확인, Exception 던지지않음!
     public Long getUserDataNoThrow(HttpSession session) {
         if (session.getAttribute("userData") == null){
             return null;
@@ -29,11 +32,12 @@ public class SessionReadService {
         return userData.getId();
     }
 
+    // TODO : 로그아웃
     public ResponseEntity signOut(HttpSession session) {
         if (session.getAttribute("userData") == null){
             throw new SessionNotFoundException();
         }
         session.removeAttribute("userData");
-        return ResponseEntity.ok(200);
+        return ResponseEntity.ok("로그아웃");
     }
 }

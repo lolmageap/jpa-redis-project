@@ -1,11 +1,14 @@
 package cherhy.soloProject.application.usecase;
 
+import cherhy.soloProject.Util.scrollDto.ScrollRequest;
+import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.member.service.MemberReadService;
+import cherhy.soloProject.domain.post.dto.PostPhotoDto;
 import cherhy.soloProject.domain.post.entity.Post;
 import cherhy.soloProject.domain.post.service.PostReadService;
-import cherhy.soloProject.domain.post.service.PostWriteService;
-import cherhy.soloProject.domain.postLike.dto.PostLikeDto;
+import cherhy.soloProject.domain.postLike.dto.request.PostLikeRequest;
+import cherhy.soloProject.domain.postLike.dto.response.PostLikeResponse;
 import cherhy.soloProject.domain.postLike.entity.PostLike;
 import cherhy.soloProject.domain.postLike.service.PostLikeReadService;
 import cherhy.soloProject.domain.postLike.service.PostLikeWriteService;
@@ -16,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static cherhy.soloProject.application.key.RedisKey.POST_LIKE;
@@ -28,21 +32,12 @@ public class MemberPostLikeUseCase {
 
     private final MemberReadService memberReadService;
     private final PostReadService postReadService;
-    private final PostWriteService postWriteService;
     private final PostLikeWriteService postLikeWriteService;
     private final PostLikeReadService postLikeReadService;
     private final StringRedisTemplate redisTemplate;
 
 
-    public ResponseEntity postExample(PostLikeDto postLikeDto){
-        Post findPost = postReadService.getPost(postLikeDto.PostId());
-        findPost.updatePostLikeCount(findPost.getLikeCount()+1);
-        Post save = postWriteService.save(findPost);
-        Integer likeCount = save.getLikeCount();
-        return ResponseEntity.ok(200);
-    }
-
-    public ResponseEntity postLike(PostLikeDto postLikeDto){
+    public ResponseEntity postLike(PostLikeRequest postLikeDto){
         ValueOperations<String, String> ops = redisTemplate.opsForValue();
 
         Member findMember = memberReadService.getMember(postLikeDto.memberId());
@@ -51,11 +46,20 @@ public class MemberPostLikeUseCase {
         Optional<PostLike> postLike = postLikeReadService.getMemberIdAndPostId(findMember, findPost);
         postLikeWriteService.likeOrLikeCancel(ops, findMember, findPost, formatPost, postLike);
 
-//        //레디스에서 게시물 확인 및 연관관계 확인 : 게시물 좋아요 누른 유저 정보 넣기 (Bulk insert를 위해)
+//        // 레디스에서 게시물 확인 및 연관관계 확인 : 게시물 좋아요 누른 유저 정보 넣기 (Bulk insert를 위해)
 //        String findPostLikeFromRedis = ops.get(formatPost);
 //        String path = String.valueOf(post.getId());
 
-        return ResponseEntity.ok(200);
+        return ResponseEntity.ok("성공");
     }
 
+    public ScrollResponse getPostLike(Long memberId, ScrollRequest scrollRequest) {
+        Member member = memberReadService.getMember(memberId);
+        List<PostLikeResponse> findPosts = postLikeReadService.getPostLike(member, scrollRequest);
+        long nextKey = postLikeReadService.getNextKey(findPosts);
+        List<Post> posts = postLikeReadService.changePost(findPosts);
+        List<PostPhotoDto> postPhotoDtos = postReadService.changePostPhotoDto(posts);
+
+        return new ScrollResponse<>(scrollRequest.next(nextKey),postPhotoDtos);
+    }
 }

@@ -1,6 +1,9 @@
 package cherhy.soloProject.application.controller;
 
-import cherhy.soloProject.domain.postLike.dto.PostLikeDto;
+import cherhy.soloProject.Util.scrollDto.ScrollRequest;
+import cherhy.soloProject.Util.scrollDto.ScrollResponse;
+import cherhy.soloProject.application.utilService.SessionReadService;
+import cherhy.soloProject.domain.postLike.dto.request.PostLikeRequest;
 import cherhy.soloProject.application.usecase.MemberPostLikeUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -8,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @Tag(name = "게시물 좋아요")
@@ -15,25 +19,21 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RequestMapping("/postLike")
 public class PostLikeController {
-
+    private final HttpSession session;
     private final MemberPostLikeUseCase memberPostPostLikeUseCase;
+    private final SessionReadService sessionReadService;
 
     @Operation(summary = "좋아요, 취소")
     @PostMapping
-    public ResponseEntity postLike(@Valid @RequestBody PostLikeDto postLikeDto){
+    public ResponseEntity postLike(@Valid @RequestBody PostLikeRequest postLikeDto){
         return memberPostPostLikeUseCase.postLike(postLikeDto);
     }
 
-//    @Operation(summary = "좋아요 누른 게시물 확인")
-//    @GetMapping
-//    public ResponseEntity getPostLike(@Valid @RequestBody PostLikeDto postLikeDto){
-//        return memberPostPostLikeUseCase.postLike(postLikeDto);
-//    }
-
-    @Operation(summary = "breakpoint, 좋아요 동시성 테스트")
-    @PostMapping("/example")
-    public ResponseEntity postExample(@Valid @RequestBody PostLikeDto postLikeDto){
-        return memberPostPostLikeUseCase.postExample(postLikeDto);
+    @Operation(summary = "좋아요 누른 게시물 확인")
+    @GetMapping
+    public ScrollResponse getPostLike(ScrollRequest scrollRequest){
+        Long memberId = sessionReadService.getUserData(session);
+        return memberPostPostLikeUseCase.getPostLike(memberId,scrollRequest);
     }
 
 }

@@ -6,6 +6,7 @@ import cherhy.soloProject.domain.TimeLine.service.TimeLineReadService;
 import cherhy.soloProject.domain.TimeLine.service.TimeLineWriteService;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.member.service.MemberReadService;
+import cherhy.soloProject.domain.member.service.MemberWriteService;
 import cherhy.soloProject.domain.memberBlock.service.MemberBlockReadService;
 import cherhy.soloProject.domain.post.dto.PostPhotoDto;
 import cherhy.soloProject.domain.post.dto.request.PostRequestDto;
@@ -37,10 +38,10 @@ public class MemberTimeLineUseCase {
     private final MemberBlockReadService memberBlockReadService;
 
     public ResponseEntity createPost(PostRequestDto postRequestDto, Long memberId){
-        Member findMember = memberReadService.getMember(memberId);
-        Post addPost = postWriteService.buildPost(postRequestDto, findMember);
-        ResponseEntity result = timeLineWriteService.insertTimeLineValue(findMember, addPost);
-        postWriteService.addPostLikeToRedis(addPost);
+        Member member = memberReadService.getMember(memberId);
+        Post addPost = postWriteService.buildPost(postRequestDto, member);
+        List<Member> findMembers = memberReadService.findAllByMember(member, addPost);
+        ResponseEntity result = timeLineWriteService.uploadTimeLine(findMembers, addPost);
         return result;
     }
 
@@ -49,12 +50,12 @@ public class MemberTimeLineUseCase {
         Post findPost = postReadService.getPost(postId, member);
         Post modifyPost = postWriteService.modify(postRequestDto, findPost);
         postWriteService.save(modifyPost);
-        return ResponseEntity.ok(200);
+        return ResponseEntity.ok("수정 성공");
     }
     @Cacheable(cacheNames = "postAll1", key = "#memberId", cacheManager = "cacheManager")
     public List<PostPhotoDto> findPostByMemberId(Long memberId){
         Member member = memberReadService.getMember(memberId);
-        List<Post> findPosts = postReadService.getPostByMemberId(member);
+        List<Post> findPosts = postReadService.getPostByMember(member);
         List<PostPhotoDto> result = postReadService.changePostPhotoDto(findPosts);
         return result;
     }
@@ -64,7 +65,7 @@ public class MemberTimeLineUseCase {
         Member member = memberReadService.getMember(memberId);
         Member myMember = memberReadService.getMember(memberSessionId);
         memberBlockReadService.ifIBlock(myMember,member);
-        List<Post> findPosts = postReadService.getPostByMemberId(member,myMember);
+        List<Post> findPosts = postReadService.getPostByMember(member, myMember);
         List<PostPhotoDto> result = postReadService.changePostPhotoDto(findPosts);
         return result;
     }
@@ -112,7 +113,7 @@ public class MemberTimeLineUseCase {
     @Cacheable(cacheNames = "timeLineCache", key = "#memberId.toString() + '_' + ( #scrollRequest.key() != null ? #scrollRequest.key() : '' )")
     public ScrollResponse<PostPhotoDto> getTimeLine(Long memberId, ScrollRequest scrollRequest) {
         Member member = memberReadService.getMember(memberId);
-        List<Post> findPostIdByCoveringIndex = timeLineReadService.getPostIdByMemberFromTimeLineCursor(member, scrollRequest);
+        List<Post> findPostIdByCoveringIndex = timeLineReadService.getTimeLine(member, scrollRequest);
         List<Long> key = timeLineReadService.getTimeLineNextKey(scrollRequest, member);
         Long nextKey = timeLineReadService.getNextKey(scrollRequest, key);
         List<PostPhotoDto> postPhotoDtos = postReadService.changePostPhotoDto(findPostIdByCoveringIndex);

@@ -8,18 +8,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class PostBlockWriteService {
     private final PostBlockRepository postBlockRepository;
 
-    public Optional<PostBlock> getPostBlockByMemberIdAndPostId(Long memberId, Long postId) {
-        return postBlockRepository.findByMemberIdAndPostId(memberId, postId);
-    }
-
+    // TODO : 차단
     public void block(Member member, Post post) {
         PostBlock buildPostBlock = PostBlock.builder()
                 .member(member)
@@ -29,6 +24,7 @@ public class PostBlockWriteService {
         postBlockRepository.save(buildPostBlock);
     }
 
+    // TODO : 차단 해제
     public void unblock(PostBlock postBlock) {
         postBlockRepository.delete(postBlock);
     }

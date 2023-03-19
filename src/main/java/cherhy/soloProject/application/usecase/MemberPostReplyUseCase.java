@@ -42,7 +42,7 @@ public class MemberPostReplyUseCase {
         Reply build = replyWriteService.buildReply(reply, findMember, findPost);
         Reply save = replyWriteService.save(build);
         replyWriteService.addRedis(zSetOps, findPost, save);
-        return ResponseEntity.ok(200);
+        return ResponseEntity.ok("댓글 등록 성공");
     }
     @Cacheable(cacheNames = "reply", key = "#postId", cacheManager = "cacheManager")
     public List<ResponseReplyDto> getReply(Long postId) {

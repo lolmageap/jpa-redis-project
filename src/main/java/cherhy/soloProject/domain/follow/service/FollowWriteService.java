@@ -14,20 +14,23 @@ public class FollowWriteService {
 
     private final FollowRepository followRepository;
 
-    private Follow buildFollow(Member findMember, Member followMember) {
-        return Follow.builder()
-                .follower(findMember)
-                .following(followMember)
-                .build();
-    }
-
+    // TODO : 팔로우하기
     public void follow(Member findMember, Member followMember) {
         Follow buildFollow = buildFollow(findMember, followMember);
         followRepository.save(buildFollow);
     }
 
+    // TODO : 언팔로우하기
     public void unfollow(Follow follow) {
         followRepository.delete(follow);
+    }
+
+    // TODO : 팔로우 빌드
+    private Follow buildFollow(Member findMember, Member followMember) {
+        return Follow.builder()
+                .follower(findMember)
+                .following(followMember)
+                .build();
     }
 
 }

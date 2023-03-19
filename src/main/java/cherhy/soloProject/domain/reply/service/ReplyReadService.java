@@ -19,9 +19,12 @@ import java.util.stream.Collectors;
 public class ReplyReadService {
     public final ReplyRepository replyRepository;
 
+    // TODO : 레디스에서 댓글 id 조회
     public List<Reply> getPostIdScroll(Long postId, List<Long> sortedKeys) {
         return replyRepository.findByPostIdScroll(postId, sortedKeys);
     }
+
+    // TODO : 레디스에서 다음 키값 조회
     public Long NextKeyCheck(ScrollRequest scrollRequest, List<Long> sortedKeys) {
         if (sortedKeys.size()-1 == ScrollRequest.size){
             Long nextKey = sortedKeys.get(ScrollRequest.size);
@@ -30,6 +33,8 @@ public class ReplyReadService {
         }
         return scrollRequest.NONE_KEY;
     }
+
+    // TODO : scrollRequest에서 정렬 되어있는 키 조회
     public List<Long> getSortedKeys(ScrollRequest scrollRequest, ZSetOperations zSetOps, String postRedis) {
         Long checkKey = keyCheck(scrollRequest, zSetOps, postRedis);
         Set<String> keys = zSetOps.reverseRange(postRedis, checkKey, ScrollRequest.size);
@@ -37,11 +42,13 @@ public class ReplyReadService {
         return parseKeys;
     }
 
+    // TODO : 키가 있으면 키값 조회, 키가 없으면 0 반환
     public Long keyCheck(ScrollRequest scrollRequest, ZSetOperations zSetOps, String postRedis) {
         long key = scrollRequest.hasKey() ? zSetOps.reverseRank(postRedis, Long.toString(scrollRequest.key())) : 0L;
         return key;
     }
 
+    // TODO : ResponseReplyDto로 변환
     public List<ResponseReplyDto> changeResponseReplyDto(Long postId, List<Reply> replies) {
         return replies.stream()
                 .map(r -> new ResponseReplyDto(

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> , PostRepositoryCustom {
-    Optional<Post> findByIdAndMember(Long postId, Member memberId);
+    Optional<Post> findByIdAndMemberId(Long postId, Long memberId);
 
     @Query("SELECT distinct p FROM Post p left join fetch p.photos ph where p.member.id = :memberId " +
             "order by p.createdDate desc ")

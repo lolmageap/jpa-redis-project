@@ -43,21 +43,23 @@ public class MemberFollowUseCase {
                         followWriteService.follow(myMember, followMember);
         });
 
-        return ResponseEntity.ok(200);
+        return ResponseEntity.ok("성공");
     }
     @Cacheable(cacheNames = "followList", key = "#memberId.toString() + '_' + ( #scrollRequest.key() != null ? #scrollRequest.key() : '' )"
             , cacheManager = "cacheManager")
     public ScrollResponse<ResponseFollowMemberDto> followList(Long memberId, ScrollRequest scrollRequest) {
         Member member = memberReadService.getMember(memberId);
-        List<ResponseFollowMemberDto> getFollowing = followReadService.getFollowing(scrollRequest, member);
-        return followReadService.getResponseFollowerMemberDtoScroll(getFollowing, scrollRequest);
+        List<ResponseFollowMemberDto> follow = followReadService.getFollowing(scrollRequest, member);
+        long nextKey = followReadService.getNextKey(scrollRequest, follow);
+        return new ScrollResponse<>(scrollRequest.next(nextKey), follow);
     }
     @Cacheable(cacheNames = "followerList", key = "#memberId.toString() + '_' + ( #scrollRequest.key() != null ? #scrollRequest.key() : '' )"
             , cacheManager = "cacheManager")
     public ScrollResponse<ResponseFollowMemberDto> followerList(Long memberId, ScrollRequest scrollRequest) {
         Member member = memberReadService.getMember(memberId);
-        List<ResponseFollowMemberDto> getFollow = followReadService.getFollower(scrollRequest, member);
-        return followReadService.getResponseFollowerMemberDtoScroll(getFollow, scrollRequest);
+        List<ResponseFollowMemberDto> follow = followReadService.getFollower(scrollRequest, member);
+        long nextKey = followReadService.getNextKey(scrollRequest, follow);
+        return new ScrollResponse<>(scrollRequest.next(nextKey), follow);
     }
 
 }

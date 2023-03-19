@@ -21,6 +21,7 @@ public class PostLikeScheduler {
     private final PostReadService postReadService;
     private final PostWriteService postWriteService;
 
+    // TODO : fixedDelay마다 레디스에 있는 좋아요 처리된 데이터 10개씩 RDBMS에 Update
     @Async
     @Scheduled(fixedDelay = 5000)
     public void scheduler(){
@@ -40,6 +41,7 @@ public class PostLikeScheduler {
         }
     }
 
+    // TODO : Redis에서 Post Id 추출하기
     private Long extractPostId(String key) {
         if (key.contains(POST_LIKE.name())){
             int index = key.indexOf(":");
@@ -50,6 +52,7 @@ public class PostLikeScheduler {
         }
     }
 
+    // TODO : RDBMS에 좋아요 update 후 레디스 키 삭제
     private void deleteRedisKey(Post savePost) {
         String formatPost = String.format(POST_LIKE.name() + savePost.getId());
         redisTemplate.delete(formatPost);

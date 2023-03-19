@@ -23,7 +23,7 @@ public class TimeLineRepositoryImpl implements TimeLineRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<Post> findPostIdByMemberFromTimeLine(Member myMember, ScrollRequest scrollRequest) {
+    public List<Post> getTimeLine(Member myMember, ScrollRequest scrollRequest) {
 
         SubQueryExpression<Long> subQuery1 = JPAExpressions
                 .select(timeLine.post.id)

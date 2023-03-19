@@ -17,6 +17,7 @@ import java.util.Optional;
 public class PostLikeWriteService {
     private final PostLikeRepository postLikeRepository;
 
+    // TODO : 좋아요 처리와 좋아요 취소 처리
     public void likeOrLikeCancel(ValueOperations<String, String> ops, Member findMember, Post findPost, String formatPost, Optional<PostLike> postLike) {
         if (postLike.isEmpty()){
             //좋아요 테이블에 값이 없으면 좋아요 +1
@@ -37,11 +38,13 @@ public class PostLikeWriteService {
         }
     }
 
+    // TODO : 좋아요 테이블에 저장
     private PostLike buildPostLike(Member findMember, Post findPost) {
         PostLike buildPostLike = PostLike.builder()
                 .member(findMember)
                 .post(findPost)
                 .build();
+
         PostLike savePostLike = postLikeRepository.save(buildPostLike);
         return savePostLike;
     }

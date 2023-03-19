@@ -33,10 +33,10 @@ public class MemberPostBlockUseCase {
     public ResponseEntity blockPost(Long memberId, Long postId) {
         Member member = memberReadService.getMember(memberId);
         Post post = postReadService.getPost(postId);
-        Optional<PostBlock> postBlock = postBlockWriteService.getPostBlockByMemberIdAndPostId(memberId, postId);
+        Optional<PostBlock> postBlock = postBlockReadService.getPostBlockByMemberIdAndPostId(memberId, postId);
         postBlock.ifPresentOrElse(p -> postBlockWriteService.unblock(p),
                 () -> postBlockWriteService.block(member, post));
-        return ResponseEntity.ok(200);
+        return ResponseEntity.ok("성공");
     }
     @Cacheable(cacheNames = "blockPost", key = "#memberId", cacheManager = "cacheManager")
     public List<PostBlockResponseDto> getBlockPost(Long memberId) {
