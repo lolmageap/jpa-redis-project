@@ -101,13 +101,6 @@ public class MemberReadService {
         return memberRepository.findAllByFollowers(findMember.getId()).orElseThrow(MemberNotFoundException::new);
     }
 
-    // TODO : 검색 DTO로 변환
-    public List<MemberSearchResponseDto> changeMemberSearchResponseDto(List<Member> findMemberList) {
-        return findMemberList.stream()
-                .map(m -> new MemberSearchResponseDto(m.getId(), m.getName()))
-                .collect(Collectors.toList());
-    }
-
     // TODO : 자기 자신은 팔로우, 차단 못하게 체크!
     public void SameUserCheck(Long memberId, Long blockMemberId) {
          if (memberId == blockMemberId) throw new SameMemberException();

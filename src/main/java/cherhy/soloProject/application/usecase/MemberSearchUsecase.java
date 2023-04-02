@@ -26,7 +26,7 @@ public class MemberSearchUsecase {
     public List<MemberSearchResponseDto> searchMember(String searchName, Long memberId) {
         ZSetOperations<String, String> ops = redisTemplate.opsForZSet();
         List<Member> findMemberList = memberReadService.getMemberList(searchName);
-        List<MemberSearchResponseDto> findMembers = memberReadService.changeMemberSearchResponseDto(findMemberList);
+        List<MemberSearchResponseDto> findMembers = MemberSearchResponseDto.from(findMemberList);
         memberWriteService.insertRedisSearchLog(ops, searchName, memberId);
         memberWriteService.insertRedisSearchRanking(ops, searchName);
         return findMembers;

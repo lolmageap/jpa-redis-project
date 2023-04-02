@@ -39,8 +39,7 @@ public class PostLikeReadService {
 
     // TODO : Post로 변환
     public List<Post> changePost(List<PostLikeResponse> posts) {
-        List<Post> result = posts.stream().map(p -> p.post()).collect(Collectors.toList());
-        return result;
+        return posts.stream().map(p -> p.post()).collect(Collectors.toList());
     }
 
 }

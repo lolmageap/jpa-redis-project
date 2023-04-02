@@ -31,12 +31,6 @@ public class PostBlockReadService {
         return postBlockRepository.findByPostBlockScroll(member, scrollRequest).orElseThrow(PostBlockNotFoundException::new);
     }
 
-    // TODO : PostBlockResponseDto로 변환
-    public List<PostBlockResponseDto> changePostBlockResponseDto(List<PostBlock> postBlocks) {
-        return postBlocks.stream().map(p -> new PostBlockResponseDto(p.getId(),new PostPhotoDto(p.getPost())))
-                .collect(Collectors.toList());
-    }
-
     // TODO : 회원 Id와 게시글 Id로 차단 조회
     public Optional<PostBlock> getPostBlockByMemberIdAndPostId(Long memberId, Long postId) {
         return postBlockRepository.findByMemberIdAndPostId(memberId, postId);

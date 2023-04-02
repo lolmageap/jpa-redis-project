@@ -48,12 +48,4 @@ public class ReplyReadService {
         return key;
     }
 
-    // TODO : ResponseReplyDto로 변환
-    public List<ResponseReplyDto> changeResponseReplyDto(Long postId, List<Reply> replies) {
-        return replies.stream()
-                .map(r -> new ResponseReplyDto(
-                        r.getMember().getId(), r.getMember().getName(), postId, r.getContent())
-                ).collect(Collectors.toList());
-    }
-
 }

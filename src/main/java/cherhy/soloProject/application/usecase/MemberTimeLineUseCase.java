@@ -56,7 +56,7 @@ public class MemberTimeLineUseCase {
     public List<PostPhotoDto> findPostByMemberId(Long memberId){
         Member member = memberReadService.getMember(memberId);
         List<Post> findPosts = postReadService.getPostByMember(member);
-        List<PostPhotoDto> result = postReadService.changePostPhotoDto(findPosts);
+        List<PostPhotoDto> result = PostPhotoDto.from(findPosts);
         return result;
     }
 
@@ -66,14 +66,14 @@ public class MemberTimeLineUseCase {
         Member myMember = memberReadService.getMember(memberSessionId);
         memberBlockReadService.ifIBlock(myMember,member);
         List<Post> findPosts = postReadService.getPostByMember(member, myMember);
-        List<PostPhotoDto> result = postReadService.changePostPhotoDto(findPosts);
+        List<PostPhotoDto> result = PostPhotoDto.from(findPosts);
         return result;
     }
     @Cacheable(cacheNames = "postPage1", key = "#memberId + #pageable.pageNumber", cacheManager = "cacheManager")
     public Page<PostPhotoDto> findPostByMemberIdPage(Long memberId, Pageable pageable) {
         Member member = memberReadService.getMember(memberId);
         List<Post> findPosts = postReadService.getPostByMemberIdPage(member, pageable);
-        List<PostPhotoDto> postPhotoDtos = postReadService.changePostPhotoDto(findPosts);
+        List<PostPhotoDto> postPhotoDtos = PostPhotoDto.from(findPosts);
         Long count = postReadService.getPostCountPage(memberId);
         return new PageImpl<>(postPhotoDtos,pageable,count);
     }
@@ -83,7 +83,7 @@ public class MemberTimeLineUseCase {
         Member myMember = memberReadService.getMember(memberSessionId);
         memberBlockReadService.ifIBlock(myMember,member);
         List<Post> findPosts = postReadService.getPostByMemberIdPage(member, myMember, pageable);
-        List<PostPhotoDto> postPhotoDtos = postReadService.changePostPhotoDto(findPosts);
+        List<PostPhotoDto> postPhotoDtos = PostPhotoDto.from(findPosts);
         Long count = postReadService.getPostCountPage(memberId, memberSessionId);
         return new PageImpl<>(postPhotoDtos,pageable,count);
     }
@@ -93,7 +93,7 @@ public class MemberTimeLineUseCase {
     public ScrollResponse<PostPhotoDto> findPostByMemberIdCursor(Long memberId, ScrollRequest scrollRequest) {
         Member member = memberReadService.getMember(memberId);
         List<Post> findPosts = postReadService.getPostByMemberIdCursor(member, scrollRequest);
-        List<PostPhotoDto> postPhotoDtos = postReadService.changePostPhotoDto(findPosts);
+        List<PostPhotoDto> postPhotoDtos = PostPhotoDto.from(findPosts);
         long nextKey = postReadService.getNextKey(postPhotoDtos);
         return new ScrollResponse<>(scrollRequest.next(nextKey) ,postPhotoDtos);
     }
@@ -105,7 +105,7 @@ public class MemberTimeLineUseCase {
         Member myMember = memberReadService.getMember(memberSessionId);
         memberBlockReadService.ifIBlock(myMember,member);
         List<Post> findPosts = postReadService.getPostByMemberIdCursor(member, myMember, scrollRequest);
-        List<PostPhotoDto> postPhotoDtos = postReadService.changePostPhotoDto(findPosts);
+        List<PostPhotoDto> postPhotoDtos = PostPhotoDto.from(findPosts);
         long nextKey = postReadService.getNextKey(postPhotoDtos);
         return new ScrollResponse<>(scrollRequest.next(nextKey) ,postPhotoDtos);
     }
@@ -116,7 +116,7 @@ public class MemberTimeLineUseCase {
         List<Post> findPostIdByCoveringIndex = timeLineReadService.getTimeLine(member, scrollRequest);
         List<Long> key = timeLineReadService.getTimeLineNextKey(scrollRequest, member);
         Long nextKey = timeLineReadService.getNextKey(scrollRequest, key);
-        List<PostPhotoDto> postPhotoDtos = postReadService.changePostPhotoDto(findPostIdByCoveringIndex);
+        List<PostPhotoDto> postPhotoDtos = PostPhotoDto.from(findPostIdByCoveringIndex);
         return new ScrollResponse<>(scrollRequest.next(nextKey),postPhotoDtos);
     }
 

@@ -79,12 +79,4 @@ public class PostReadService {
                 .min().orElse(ScrollRequest.NONE_KEY);
     }
 
-    // TODO : PostPhotoDto로 변환
-    public List<PostPhotoDto> changePostPhotoDto(List<Post> findPosts) {
-        return findPosts.stream().map(post ->
-                new PostPhotoDto(
-                post.getId(), post.getMember().getId(), post.getTitle(), post.getContent(), post.getLikeCount(), post.getPhotos())
-        ).collect(Collectors.toList());
-    }
-
 }

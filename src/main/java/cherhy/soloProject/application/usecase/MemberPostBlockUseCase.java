@@ -42,14 +42,14 @@ public class MemberPostBlockUseCase {
     public List<PostBlockResponseDto> getBlockPost(Long memberId) {
         Member member = memberReadService.getMember(memberId);
         List<PostBlock> postBlocks = postBlockReadService.getPostBlocks(member);
-        return  postBlockReadService.changePostBlockResponseDto(postBlocks);
+        return PostBlockResponseDto.from(postBlocks);
     }
     @Cacheable(cacheNames = "blockPostCursor", key = "#memberId.toString() + '_' + ( #scrollRequest.key() != null ? #scrollRequest.key() : '' )"
             , cacheManager = "cacheManager")
     public ScrollResponse getBlockPost(Long memberId, ScrollRequest scrollRequest) {
         Member member = memberReadService.getMember(memberId);
         List<PostBlock> postBlocks = postBlockReadService.getPostBlocks(member, scrollRequest);
-        List<PostBlockResponseDto> postBlockResponseDtos = postBlockReadService.changePostBlockResponseDto(postBlocks);
+        List<PostBlockResponseDto> postBlockResponseDtos = PostBlockResponseDto.from(postBlocks);
         long nextKey = postBlockReadService.getNextKey(postBlockResponseDtos);
         return new ScrollResponse<>(scrollRequest.next(nextKey), postBlockResponseDtos);
     }

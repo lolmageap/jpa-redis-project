@@ -10,6 +10,7 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Data
@@ -42,6 +43,13 @@ public class PostPhotoDto implements Serializable {
         for (Photo photo : post.getPhotos()) {
             this.photos.add(photo.getPhoto());
         }
+    }
+
+    public static List<PostPhotoDto> from(List<Post> findPosts) {
+        return findPosts.stream().map(post ->
+                new PostPhotoDto(
+                        post.getId(), post.getMember().getId(), post.getTitle(), post.getContent(), post.getLikeCount(), post.getPhotos())
+        ).collect(Collectors.toList());
     }
 
 }

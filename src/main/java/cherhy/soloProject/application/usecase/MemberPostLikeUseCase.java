@@ -58,7 +58,7 @@ public class MemberPostLikeUseCase {
         List<PostLikeResponse> findPosts = postLikeReadService.getPostLike(member, scrollRequest);
         long nextKey = postLikeReadService.getNextKey(findPosts);
         List<Post> posts = postLikeReadService.changePost(findPosts);
-        List<PostPhotoDto> postPhotoDtos = postReadService.changePostPhotoDto(posts);
+        List<PostPhotoDto> postPhotoDtos = PostPhotoDto.from(posts);
 
         return new ScrollResponse<>(scrollRequest.next(nextKey),postPhotoDtos);
     }
