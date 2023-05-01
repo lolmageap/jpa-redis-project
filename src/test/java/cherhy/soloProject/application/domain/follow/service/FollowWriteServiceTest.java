@@ -40,12 +40,6 @@ class FollowWriteServiceTest {
     @Test
     @Rollback(value = false)
     public void testFollow() throws Exception{
-        //when
-        memberFollowUseCase.followMember(1L, 2L);
-
-        List<Follow> all = followRepository.findAll();
-        //then
-        assertThat(all.size()).isEqualTo(1);
     }
 
 

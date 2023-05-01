@@ -4,6 +4,7 @@ import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.application.usecase.MemberPostReplyUseCase;
 import cherhy.soloProject.application.utilService.SessionReadService;
+import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.reply.dto.RequestReplyDto;
 import cherhy.soloProject.domain.reply.dto.response.ResponseReplyDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,8 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 
 @Tag(name = "댓글")
@@ -21,15 +22,14 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/reply")
 public class ReplyController {
-    private final HttpSession session;
     private final MemberPostReplyUseCase memberPostReplyUseCase;
     private final SessionReadService sessionReadService;
 
     @PostMapping
     @Operation(summary = "댓글 등록")
-    public ResponseEntity setReply(@RequestBody @Valid RequestReplyDto reply){
-        Long memberId = sessionReadService.getUserData(session);
-        return memberPostReplyUseCase.setReply(reply, memberId);
+    public ResponseEntity setReply(@RequestBody @Valid RequestReplyDto reply, Principal principal){
+        Member member = sessionReadService.getUserData(principal);
+        return memberPostReplyUseCase.createReply(reply, member);
     }
 
     @GetMapping("/{postId}")
@@ -43,6 +43,5 @@ public class ReplyController {
     public ScrollResponse<ResponseReplyDto> getReplyScrollInRedis(@PathVariable Long postId, ScrollRequest scrollRequest){
         return memberPostReplyUseCase.getReplyScrollInRedis(postId, scrollRequest);
     }
-
 
 }

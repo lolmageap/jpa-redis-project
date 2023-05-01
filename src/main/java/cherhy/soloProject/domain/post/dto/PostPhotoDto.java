@@ -22,6 +22,13 @@ public class PostPhotoDto implements Serializable {
     private Integer likeCount;
     private List<String> photos = new ArrayList<>();
 
+    public static List<PostPhotoDto> from(List<Post> findPosts) {
+        return findPosts.stream().map(post ->
+                new PostPhotoDto(
+                        post.getId(), post.getMember().getId(), post.getTitle(), post.getContent(), post.getLikeCount(), post.getPhotos())
+        ).collect(Collectors.toList());
+    }
+
     @QueryProjection
     public PostPhotoDto(Long id, Long memberId, String title, String content, Integer likeCount, List<Photo> photos) {
         this.id = id;
@@ -45,11 +52,5 @@ public class PostPhotoDto implements Serializable {
         }
     }
 
-    public static List<PostPhotoDto> from(List<Post> findPosts) {
-        return findPosts.stream().map(post ->
-                new PostPhotoDto(
-                        post.getId(), post.getMember().getId(), post.getTitle(), post.getContent(), post.getLikeCount(), post.getPhotos())
-        ).collect(Collectors.toList());
-    }
 
 }

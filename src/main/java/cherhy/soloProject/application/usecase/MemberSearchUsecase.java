@@ -1,6 +1,6 @@
 package cherhy.soloProject.application.usecase;
 
-import cherhy.soloProject.domain.member.dto.response.MemberSearchResponseDto;
+import cherhy.soloProject.domain.member.dto.response.MemberSearchResponse;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.member.service.MemberReadService;
 import cherhy.soloProject.domain.member.service.MemberWriteService;
@@ -23,18 +23,18 @@ public class MemberSearchUsecase {
     private final StringRedisTemplate redisTemplate;
 
     @Cacheable(cacheNames = "SearchMember", key = "#memberId + #searchName", cacheManager = "cacheManager")
-    public List<MemberSearchResponseDto> searchMember(String searchName, Long memberId) {
+    public List<MemberSearchResponse> getSearchMember(String searchName, Member member) {
         ZSetOperations<String, String> ops = redisTemplate.opsForZSet();
         List<Member> findMemberList = memberReadService.getMemberList(searchName);
-        List<MemberSearchResponseDto> findMembers = MemberSearchResponseDto.from(findMemberList);
-        memberWriteService.insertRedisSearchLog(ops, searchName, memberId);
+        List<MemberSearchResponse> findMembers = MemberSearchResponse.from(findMemberList);
+        memberWriteService.insertRedisSearchLog(ops, searchName, member.getId());
         memberWriteService.insertRedisSearchRanking(ops, searchName);
         return findMembers;
     }
 
-    public Set<String> getSearchHistoryLog(Long memberId) {
+    public Set<String> getSearchHistoryLog(Member member) {
         ZSetOperations<String, String> ops = redisTemplate.opsForZSet();
-        return memberReadService.getSearchHistoryLog(ops, memberId);
+        return memberReadService.getSearchHistoryLog(ops, member.getId());
     }
 
     public Set<String> getHighScoreSearchWord(String searchName) {

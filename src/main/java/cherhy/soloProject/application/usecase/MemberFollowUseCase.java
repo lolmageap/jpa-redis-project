@@ -31,9 +31,9 @@ public class MemberFollowUseCase {
     private final MemberBlockReadService memberBlockReadService;
     private final MemberBlockWriteService memberBlockWriteService;
 
-    public ResponseEntity followMember(Long memberId, Long FollowingId){
-        memberReadService.SameUserCheck(memberId, FollowingId);
-        Member myMember = memberReadService.getMember(memberId);
+    public ResponseEntity followMember(Member member, Long FollowingId){
+        memberReadService.SameUserCheck(member.getId(), FollowingId);
+        Member myMember = memberReadService.getMember(member.getId());
         Member followMember = memberReadService.getMember(FollowingId);
         Optional<Follow> follow = followReadService.getFollowExist(myMember, followMember);
 
@@ -47,7 +47,7 @@ public class MemberFollowUseCase {
     }
     @Cacheable(cacheNames = "followList", key = "#memberId.toString() + '_' + ( #scrollRequest.key() != null ? #scrollRequest.key() : '' )"
             , cacheManager = "cacheManager")
-    public ScrollResponse<ResponseFollowMemberDto> followList(Long memberId, ScrollRequest scrollRequest) {
+    public ScrollResponse<ResponseFollowMemberDto> getFollows(Long memberId, ScrollRequest scrollRequest) {
         Member member = memberReadService.getMember(memberId);
         List<ResponseFollowMemberDto> follow = followReadService.getFollowing(scrollRequest, member);
         long nextKey = followReadService.getNextKey(scrollRequest, follow);
@@ -55,7 +55,7 @@ public class MemberFollowUseCase {
     }
     @Cacheable(cacheNames = "followerList", key = "#memberId.toString() + '_' + ( #scrollRequest.key() != null ? #scrollRequest.key() : '' )"
             , cacheManager = "cacheManager")
-    public ScrollResponse<ResponseFollowMemberDto> followerList(Long memberId, ScrollRequest scrollRequest) {
+    public ScrollResponse<ResponseFollowMemberDto> getFollowers(Long memberId, ScrollRequest scrollRequest) {
         Member member = memberReadService.getMember(memberId);
         List<ResponseFollowMemberDto> follow = followReadService.getFollower(scrollRequest, member);
         long nextKey = followReadService.getNextKey(scrollRequest, follow);

@@ -35,11 +35,10 @@ public class MemberPostReplyUseCase {
     private final ReplyWriteService replyWriteService;
     private final StringRedisTemplate redisTemplate;
 
-    public ResponseEntity setReply(RequestReplyDto reply, Long memberId){
+    public ResponseEntity createReply(RequestReplyDto reply, Member member){
         ZSetOperations zSetOps = redisTemplate.opsForZSet(); //Sorted Set 선언
-        Member findMember = memberReadService.getMember(memberId);
         Post findPost = postReadService.getPost(reply.postId());
-        Reply build = replyWriteService.buildReply(reply, findMember, findPost);
+        Reply build = replyWriteService.buildReply(reply, member, findPost);
         Reply save = replyWriteService.save(build);
         replyWriteService.addRedis(zSetOps, findPost, save);
         return ResponseEntity.ok("댓글 등록 성공");

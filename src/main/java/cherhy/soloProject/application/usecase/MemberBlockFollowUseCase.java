@@ -31,10 +31,9 @@ public class MemberBlockFollowUseCase {
     private final FollowReadService followReadService;
     private final FollowWriteService followWriteService;
 
-    public ResponseEntity blockMember(Long memberId, Long blockMemberId) {
-        memberReadService.SameUserCheck(memberId, blockMemberId);
+    public ResponseEntity blockMember(Member member, Long blockMemberId) {
+        memberReadService.SameUserCheck(member.getId(), blockMemberId);
 
-        Member member = memberReadService.getMember(memberId);
         Member blockMember = memberReadService.getMember(blockMemberId);
         Optional<MemberBlock> memberBlock = memberBlockReadService.getBlockMember(member, blockMember);
 
@@ -48,8 +47,7 @@ public class MemberBlockFollowUseCase {
 
     @Cacheable(cacheNames = "memberBlock", key = "#memberId.toString() + '_' + ( #scrollRequest.key() != null ? #scrollRequest.key() : '' )"
             , cacheManager = "cacheManager")
-    public ScrollResponse getBlockMember(Long memberId, ScrollRequest scrollRequest) {
-        Member member = memberReadService.getMember(memberId);
+    public ScrollResponse getBlockMember(Member member, ScrollRequest scrollRequest) {
         List<MemberBlockResponseDto> memberBlocks = memberBlockReadService.getMemberBlocks(member, scrollRequest);
         long nextKey = memberBlockReadService.getNextKey(memberBlocks);
         return new ScrollResponse(scrollRequest.next(nextKey),memberBlocks);

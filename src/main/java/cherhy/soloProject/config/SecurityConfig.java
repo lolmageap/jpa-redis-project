@@ -9,6 +9,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Configuration
 @EnableWebSecurity
@@ -35,14 +39,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and()
                 .formLogin()
-                .loginPage("/member/signIn")
-//                .loginProcessingUrl("/member/signIn")
-                .defaultSuccessUrl("/")
-                .permitAll()
+                    .loginPage("/member/sign-in")
+                    .usernameParameter("userId")
+                  .loginProcessingUrl("/member/sign-in")
+                    .defaultSuccessUrl("/")
                 .and()
                 .logout()
-                .logoutSuccessUrl("/")
-                .permitAll();
+                    .logoutSuccessUrl("/")
+                    .invalidateHttpSession(true);
     }
 
 }

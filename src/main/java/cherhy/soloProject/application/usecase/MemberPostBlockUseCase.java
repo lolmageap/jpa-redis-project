@@ -30,24 +30,22 @@ public class MemberPostBlockUseCase {
     private final PostBlockReadService postBlockReadService;
     private final PostBlockWriteService postBlockWriteService;
 
-    public ResponseEntity blockPost(Long memberId, Long postId) {
-        Member member = memberReadService.getMember(memberId);
+    public ResponseEntity blockPost(Member member, Long postId) {
         Post post = postReadService.getPost(postId);
-        Optional<PostBlock> postBlock = postBlockReadService.getPostBlockByMemberIdAndPostId(memberId, postId);
+        Optional<PostBlock> postBlock = postBlockReadService.getPostBlockByMemberIdAndPostId(member.getId(), postId);
+
         postBlock.ifPresentOrElse(p -> postBlockWriteService.unblock(p),
                 () -> postBlockWriteService.block(member, post));
         return ResponseEntity.ok("성공");
     }
     @Cacheable(cacheNames = "blockPost", key = "#memberId", cacheManager = "cacheManager")
-    public List<PostBlockResponseDto> getBlockPost(Long memberId) {
-        Member member = memberReadService.getMember(memberId);
+    public List<PostBlockResponseDto> getBlockPost(Member member) {
         List<PostBlock> postBlocks = postBlockReadService.getPostBlocks(member);
         return PostBlockResponseDto.from(postBlocks);
     }
     @Cacheable(cacheNames = "blockPostCursor", key = "#memberId.toString() + '_' + ( #scrollRequest.key() != null ? #scrollRequest.key() : '' )"
             , cacheManager = "cacheManager")
-    public ScrollResponse getBlockPost(Long memberId, ScrollRequest scrollRequest) {
-        Member member = memberReadService.getMember(memberId);
+    public ScrollResponse getBlockPost(Member member, ScrollRequest scrollRequest) {
         List<PostBlock> postBlocks = postBlockReadService.getPostBlocks(member, scrollRequest);
         List<PostBlockResponseDto> postBlockResponseDtos = PostBlockResponseDto.from(postBlocks);
         long nextKey = postBlockReadService.getNextKey(postBlockResponseDtos);

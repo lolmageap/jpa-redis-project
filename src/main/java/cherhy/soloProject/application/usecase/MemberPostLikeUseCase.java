@@ -53,8 +53,7 @@ public class MemberPostLikeUseCase {
         return ResponseEntity.ok("성공");
     }
 
-    public ScrollResponse getPostLike(Long memberId, ScrollRequest scrollRequest) {
-        Member member = memberReadService.getMember(memberId);
+    public ScrollResponse getPostLike(Member member, ScrollRequest scrollRequest) {
         List<PostLikeResponse> findPosts = postLikeReadService.getPostLike(member, scrollRequest);
         long nextKey = postLikeReadService.getNextKey(findPosts);
         List<Post> posts = postLikeReadService.changePost(findPosts);

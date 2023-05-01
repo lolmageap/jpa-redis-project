@@ -5,8 +5,8 @@ import cherhy.soloProject.application.exception.MemberNotFoundException;
 import cherhy.soloProject.application.exception.PasswordNotMatchException;
 import cherhy.soloProject.application.exception.SameMemberException;
 import cherhy.soloProject.application.exception.enums.ExceptionKey;
-import cherhy.soloProject.domain.member.dto.request.SignInRequestDto;
-import cherhy.soloProject.domain.member.dto.response.MemberSearchResponseDto;
+import cherhy.soloProject.config.UserPrincipal;
+import cherhy.soloProject.domain.member.dto.request.SignInRequest;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.member.repository.jpa.MemberRepository;
 import cherhy.soloProject.domain.post.entity.Post;
@@ -16,16 +16,17 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static cherhy.soloProject.application.key.RedisKey.SEARCH_LOG;
 import static cherhy.soloProject.application.key.RedisKey.SEARCH_RANK;
@@ -34,11 +35,19 @@ import static cherhy.soloProject.application.key.RedisKey.SEARCH_RANK;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class MemberReadService {
+public class MemberReadService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder encoder;
     private final StringRedisTemplate redisTemplate;
+
+
+    @Override
+    public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
+        Member member = memberRepository.findByUserId(userId).orElseThrow(() -> new MemberNotFoundException());
+        UserPrincipal customerDetail = new UserPrincipal(member);
+        return customerDetail;
+    }
 
     // TODO : 이메일 체크
     public ResponseEntity emailCheck(String email){
@@ -57,12 +66,11 @@ public class MemberReadService {
     }
 
     // TODO : 로그인
-    public ResponseEntity signIn(SignInRequestDto signInRequestDto, HttpSession session){
+    public ResponseEntity signIn(SignInRequest signInRequestDto){
         ValueOperations<String, String> ops = redisTemplate.opsForValue();
         Member findMember = getMember(signInRequestDto.userId());
 
         passwordComparison(signInRequestDto, findMember);
-        session.setAttribute("userData" , findMember);
         attendToday(ops, findMember);
         return ResponseEntity.ok("로그인 성공");
     }
@@ -84,7 +92,7 @@ public class MemberReadService {
     }
 
     // TODO : 비밀번호 체크
-    private void passwordComparison(SignInRequestDto signInRequestDto, Member findMember) {
+    private void passwordComparison(SignInRequest signInRequestDto, Member findMember) {
         if(!encoder.matches(signInRequestDto.password(), findMember.getPassword())){
             throw new PasswordNotMatchException();
         }

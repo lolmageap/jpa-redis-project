@@ -6,11 +6,11 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public record MemberSearchResponseDto(Long memberId, String name) implements Serializable {
+public record MemberSearchResponse(Long memberId, String name) implements Serializable {
 
-    public static List<MemberSearchResponseDto> from(List<Member> findMemberList) {
+    public static List<MemberSearchResponse> from(List<Member> findMemberList) {
         return findMemberList.stream()
-                .map(m -> new MemberSearchResponseDto(m.getId(), m.getName()))
+                .map(m -> new MemberSearchResponse(m.getId(), m.getName()))
                 .collect(Collectors.toList());
     }
 

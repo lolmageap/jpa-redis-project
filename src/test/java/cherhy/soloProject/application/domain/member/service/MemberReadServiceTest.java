@@ -1,7 +1,7 @@
 package cherhy.soloProject.application.domain.member.service;
 
 
-import cherhy.soloProject.domain.member.dto.request.MemberRequestDto;
+import cherhy.soloProject.domain.member.dto.request.MemberRequest;
 import cherhy.soloProject.domain.member.service.MemberReadService;
 import cherhy.soloProject.domain.member.service.MemberWriteService;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ class MemberReadServiceTest {
     MemberWriteService memberWriteService;
     @Test
     public void testSignup() throws Exception{
-        memberWriteService.signUp(new MemberRequestDto("abcdef", "정철희", "ekxk1234@gmail.com", "ss012012"));
+        memberWriteService.signUp(new MemberRequest("abcdef", "정철희", "ekxk1234@gmail.com", "ss012012"));
     }
 
 }

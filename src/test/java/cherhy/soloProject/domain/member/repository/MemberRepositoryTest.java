@@ -1,7 +1,7 @@
 package cherhy.soloProject.domain.member.repository;
 
 
-import cherhy.soloProject.domain.member.dto.request.MemberRequestDto;
+import cherhy.soloProject.domain.member.dto.request.MemberRequest;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.member.repository.jpa.MemberRepository;
 import cherhy.soloProject.domain.member.service.MemberWriteService;
@@ -31,7 +31,7 @@ class MemberRepositoryTest {
     @Test
     public void testMember() throws Exception{
         //given
-        MemberRequestDto member = new MemberRequestDto("aaaa","홍길동","abcd@naver.com","abcd");
+        MemberRequest member = new MemberRequest("aaaa","홍길동","abcd@naver.com","abcd");
         //when
         memberWriteService.signUp(member);
         Member findMember = memberRepository.findById(1L).get();
@@ -43,7 +43,7 @@ class MemberRepositoryTest {
     public void testInsertMembers() throws Exception{
         //given
         for (int i = 0; i < 100; i++) {
-            MemberRequestDto member = new MemberRequestDto("aaaa" + i,"길동" + i,"abcd"+ i +"@naver.com" ,"abcd" + i);
+            MemberRequest member = new MemberRequest("aaaa" + i,"길동" + i,"abcd"+ i +"@naver.com" ,"abcd" + i);
             memberWriteService.signUp(member);
         }
         //when

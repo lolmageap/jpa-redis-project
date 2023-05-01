@@ -1,6 +1,6 @@
 package cherhy.soloProject.domain.member.service;
 
-import cherhy.soloProject.domain.member.dto.request.MemberRequestDto;
+import cherhy.soloProject.domain.member.dto.request.MemberRequest;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.member.repository.jpa.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class MemberWriteService {
     private final PasswordEncoder encoder;
 
     // TODO : 회원가입
-    public ResponseEntity signUp(MemberRequestDto memberRequestDto) {
+    public ResponseEntity signUp(MemberRequest memberRequestDto) {
             Member member = BuildMember(memberRequestDto);
             member.changePassword(encoder.encode(memberRequestDto.password()));
             memberRepository.save(member);
@@ -34,15 +34,14 @@ public class MemberWriteService {
     }
 
     // TODO : 회원 정보 수정
-    public String modifyMember(MemberRequestDto memberRequestDto, Long memberId) {
-        Member findMember = memberReadService.getMember(memberId);
-        memberRepository.save(modify(memberRequestDto, findMember));
+    public String modifyMember(MemberRequest memberRequestDto, Member member) {
+        modify(memberRequestDto, member);
         return "회원정보 변경";
     }
     
 
     // TODO : 정보 수정 전 validation check
-    private Member modify(MemberRequestDto memberRequestDto, Member findMember) {
+    private Member modify(MemberRequest memberRequestDto, Member findMember) {
         if (!memberRequestDto.user_id().isEmpty()){
             findMember.changeUserId(memberRequestDto.user_id());
         }
@@ -56,7 +55,7 @@ public class MemberWriteService {
     }
 
     // TODO : 회원 빌드
-    private Member BuildMember(MemberRequestDto memberRequestDto) {
+    private Member BuildMember(MemberRequest memberRequestDto) {
         Member member = Member.builder()
                 .email(memberRequestDto.email())
                 .name(memberRequestDto.name())
