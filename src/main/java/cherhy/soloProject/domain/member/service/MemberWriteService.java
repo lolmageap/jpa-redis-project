@@ -35,34 +35,20 @@ public class MemberWriteService {
 
     // TODO : 회원 정보 수정
     public String modifyMember(MemberRequest memberRequestDto, Member member) {
-        modify(memberRequestDto, member);
+        member.changeUserId(memberRequestDto.user_id());
+        member.changeName(memberRequestDto.name());
+        member.changePassword(encoder.encode(memberRequestDto.password()));
         return "회원정보 변경";
-    }
-    
-
-    // TODO : 정보 수정 전 validation check
-    private Member modify(MemberRequest memberRequestDto, Member findMember) {
-        if (!memberRequestDto.user_id().isEmpty()){
-            findMember.changeUserId(memberRequestDto.user_id());
-        }
-        if (!memberRequestDto.name().isEmpty()){
-            findMember.changeName(memberRequestDto.name());
-        }
-        if (!memberRequestDto.password().isEmpty()){
-            findMember.changePassword(encoder.encode(memberRequestDto.password()));
-        }
-        return findMember;
     }
 
     // TODO : 회원 빌드
     private Member BuildMember(MemberRequest memberRequestDto) {
-        Member member = Member.builder()
+        return Member.builder()
                 .email(memberRequestDto.email())
                 .name(memberRequestDto.name())
                 .userId(memberRequestDto.user_id())
                 .password(memberRequestDto.password())
                 .build();
-        return member;
     }
 
     // TODO : 검색 로그 데이터 레디스에 저장

@@ -1,4 +1,4 @@
-package cherhy.soloProject.domain.TimeLine.service;
+package cherhy.soloProject.application.domain.TimeLine.service;
 
 import cherhy.soloProject.application.exception.MemberNotFoundException;
 import cherhy.soloProject.domain.member.entity.Member;

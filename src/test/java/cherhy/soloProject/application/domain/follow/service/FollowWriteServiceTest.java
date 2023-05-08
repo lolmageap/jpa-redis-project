@@ -1,19 +1,16 @@
-package cherhy.soloProject.domain.follow.service;
+package cherhy.soloProject.application.domain.follow.service;
 
-import cherhy.soloProject.domain.follow.entity.Follow;
+import cherhy.soloProject.application.usecase.MemberFollowUseCase;
 import cherhy.soloProject.domain.follow.repository.jpa.FollowRepository;
 import cherhy.soloProject.domain.follow.service.FollowWriteService;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.member.repository.jpa.MemberRepository;
-import cherhy.soloProject.application.usecase.MemberFollowUseCase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Commit;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,7 +22,6 @@ class FollowWriteServiceTest {
 
     @Autowired
     FollowWriteService followWriteService;
-    MemberFollowUseCase memberFollowUseCase;
     @Autowired
     FollowRepository followRepository;
     @Autowired
