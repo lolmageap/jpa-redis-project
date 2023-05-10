@@ -2,18 +2,16 @@ package cherhy.soloProject.domain.postBlock.service;
 
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.domain.member.entity.Member;
-import cherhy.soloProject.domain.post.dto.PostPhotoDto;
 import cherhy.soloProject.domain.postBlock.dto.response.PostBlockResponseDto;
 import cherhy.soloProject.domain.postBlock.entity.PostBlock;
 import cherhy.soloProject.domain.postBlock.repository.jpa.PostBlockRepository;
-import cherhy.soloProject.application.exception.PostBlockNotFoundException;
+import cherhy.soloProject.exception.PostBlockNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)

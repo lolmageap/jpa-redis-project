@@ -4,6 +4,7 @@ import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.domain.TimeLine.service.TimeLineReadService;
 import cherhy.soloProject.domain.TimeLine.service.TimeLineWriteService;
+import cherhy.soloProject.domain.follow.service.FollowReadService;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.member.service.MemberReadService;
 import cherhy.soloProject.domain.memberBlock.service.MemberBlockReadService;
@@ -32,13 +33,14 @@ public class MemberTimeLineUseCase {
     private final MemberReadService memberReadService;
     private final PostReadService postReadService;
     private final PostWriteService postWriteService;
+    private final FollowReadService followReadService;
     private final TimeLineWriteService timeLineWriteService;
     private final TimeLineReadService timeLineReadService;
     private final MemberBlockReadService memberBlockReadService;
 
     public ResponseEntity createPost(PostRequestDto postRequestDto, Member member){
         Post addPost = postWriteService.buildPost(postRequestDto, member);
-        List<Member> findMembers = memberReadService.findAllByMember(member, addPost);
+        List<Member> findMembers = followReadService.findAllByFollowers(member);
         ResponseEntity result = timeLineWriteService.uploadTimeLine(findMembers, addPost);
         return result;
     }

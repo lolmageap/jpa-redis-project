@@ -1,6 +1,6 @@
-package cherhy.soloProject.application.exception;
+package cherhy.soloProject.exception;
 
-import cherhy.soloProject.application.exception.enums.ExceptionKey;
+import cherhy.soloProject.exception.enums.ExceptionKey;
 
 public class ExistException extends SnsException {
 

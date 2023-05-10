@@ -1,4 +1,4 @@
-package cherhy.soloProject.application.exception.dto;
+package cherhy.soloProject.exception.dto;
 
 import lombok.Builder;
 

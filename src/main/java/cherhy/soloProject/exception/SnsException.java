@@ -1,4 +1,4 @@
-package cherhy.soloProject.application.exception;
+package cherhy.soloProject.exception;
 
 import lombok.Getter;
 

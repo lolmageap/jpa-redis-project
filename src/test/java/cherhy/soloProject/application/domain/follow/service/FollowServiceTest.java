@@ -3,26 +3,27 @@ package cherhy.soloProject.application.domain.follow.service;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.domain.follow.dto.response.ResponseFollowMemberDto;
 import cherhy.soloProject.domain.follow.entity.Follow;
-import cherhy.soloProject.domain.follow.repository.jpa.FollowRepository;
 import cherhy.soloProject.domain.follow.service.FollowReadService;
 import cherhy.soloProject.domain.follow.service.FollowWriteService;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.member.service.MemberReadService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
+import org.webjars.NotFoundException;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Rollback
+@Transactional
 @SpringBootTest
-class FollowReadServiceTest {
+class FollowServiceTest {
 
     @Autowired
     MemberReadService memberReadService;
@@ -76,6 +77,23 @@ class FollowReadServiceTest {
 
         Optional<Follow> follow = followReadService.getFollowExist(me, you);
         assertThat(follow.get().getId()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("언팔로우")
+    void unfollow() {
+
+        Member me = memberReadService.getMember(1L);
+        Member you = memberReadService.getMember(2L);
+
+        followWriteService.follow(me, you);
+
+        assertThrows(NotFoundException.class, () -> {
+            followReadService.getFollowExist(me, you).orElseThrow(
+                    () -> new NotFoundException("팔로워가 존재하지 않습니다.")
+            );
+        });
+
     }
 
 }

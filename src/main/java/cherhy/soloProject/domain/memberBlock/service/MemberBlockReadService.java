@@ -1,12 +1,12 @@
 package cherhy.soloProject.domain.memberBlock.service;
 
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
-import cherhy.soloProject.application.exception.MemberBlockException;
+import cherhy.soloProject.exception.MemberBlockException;
 import cherhy.soloProject.domain.memberBlock.dto.response.MemberBlockResponseDto;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.memberBlock.entity.MemberBlock;
 import cherhy.soloProject.domain.memberBlock.repository.jpa.MemberBlockRepository;
-import cherhy.soloProject.application.exception.MemberNotFoundException;
+import cherhy.soloProject.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

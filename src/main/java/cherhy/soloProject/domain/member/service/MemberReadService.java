@@ -1,15 +1,14 @@
 package cherhy.soloProject.domain.member.service;
 
-import cherhy.soloProject.application.exception.ExistException;
-import cherhy.soloProject.application.exception.MemberNotFoundException;
-import cherhy.soloProject.application.exception.PasswordNotMatchException;
-import cherhy.soloProject.application.exception.SameMemberException;
-import cherhy.soloProject.application.exception.enums.ExceptionKey;
 import cherhy.soloProject.config.UserPrincipal;
 import cherhy.soloProject.domain.member.dto.request.SignInRequest;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.member.repository.jpa.MemberRepository;
-import cherhy.soloProject.domain.post.entity.Post;
+import cherhy.soloProject.exception.ExistException;
+import cherhy.soloProject.exception.MemberNotFoundException;
+import cherhy.soloProject.exception.PasswordNotMatchException;
+import cherhy.soloProject.exception.SameMemberException;
+import cherhy.soloProject.exception.enums.ExceptionKey;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.RedisZSetCommands;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -99,19 +98,14 @@ public class MemberReadService implements UserDetailsService {
     }
 
     // TODO : 회원 이름 검색, 3명 조회
-    public List<Member> getMemberList(String searchMemberName) {
+    public List<Member> getMembers(String searchMemberName) {
         String formatSearchMemberName = String.format("%%%s%%", searchMemberName);
         return memberRepository.findTop3ByNameLikeOrderByIdAsc(formatSearchMemberName).orElseThrow(MemberNotFoundException::new);
     }
 
-    // TODO : 회원 빌드
-    public List<Member> findAllByMember(Member findMember, Post post) {
-        return memberRepository.findAllByFollowers(findMember.getId()).orElseThrow(MemberNotFoundException::new);
-    }
-
     // TODO : 자기 자신은 팔로우, 차단 못하게 체크!
-    public void SameUserCheck(Long memberId, Long blockMemberId) {
-         if (memberId == blockMemberId) throw new SameMemberException();
+    public void SameUserCheck(Long memberId, Long OthersMemberId) {
+         if (memberId == OthersMemberId) throw new SameMemberException();
     }
 
     // TODO : 검색 내역 조회

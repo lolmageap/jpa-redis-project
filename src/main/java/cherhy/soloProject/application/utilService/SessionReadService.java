@@ -1,7 +1,7 @@
 package cherhy.soloProject.application.utilService;
 
-import cherhy.soloProject.application.exception.MemberNotFoundException;
-import cherhy.soloProject.application.exception.SessionNotFoundException;
+import cherhy.soloProject.exception.MemberNotFoundException;
+import cherhy.soloProject.exception.SessionNotFoundException;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.member.repository.jpa.MemberRepository;
 import lombok.RequiredArgsConstructor;

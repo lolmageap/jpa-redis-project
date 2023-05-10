@@ -5,6 +5,7 @@ import cherhy.soloProject.domain.follow.dto.response.ResponseFollowMemberDto;
 import cherhy.soloProject.domain.follow.entity.Follow;
 import cherhy.soloProject.domain.follow.repository.jpa.FollowRepository;
 import cherhy.soloProject.domain.member.entity.Member;
+import cherhy.soloProject.exception.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +38,10 @@ public class FollowReadService {
     // TODO : 무한스크롤 팔로우 다음 키 체크
     public long getNextKey(ScrollRequest scrollRequest, List<ResponseFollowMemberDto> resMemberDto) {
         return resMemberDto.stream().mapToLong(m -> m.followId()).min().orElse(scrollRequest.NONE_KEY);
+    }
+
+    public List<Member> findAllByFollowers(Member findMember) {
+        return followRepository.findAllByFollowers(findMember.getId()).orElseThrow(MemberNotFoundException::new);
     }
 
 }

@@ -1,4 +1,4 @@
-package cherhy.soloProject.application.exception;
+package cherhy.soloProject.exception;
 
 public class PostBlockNotFoundException extends SnsException {
 

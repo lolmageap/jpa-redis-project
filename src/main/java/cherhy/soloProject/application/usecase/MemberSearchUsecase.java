@@ -25,7 +25,7 @@ public class MemberSearchUsecase {
     @Cacheable(cacheNames = "SearchMember", key = "#memberId + #searchName", cacheManager = "cacheManager")
     public List<MemberSearchResponse> getSearchMember(String searchName, Member member) {
         ZSetOperations<String, String> ops = redisTemplate.opsForZSet();
-        List<Member> findMemberList = memberReadService.getMemberList(searchName);
+        List<Member> findMemberList = memberReadService.getMembers(searchName);
         List<MemberSearchResponse> findMembers = MemberSearchResponse.from(findMemberList);
         memberWriteService.insertRedisSearchLog(ops, searchName, member.getId());
         memberWriteService.insertRedisSearchRanking(ops, searchName);

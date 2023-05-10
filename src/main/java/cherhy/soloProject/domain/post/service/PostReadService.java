@@ -5,14 +5,13 @@ import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.post.dto.PostPhotoDto;
 import cherhy.soloProject.domain.post.entity.Post;
 import cherhy.soloProject.domain.post.repository.jpa.PostRepository;
-import cherhy.soloProject.application.exception.PostNotFoundException;
+import cherhy.soloProject.exception.PostNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
