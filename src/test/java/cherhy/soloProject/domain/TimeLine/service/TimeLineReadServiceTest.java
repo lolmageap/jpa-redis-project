@@ -1,4 +1,4 @@
-package cherhy.soloProject.application.domain.TimeLine.service;
+package cherhy.soloProject.domain.TimeLine.service;
 
 import org.springframework.boot.test.context.SpringBootTest;
 

@@ -39,7 +39,8 @@ public class MemberBlockFollowUseCase {
 
         memberBlock.ifPresentOrElse(mb -> memberBlockWriteService.unblock(mb),
         () -> {
-            memberBlockWriteService.buildMemberBlock(member,blockMember);
+            MemberBlock memberToBlock = MemberBlock.of(member, blockMember);
+            memberBlockWriteService.block(memberToBlock);
             followReadService.getFollowExist(member, blockMember).ifPresent(f -> followWriteService.unfollow(f));
         });
         return ResponseEntity.ok("성공");

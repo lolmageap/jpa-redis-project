@@ -1,4 +1,4 @@
-package cherhy.soloProject.application.domain.follow.service;
+package cherhy.soloProject.domain.follow.service;
 
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.domain.follow.dto.response.ResponseFollowMemberDto;

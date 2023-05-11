@@ -20,8 +20,16 @@ public class MemberBlock extends BaseTimeEntity {
     private Member blockMember;
 
     @Builder
-    public MemberBlock(Member member, Member blockMember) {
+    private MemberBlock(Member member, Member blockMember) {
         this.member = member;
         this.blockMember = blockMember;
     }
+
+    public static MemberBlock of(Member member, Member blockMember) {
+        return MemberBlock.builder()
+                .member(member)
+                .blockMember(blockMember)
+                .build();
+    }
+
 }

@@ -21,12 +21,11 @@ public class MemberBlockReadService {
 
     private final MemberBlockRepository memberBlockRepository;
 
-    // TODO : 내가 차단한 회원인지 조회
+    // TODO : 내가 차단한 회원인지 조회, 차단 정보 조회
     public Optional<MemberBlock> getBlockMember(Member myMember, Member blockMember) {
         return memberBlockRepository.getBlockMember(myMember, blockMember);
     }
 
-    // TODO : 내가 차단 당했는지 확인
     public void ifIBlock(Member myMember, Member blockedMember) {
         memberBlockRepository.ifIBlock(myMember, blockedMember).ifPresent(m -> {
             throw new MemberBlockException();

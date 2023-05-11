@@ -1,4 +1,4 @@
-package cherhy.soloProject.application.domain.member.service;
+package cherhy.soloProject.domain.member.service;
 
 
 import cherhy.soloProject.domain.member.dto.request.SignInRequest;
