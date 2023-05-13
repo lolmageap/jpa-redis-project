@@ -5,6 +5,7 @@ import cherhy.soloProject.domain.member.dto.request.MemberRequest;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.member.service.MemberReadService;
 import cherhy.soloProject.domain.member.service.MemberWriteService;
+import cherhy.soloProject.domain.member.service.MemberWriteServiceTest;
 import cherhy.soloProject.domain.memberBlock.dto.response.MemberBlockResponseDto;
 import cherhy.soloProject.domain.memberBlock.entity.MemberBlock;
 import cherhy.soloProject.exception.MemberBlockException;
@@ -36,24 +37,10 @@ class MemberBlockServiceTest {
     MemberBlockWriteService memberBlockWriteService;
 
     @BeforeEach
-    @Order(1)
     @DisplayName("회원 추가")
     void addMember(){
-        // given
-        MemberRequest memberRequest = new MemberRequest("abcdef", "정철희", "ekxk1234@gmail.com", "1234");
-        memberWriteService.signUp(memberRequest);
-
-        MemberRequest memberRequest2 = new MemberRequest("qwerty", "홍길동", "abcd234@naver.com", "12345");
-        memberWriteService.signUp(memberRequest2);
-
-        MemberRequest memberRequest3 = new MemberRequest("zxcvbn", "유재석", "zxcvbn@gmail.com", "1111");
-        memberWriteService.signUp(memberRequest3);
-
-        MemberRequest memberRequest4 = new MemberRequest("hihihi", "고양이", "noise@naver.com", "111111111");
-        memberWriteService.signUp(memberRequest4);
-
-        MemberRequest memberRequest5 = new MemberRequest("testtest", "유재석", "jzcxhvljk@gmail.com", "4444sdfwe");
-        memberWriteService.signUp(memberRequest5);
+        MemberWriteServiceTest memberWriteServiceTest = new MemberWriteServiceTest(memberReadService, memberWriteService);
+        memberWriteServiceTest.addMember();
     }
 
     @Test
@@ -136,12 +123,13 @@ class MemberBlockServiceTest {
         MemberBlock memberToBlock4 = MemberBlock.of(me, you4);
         memberBlockWriteService.block(memberToBlock4);
 
+        // Order By Id Desc
         List<MemberBlockResponseDto> memberBlocks = memberBlockReadService.getMemberBlocks(me, scrollRequest);
         long nextKey = memberBlockReadService.getNextKey(memberBlocks);
 
         //then
         Assertions.assertThat(memberBlocks.size()).isEqualTo(3);
-        Assertions.assertThat(nextKey).isEqualTo(2); // Id desc
+        Assertions.assertThat(nextKey).isEqualTo(2);
     }
 
 }

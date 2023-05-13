@@ -17,17 +17,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
 @SpringBootTest
-class MemberWriteServiceTest {
+public class MemberWriteServiceTest {
 
-    @Autowired
-    MemberReadService memberReadService;
-    @Autowired
-    MemberWriteService memberWriteService;
+    private final MemberReadService memberReadService;
+    private final MemberWriteService memberWriteService;
+
+    public MemberWriteServiceTest(MemberReadService memberReadService, MemberWriteService memberWriteService) {
+        this.memberReadService = memberReadService;
+        this.memberWriteService = memberWriteService;
+    }
 
     @Test
     @Commit
     @DisplayName("회원 가입")
     void Signup() {
+        addMember();
+    }
+
+    public void addMember() {
         MemberRequest memberRequest = new MemberRequest("abcdef", "정철희", "ekxk1234@gmail.com", "1234");
         memberWriteService.signUp(memberRequest);
 
@@ -36,6 +43,12 @@ class MemberWriteServiceTest {
 
         MemberRequest memberRequest3 = new MemberRequest("zxcvbn", "유재석", "zxcvbn@gmail.com", "1111");
         memberWriteService.signUp(memberRequest3);
+
+        MemberRequest memberRequest4 = new MemberRequest("hihihi", "고양이", "noise@naver.com", "111111111");
+        memberWriteService.signUp(memberRequest4);
+
+        MemberRequest memberRequest5 = new MemberRequest("testtest", "유재석", "jzcxhvljk@gmail.com", "4444sdfwe");
+        memberWriteService.signUp(memberRequest5);
     }
 
     @Test

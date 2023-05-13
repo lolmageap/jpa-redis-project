@@ -1,12 +1,14 @@
 package cherhy.soloProject.domain.post.entity;
 
 import cherhy.soloProject.Util.BaseEntity;
-import cherhy.soloProject.domain.TimeLine.entity.TimeLine;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.photo.entity.Photo;
+import cherhy.soloProject.domain.post.dto.request.PostRequestDto;
 import cherhy.soloProject.domain.reply.entity.Reply;
-import lombok.*;
-
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -36,12 +38,25 @@ public class Post extends BaseEntity {
 //    @Version //낙관적 락
 //    private Long version;
 
+    public static Post of(PostRequestDto postRequestDto, Member member){
+        return Post.builder()
+                .member(member)
+                .title(postRequestDto.title())
+                .content(postRequestDto.content())
+                .photos(postRequestDto.photos())
+                .build();
+    }
+
     @Builder
-    public Post(Member member, String title, String content, List<Photo> photos, Integer likeCount) {
+    public Post(Member member, String title, String content, List<String> photos, Integer likeCount) {
         this.member = member;
         this.title = title;
         this.content = content;
-        this.photos = photos;
+
+        for (String photo : photos) {
+            this.photos.add(Photo.of(photo));
+        }
+
         this.likeCount = likeCount == null ? 0 : likeCount;
     }
 

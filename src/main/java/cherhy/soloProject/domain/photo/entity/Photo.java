@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Entity
@@ -22,9 +23,11 @@ public class Photo {
 
     private String photo; //사진 링크
 
-    @Builder
-    public Photo(Post post, String photo) {
-        this.post = post;
+    public static Photo of(String photo){
+        return new Photo(photo);
+    }
+
+    public Photo(String photo) {
         this.photo = photo;
     }
 }

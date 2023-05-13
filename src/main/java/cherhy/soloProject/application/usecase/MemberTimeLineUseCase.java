@@ -39,9 +39,11 @@ public class MemberTimeLineUseCase {
     private final MemberBlockReadService memberBlockReadService;
 
     public ResponseEntity createPost(PostRequestDto postRequestDto, Member member){
-        Post addPost = postWriteService.buildPost(postRequestDto, member);
+        Post post = Post.of(postRequestDto, member);
+        Post savePost = postWriteService.save(post);
+
         List<Member> findMembers = followReadService.findAllByFollowers(member);
-        ResponseEntity result = timeLineWriteService.uploadTimeLine(findMembers, addPost);
+        ResponseEntity result = timeLineWriteService.uploadTimeLine(findMembers, savePost);
         return result;
     }
 

@@ -24,4 +24,4 @@ spring:
 
 logging:
   level:
-    org.hibernate.sql: warn
+    org.hibernate.sql: error
