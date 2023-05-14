@@ -3,7 +3,6 @@ package cherhy.soloProject.domain.member.service;
 
 import cherhy.soloProject.domain.member.dto.request.SignInRequest;
 import cherhy.soloProject.domain.member.entity.Member;
-import cherhy.soloProject.domain.member.service.MemberReadService;
 import cherhy.soloProject.exception.ExistException;
 import cherhy.soloProject.exception.MemberNotFoundException;
 import cherhy.soloProject.exception.PasswordNotMatchException;
@@ -13,8 +12,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.test.annotation.Commit;
 
 import java.util.List;

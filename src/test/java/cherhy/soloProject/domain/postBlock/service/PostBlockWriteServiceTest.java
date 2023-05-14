@@ -1,6 +1,5 @@
 package cherhy.soloProject.domain.postBlock.service;
 
-import cherhy.soloProject.application.usecase.MemberPostBlockUseCase;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.member.service.MemberReadService;
 import cherhy.soloProject.domain.member.service.MemberWriteService;
@@ -10,18 +9,15 @@ import cherhy.soloProject.domain.post.entity.Post;
 import cherhy.soloProject.domain.post.service.PostReadService;
 import cherhy.soloProject.domain.post.service.PostWriteService;
 import cherhy.soloProject.domain.postBlock.entity.PostBlock;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.ResponseEntity;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 class PostBlockWriteServiceTest {
@@ -60,6 +56,6 @@ class PostBlockWriteServiceTest {
 
         postBlockWriteService.block(me, post);
         List<PostBlock> postBlocks = postBlockReadService.getPostBlocks(me);
-        Assertions.assertThat(postBlocks.size()).isEqualTo(1);
+        assertThat(postBlocks.size()).isEqualTo(1);
     }
 }

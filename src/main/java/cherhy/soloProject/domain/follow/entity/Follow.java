@@ -25,9 +25,17 @@ public class Follow extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member following;
 
+    public static Follow of(Member follower, Member following){
+       return Follow.builder()
+                .follower(follower)
+                .following(following)
+                .build();
+    }
+
     @Builder
     public Follow(Member follower, Member following) {
         this.follower = follower;
         this.following = following;
     }
+
 }

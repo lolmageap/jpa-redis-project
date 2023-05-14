@@ -1,113 +1,130 @@
 package cherhy.soloProject.domain.memberBlock.service;
 
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
-import cherhy.soloProject.domain.member.dto.request.MemberRequest;
 import cherhy.soloProject.domain.member.entity.Member;
-import cherhy.soloProject.domain.member.service.MemberReadService;
-import cherhy.soloProject.domain.member.service.MemberWriteService;
-import cherhy.soloProject.domain.member.service.MemberWriteServiceTest;
 import cherhy.soloProject.domain.memberBlock.dto.response.MemberBlockResponseDto;
 import cherhy.soloProject.domain.memberBlock.entity.MemberBlock;
 import cherhy.soloProject.exception.MemberBlockException;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Rollback
 @Transactional
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class MemberBlockServiceTest {
-
-    @Autowired
-    MemberReadService memberReadService;
-    @Autowired
-    MemberWriteService memberWriteService;
     @Autowired
     MemberBlockReadService memberBlockReadService;
     @Autowired
     MemberBlockWriteService memberBlockWriteService;
 
-    @BeforeEach
-    @DisplayName("회원 추가")
-    void addMember(){
-        MemberWriteServiceTest memberWriteServiceTest = new MemberWriteServiceTest(memberReadService, memberWriteService);
-        memberWriteServiceTest.addMember();
-    }
+    EntityManager em;
+
 
     @Test
-    @Order(1)
-    @DisplayName("차단하기")
+    @DisplayName("차단")
     void testBlock(){
         // given
-        Member member = memberReadService.getMember(1L);
-        Member blockMember = memberReadService.getMember(2L);
+        Member me = new Member("test", "정철희", "ekxk1234@naver.com", "1234");
+        Member you = new Member("testtest", "유재석", "pzkxjher@naver.com", "4321");
 
         // when
-        MemberBlock memberToBlock = MemberBlock.of(member, blockMember);
+        MemberBlock memberToBlock = MemberBlock.of(me, you);
         memberBlockWriteService.block(memberToBlock);
 
+        em.flush();
+        em.clear();
+
         // then
-        Optional<MemberBlock> result = memberBlockReadService.getBlockMember(member, blockMember);
-        Assertions.assertThat(result.get().getBlockMember().getId()).isEqualTo(2L);
+        Optional<MemberBlock> result = memberBlockReadService.getBlockMember(me, you);
+        Assertions.assertThat(result.get().getMember().getName()).isEqualTo("정철희");
     }
 
-
     @Test
-    @Order(2)
-    @DisplayName("내가 차단 당했는지 확인")
-    void testGetBlock(){
+    @DisplayName("차단 조회 Error")
+    void testGetBlockError(){
         // given
-        Member member = memberReadService.getMember(1L);
-        Member blockMember = memberReadService.getMember(2L);
-
-        // when
-        MemberBlock memberToBlock = MemberBlock.of(member, blockMember);
-        memberBlockWriteService.block(memberToBlock);
+        Member me = new Member("test", "정철희", "ekxk1234@naver.com", "1234");
+        Member you = new Member("testtest", "유재석", "pzkxjher@naver.com", "4321");
 
         // then
-        assertThrows(MemberBlockException.class, () -> memberBlockReadService.ifIBlock(blockMember, member));
-        memberBlockReadService.ifIBlock(member, blockMember);
+        assertThatThrownBy(() -> memberBlockReadService.getBlockMember(me, you))
+                .isInstanceOf(NullPointerException.class);
+
     }
 
     @Test
-    @Order(3)
+    @DisplayName("내가 차단 당했는지 확인")
+    void testIfBlocked(){
+        // given
+        Member me = new Member("test", "정철희", "ekxk1234@naver.com", "1234");
+        Member you = new Member("testtest", "유재석", "pzkxjher@naver.com", "4321");
+
+        // when
+        MemberBlock memberToBlock = MemberBlock.of(me, you);
+        memberBlockWriteService.block(memberToBlock);
+
+        em.flush();
+        em.clear();
+
+        // then
+        memberBlockReadService.ifIBlock(me, you);
+    }
+
+    @Test
+    @DisplayName("내가 차단 당했는지 확인 Error")
+    void testIfBlockedError(){
+        // given
+        Member me = new Member("test", "정철희", "ekxk1234@naver.com", "1234");
+        Member you = new Member("testtest", "유재석", "pzkxjher@naver.com", "4321");
+
+        // then
+        assertThatThrownBy(() -> memberBlockReadService.ifIBlock(me, you))
+                .isInstanceOf(MemberBlockException.class);
+    }
+
+    @Test
     @DisplayName("차단풀기")
     void testUnblock(){
         // given
-        Member member = memberReadService.getMember(1L);
-        Member blockMember = memberReadService.getMember(2L);
-        Optional<MemberBlock> unBlockMember = memberBlockReadService.getBlockMember(member, blockMember);
+        Member me = new Member("test", "정철희", "ekxk1234@naver.com", "1234");
+        Member you = new Member("testtest", "유재석", "pzkxjher@naver.com", "4321");
 
         // when
-        unBlockMember.ifPresent(m -> memberBlockWriteService.unblock(m));
+        MemberBlock blockMember = MemberBlock.of(me, you);
+        memberBlockWriteService.block(blockMember);
+        memberBlockWriteService.unblock(blockMember);
 
-        // then
-        assertThrows(NullPointerException.class, () ->
-            memberBlockReadService.getBlockMember(member, blockMember)
-                    .orElseThrow(NullPointerException::new)
-        );
+        em.flush();
+        em.clear();
+
+        assertThatThrownBy(() -> memberBlockReadService.getBlockMember(me, you)
+                                .orElseThrow(NullPointerException::new))
+                .isInstanceOf(NullPointerException.class);
     }
 
     @Test
-    @Order(4)
     @DisplayName("차단한 사람들 조회")
     void testGetMemberBlocks(){
         // given
-        Member me = memberReadService.getMember(3L);
-        Member you = memberReadService.getMember(1L);
-        Member you2 = memberReadService.getMember(2L);
-        Member you3 = memberReadService.getMember(4L);
-        Member you4 = memberReadService.getMember(5L);
-
+        Member me = new Member("abcdef", "정철희", "ekxk1234@gmail.com", "1234");
+        Member you = new Member("qwerty", "홍길동", "abcd234@naver.com", "12345");
+        Member you2 = new Member("zxcvbn", "유재석", "zxcvbn@gmail.com", "1111");
+        Member you3 = new Member("hihihi", "고양이", "noise@naver.com", "111111111");
+        Member you4 = new Member("testtest", "유재석", "jzcxhvljk@gmail.com", "4444sdfwe");
         ScrollRequest scrollRequest = new ScrollRequest(null);
 
         // when

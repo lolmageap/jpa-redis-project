@@ -49,7 +49,7 @@ public class Member extends BaseTimeEntity {
     private List<MemberBlock> memberBlocks = new ArrayList<>();
 
     @Builder //회원가입
-    public Member(String userId, String name, String email, String password, LocalDate birthday) {
+    public Member(String userId, String name, String email, String password) {
         this.userId = requireNonNull(userId);
         this.name = requireNonNull(name);
         this.password = requireNonNull(password);

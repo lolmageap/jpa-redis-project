@@ -40,7 +40,7 @@ public class MemberFollowUseCase {
         follow.ifPresentOrElse(f -> followWriteService.unfollow(f),
                 () -> { memberBlockReadService.getBlockMember(myMember,followMember)
                             .ifPresent(m -> memberBlockWriteService.unblock(m));
-                        followWriteService.follow(myMember, followMember);
+                        followWriteService.follow(Follow.of(myMember, followMember));
         });
 
         return ResponseEntity.ok("성공");
