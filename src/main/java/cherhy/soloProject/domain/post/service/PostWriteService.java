@@ -1,14 +1,16 @@
 package cherhy.soloProject.domain.post.service;
 
 
-import cherhy.soloProject.domain.member.entity.Member;
-import cherhy.soloProject.domain.photo.repository.jpa.PhotoRepository;
+import cherhy.soloProject.domain.photo.entity.Photo;
 import cherhy.soloProject.domain.post.dto.request.PostRequestDto;
 import cherhy.soloProject.domain.post.entity.Post;
 import cherhy.soloProject.domain.post.repository.jpa.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -17,26 +19,19 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostWriteService {
 
     private final PostRepository postRepository;
-    private final PhotoRepository photoRepository;
 
-    // TODO : 수정 및 null validation check
-    public Post modify(PostRequestDto postRequestDto, Post findPost) {
-        if (!postRequestDto.content().isEmpty()){
-            findPost.changeContent(postRequestDto.content());
-        }
-        if (!postRequestDto.title().isEmpty()){
-            findPost.changeTitle(postRequestDto.title());
-        }
-        if (!postRequestDto.photos().isEmpty()){
-            photoRepository.deleteByPostId(findPost.getId());
-        }
-        return findPost;
-    }
-
-    // TODO : 저장
     public Post save(Post post) {
         return postRepository.save(post);
     }
+
+    public Post update(PostRequestDto postRequestDto, Post post) {
+        List<Photo> photos = new ArrayList<>(post.getPhotos());
+        photos.clear();
+        Post updatePost = post.of(postRequestDto, post.getMember());
+        updatePost.addId(post.getId());
+        return updatePost;
+    }
+
 
 //    // TODO : 좋아요 시
 //    public void addPostLikeToRedis(Post savePost) {

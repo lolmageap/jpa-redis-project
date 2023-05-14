@@ -3,13 +3,9 @@ package cherhy.soloProject.domain.member.service;
 
 import cherhy.soloProject.domain.member.dto.request.MemberRequest;
 import cherhy.soloProject.domain.member.entity.Member;
-import cherhy.soloProject.domain.member.service.MemberReadService;
-import cherhy.soloProject.domain.member.service.MemberWriteService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,7 +24,6 @@ public class MemberWriteServiceTest {
     }
 
     @Test
-    @Commit
     @DisplayName("회원 가입")
     void Signup() {
         addMember();
@@ -49,6 +44,7 @@ public class MemberWriteServiceTest {
 
         MemberRequest memberRequest5 = new MemberRequest("testtest", "유재석", "jzcxhvljk@gmail.com", "4444sdfwe");
         memberWriteService.signUp(memberRequest5);
+
     }
 
     @Test
@@ -56,6 +52,7 @@ public class MemberWriteServiceTest {
     void testSignup() {
         Member member = memberReadService.getMember(1L);
         MemberRequest memberRequest = new MemberRequest("abcd1234", "정철희", "ekxk1234@naver.com", "1234");
+
         String result = memberWriteService.modifyMember(memberRequest, member);
         assertThat(result).isEqualTo("회원정보 변경");
     }

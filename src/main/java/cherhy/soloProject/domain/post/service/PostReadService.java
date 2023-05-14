@@ -37,7 +37,7 @@ public class PostReadService {
     }
 
     // TODO : 게시글 아이디와 memberId로 게시글 조회
-    public Post getPost(Long postId, Member member) {
+    public Post getMyPost(Long postId, Member member) {
         return postRepository.findByIdAndMemberId(postId, member.getId())
                 .orElseThrow(PostNotFoundException::new);
     }

@@ -48,8 +48,8 @@ public class MemberTimeLineUseCase {
     }
 
     public ResponseEntity modifyPost(PostRequestDto postRequestDto, Member member, Long postId){
-        Post findPost = postReadService.getPost(postId, member);
-        Post modifyPost = postWriteService.modify(postRequestDto, findPost);
+        Post post = postReadService.getMyPost(postId, member);
+        Post modifyPost = postWriteService.update(postRequestDto, post);
         postWriteService.save(modifyPost);
         return ResponseEntity.ok("수정 성공");
     }

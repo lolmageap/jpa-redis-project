@@ -1,10 +1,7 @@
 package cherhy.soloProject.domain.photo.entity;
 
 import cherhy.soloProject.domain.post.entity.Post;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -20,14 +17,15 @@ public class Photo {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "post_id")
     private Post post;
+    private String photo;
 
-    private String photo; //사진 링크
-
-    public static Photo of(String photo){
-        return new Photo(photo);
+    public static Photo of(Post post, String photo){
+        return new Photo(post, photo);
     }
 
-    public Photo(String photo) {
+    public Photo(Post post, String photo) {
+        this.post = post;
         this.photo = photo;
     }
+
 }
