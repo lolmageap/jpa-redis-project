@@ -28,7 +28,7 @@ import java.util.List;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class MemberTimeLineUseCase {
+public class TimeLineUseCase {
 
     private final MemberReadService memberReadService;
     private final PostReadService postReadService;

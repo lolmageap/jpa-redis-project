@@ -27,7 +27,7 @@ import static cherhy.soloProject.application.key.RedisKey.REPLY_MODIFY_DESC;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class MemberPostReplyUseCase {
+public class ReplyUseCase {
 
     private final MemberReadService memberReadService;
     private final PostReadService postReadService;

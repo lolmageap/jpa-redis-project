@@ -2,7 +2,7 @@ package cherhy.soloProject.application.controller;
 
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.Util.scrollDto.ScrollResponse;
-import cherhy.soloProject.application.usecase.MemberPostReplyUseCase;
+import cherhy.soloProject.application.usecase.ReplyUseCase;
 import cherhy.soloProject.application.utilService.SessionReadService;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.reply.dto.RequestReplyDto;
@@ -22,7 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/reply")
 public class ReplyController {
-    private final MemberPostReplyUseCase memberPostReplyUseCase;
+    private final ReplyUseCase memberPostReplyUseCase;
     private final SessionReadService sessionReadService;
 
     @PostMapping

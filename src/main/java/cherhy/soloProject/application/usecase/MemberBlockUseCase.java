@@ -23,7 +23,7 @@ import java.util.Optional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class MemberBlockFollowUseCase {
+public class MemberBlockUseCase {
 
     private final MemberReadService memberReadService;
     private final MemberBlockReadService memberBlockReadService;

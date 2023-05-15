@@ -23,9 +23,8 @@ import java.util.Optional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class MemberPostBlockUseCase {
+public class PostBlockUseCase {
 
-    private final MemberReadService memberReadService;
     private final PostReadService postReadService;
     private final PostBlockReadService postBlockReadService;
     private final PostBlockWriteService postBlockWriteService;
@@ -35,7 +34,7 @@ public class MemberPostBlockUseCase {
         Optional<PostBlock> postBlock = postBlockReadService.getPostBlockByMemberIdAndPostId(member.getId(), postId);
 
         postBlock.ifPresentOrElse(p -> postBlockWriteService.unblock(p),
-                () -> postBlockWriteService.block(member, post));
+                () -> postBlockWriteService.block(PostBlock.of(member, post)));
         return ResponseEntity.ok("성공");
     }
     @Cacheable(cacheNames = "blockPost", key = "#memberId", cacheManager = "cacheManager")

@@ -2,7 +2,7 @@ package cherhy.soloProject.application.controller;
 
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.Util.scrollDto.ScrollResponse;
-import cherhy.soloProject.application.usecase.MemberPostLikeUseCase;
+import cherhy.soloProject.application.usecase.PostLikeUseCase;
 import cherhy.soloProject.application.utilService.SessionReadService;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.postLike.dto.request.PostLikeRequest;
@@ -20,7 +20,7 @@ import java.security.Principal;
 @RequiredArgsConstructor
 @RequestMapping("/postLike")
 public class PostLikeController {
-    private final MemberPostLikeUseCase memberPostPostLikeUseCase;
+    private final PostLikeUseCase memberPostPostLikeUseCase;
     private final SessionReadService sessionReadService;
 
     @Operation(summary = "좋아요, 취소")

@@ -32,7 +32,6 @@ public class PostWriteService {
         return updatePost;
     }
 
-
 //    // TODO : 좋아요 시
 //    public void addPostLikeToRedis(Post savePost) {
 //        ValueOperations<String, String> ops = redisTemplate.opsForValue();

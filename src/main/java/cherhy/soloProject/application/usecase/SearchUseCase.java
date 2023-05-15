@@ -17,7 +17,7 @@ import java.util.Set;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class MemberSearchUsecase {
+public class SearchUseCase {
     private final MemberReadService memberReadService;
     private final MemberWriteService memberWriteService;
     private final StringRedisTemplate redisTemplate;

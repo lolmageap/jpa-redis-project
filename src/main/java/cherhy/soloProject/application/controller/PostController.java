@@ -2,7 +2,7 @@ package cherhy.soloProject.application.controller;
 
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.Util.scrollDto.ScrollResponse;
-import cherhy.soloProject.application.usecase.MemberTimeLineUseCase;
+import cherhy.soloProject.application.usecase.TimeLineUseCase;
 import cherhy.soloProject.application.utilService.SessionReadService;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.post.dto.PostPhotoDto;
@@ -24,7 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/post")
 public class PostController {
-    private final MemberTimeLineUseCase memberPostUseCase;
+    private final TimeLineUseCase memberPostUseCase;
     private final SessionReadService sessionReadService;
 
     @Operation(summary = "게시물 생성 // Push Model")

@@ -33,19 +33,19 @@ public class Member extends BaseTimeEntity {
     private String name;
     private String password;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Post> posts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "follower", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL)
     private List<Follow> followers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "following", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "following", cascade = CascadeType.ALL)
     private List<Follow> follows = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<PostBlock> postBlocks = new ArrayList<>();
 
-    @OneToMany(mappedBy = "blockMember", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "blockMember", cascade = CascadeType.ALL)
     private List<MemberBlock> memberBlocks = new ArrayList<>();
 
     @Builder //회원가입

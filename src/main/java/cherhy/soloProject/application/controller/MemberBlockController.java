@@ -2,7 +2,7 @@ package cherhy.soloProject.application.controller;
 
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.Util.scrollDto.ScrollResponse;
-import cherhy.soloProject.application.usecase.MemberBlockFollowUseCase;
+import cherhy.soloProject.application.usecase.MemberBlockUseCase;
 import cherhy.soloProject.application.utilService.SessionReadService;
 import cherhy.soloProject.domain.member.entity.Member;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,7 +19,7 @@ import java.security.Principal;
 @RequestMapping("/memberBlock")
 public class MemberBlockController {
     private final SessionReadService sessionReadService;
-    private final MemberBlockFollowUseCase memberBlockUseCase;
+    private final MemberBlockUseCase memberBlockUseCase;
 
     @Operation(summary = "회원 차단하기")
     @PostMapping("/{blockMemberId}")

@@ -1,6 +1,6 @@
 package cherhy.soloProject.application.controller;
 
-import cherhy.soloProject.application.usecase.MemberSearchUsecase;
+import cherhy.soloProject.application.usecase.SearchUseCase;
 import cherhy.soloProject.application.utilService.SessionReadService;
 import cherhy.soloProject.domain.member.dto.response.MemberSearchResponse;
 import cherhy.soloProject.domain.member.entity.Member;
@@ -23,7 +23,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 @RequestMapping("/memberSearch")
 public class MemberSearchController {
-    private final MemberSearchUsecase memberSearchUsecase;
+    private final SearchUseCase memberSearchUsecase;
     private final SessionReadService sessionReadService;
 
     @Operation(summary = "회원 검색")

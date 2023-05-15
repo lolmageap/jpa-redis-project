@@ -2,7 +2,7 @@ package cherhy.soloProject.application.controller;
 
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.Util.scrollDto.ScrollResponse;
-import cherhy.soloProject.application.usecase.MemberFollowUseCase;
+import cherhy.soloProject.application.usecase.FollowUseCase;
 import cherhy.soloProject.application.utilService.SessionReadService;
 import cherhy.soloProject.domain.follow.dto.response.ResponseFollowMemberDto;
 import cherhy.soloProject.domain.member.entity.Member;
@@ -19,7 +19,7 @@ import java.security.Principal;
 @RequiredArgsConstructor
 @RequestMapping("/follow")
 public class FollowController {
-    private final MemberFollowUseCase memberFollowUseCase;
+    private final FollowUseCase memberFollowUseCase;
     private final SessionReadService sessionReadService;
 
     @Operation(summary = "팔로우, 언팔로우")

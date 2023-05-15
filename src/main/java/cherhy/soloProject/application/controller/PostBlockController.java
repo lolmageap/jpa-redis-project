@@ -3,7 +3,7 @@ package cherhy.soloProject.application.controller;
 
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.Util.scrollDto.ScrollResponse;
-import cherhy.soloProject.application.usecase.MemberPostBlockUseCase;
+import cherhy.soloProject.application.usecase.PostBlockUseCase;
 import cherhy.soloProject.application.utilService.SessionReadService;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.postBlock.dto.response.PostBlockResponseDto;
@@ -21,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/postBlock")
 public class PostBlockController {
-    private final MemberPostBlockUseCase memberPostPostBlockUseCase;
+    private final PostBlockUseCase memberPostPostBlockUseCase;
     private final SessionReadService sessionReadService;
 
     @Operation(summary = "게시물 차단하기")

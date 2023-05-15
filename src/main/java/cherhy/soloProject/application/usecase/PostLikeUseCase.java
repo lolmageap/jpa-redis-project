@@ -28,7 +28,7 @@ import static cherhy.soloProject.application.key.RedisKey.POST_LIKE;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class MemberPostLikeUseCase {
+public class PostLikeUseCase {
 
     private final MemberReadService memberReadService;
     private final PostReadService postReadService;
