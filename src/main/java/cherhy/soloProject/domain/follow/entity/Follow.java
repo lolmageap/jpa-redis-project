@@ -33,7 +33,7 @@ public class Follow extends BaseTimeEntity {
     }
 
     @Builder
-    public Follow(Member follower, Member following) {
+    private Follow(Member follower, Member following) {
         this.follower = follower;
         this.following = following;
     }

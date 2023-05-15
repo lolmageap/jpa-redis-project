@@ -4,13 +4,11 @@ package cherhy.soloProject.domain.post.dto;
 import cherhy.soloProject.domain.photo.entity.Photo;
 import cherhy.soloProject.domain.post.entity.Post;
 import com.querydsl.core.annotations.QueryProjection;
-import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Data
@@ -22,11 +20,8 @@ public class PostPhotoDto implements Serializable {
     private Integer likeCount;
     private List<String> photos = new ArrayList<>();
 
-    public static List<PostPhotoDto> from(List<Post> findPosts) {
-        return findPosts.stream().map(post ->
-                new PostPhotoDto(
-                        post.getId(), post.getMember().getId(), post.getTitle(), post.getContent(), post.getLikeCount(), post.getPhotos())
-        ).collect(Collectors.toList());
+    public static PostPhotoDto of(Post post) {
+        return new PostPhotoDto(post);
     }
 
     @QueryProjection
@@ -41,8 +36,7 @@ public class PostPhotoDto implements Serializable {
         }
     }
 
-    @Builder
-    public PostPhotoDto(Post post) {
+    private PostPhotoDto(Post post) {
         this.id = post.getId();
         this.memberId = post.getMember().getId();
         this.title = post.getTitle();

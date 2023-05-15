@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static cherhy.soloProject.application.key.RedisKey.POST_LIKE;
 
@@ -57,7 +58,7 @@ public class PostLikeUseCase {
         List<PostLikeResponse> findPosts = postLikeReadService.getPostLike(member, scrollRequest);
         long nextKey = postLikeReadService.getNextKey(findPosts);
         List<Post> posts = postLikeReadService.changePost(findPosts);
-        List<PostPhotoDto> postPhotoDtos = PostPhotoDto.from(posts);
+        List<PostPhotoDto> postPhotoDtos = posts.stream().map(PostPhotoDto::of).collect(Collectors.toList());
 
         return new ScrollResponse<>(scrollRequest.next(nextKey),postPhotoDtos);
     }

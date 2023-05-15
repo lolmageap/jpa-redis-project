@@ -11,9 +11,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
 import static java.util.Objects.requireNonNull;
 
 @Getter
@@ -49,7 +49,7 @@ public class Member extends BaseTimeEntity {
     private List<MemberBlock> memberBlocks = new ArrayList<>();
 
     @Builder //회원가입
-    public Member(String userId, String name, String email, String password) {
+    private Member(String userId, String name, String email, String password) {
         this.userId = requireNonNull(userId);
         this.name = requireNonNull(name);
         this.password = requireNonNull(password);

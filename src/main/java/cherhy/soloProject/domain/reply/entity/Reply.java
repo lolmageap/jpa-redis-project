@@ -22,8 +22,9 @@ public class Reply extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
     private String content;
+
     @Builder
-    public Reply(Post post, Member member, String content) {
+    private Reply(Post post, Member member, String content) {
         this.post = post;
         this.member = member;
         this.content = content;

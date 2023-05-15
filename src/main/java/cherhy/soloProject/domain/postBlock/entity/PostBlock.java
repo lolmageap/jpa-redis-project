@@ -26,7 +26,7 @@ public class PostBlock extends BaseTimeEntity {
     }
 
     @Builder
-    public PostBlock(Member member, Post post) {
+    private PostBlock(Member member, Post post) {
         this.member = member;
         this.post = post;
     }

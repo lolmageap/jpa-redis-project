@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -101,7 +102,7 @@ class PostReadServiceTest {
 
         //when
         List<Post> posts = postReadService.getPostByMemberIdCursor(me, scrollRequest);
-        List<PostPhotoDto> postPhotoDto = PostPhotoDto.from(posts);
+        List<PostPhotoDto> postPhotoDto = posts.stream().map(PostPhotoDto::of).collect(Collectors.toList());
         long nextKey = postReadService.getNextKey(postPhotoDto);
 
         // then
@@ -119,7 +120,7 @@ class PostReadServiceTest {
 
         //when
         List<Post> posts = postReadService.getPostByMemberIdCursor(me, you, scrollRequest);
-        List<PostPhotoDto> postPhotoDto = PostPhotoDto.from(posts);
+        List<PostPhotoDto> postPhotoDto = posts.stream().map(PostPhotoDto::of).collect(Collectors.toList());
         long nextKey = postReadService.getNextKey(postPhotoDto);
 
         // then

@@ -47,7 +47,7 @@ public class ReplyUseCase {
     public List<ResponseReplyDto> getReply(Long postId) {
         Post findPost = postReadService.getPost(postId);
         List<Reply> replies = findPost.getReplies();
-        return ResponseReplyDto.from(postId, replies);
+        return ResponseReplyDto.of(postId, replies);
     }
 
     // 레디스를 사용한 무한 스크롤
@@ -60,7 +60,7 @@ public class ReplyUseCase {
         List<Long> sortedKeys = replyReadService.getSortedKeys(scrollRequest, zSetOps, postRedis); // scrollRequest 정렬 되어있는 키 가져오기
         Long getNextKey = replyReadService.NextKeyCheck(scrollRequest, sortedKeys); // 다음 키값을 가져옴
         List<Reply> repliesScroll = replyReadService.getPostIdScroll(postId, sortedKeys); // 정렬된 값을 기준으로 값 가져오기
-        List<ResponseReplyDto> responseReplyDtos = ResponseReplyDto.from(postId, repliesScroll); //dto로 변환
+        List<ResponseReplyDto> responseReplyDtos = ResponseReplyDto.of(postId, repliesScroll); //dto로 변환
 //        long getNextKey = nextKey(scrollRequest, repliesScroll);
         return new ScrollResponse<>(scrollRequest.next(getNextKey),responseReplyDtos);
     }

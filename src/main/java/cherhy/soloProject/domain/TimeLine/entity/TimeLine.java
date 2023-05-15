@@ -28,7 +28,7 @@ public class TimeLine extends BaseTimeEntity {
     private Post post;
 
     @Builder
-    public TimeLine(Member member, Post post) {
+    private TimeLine(Member member, Post post) {
         this.member = member;
         this.post = post;
     }

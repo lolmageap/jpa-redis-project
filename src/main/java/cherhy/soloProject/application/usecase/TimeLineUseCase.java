@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -56,8 +57,8 @@ public class TimeLineUseCase {
     @Cacheable(cacheNames = "postAll1", key = "#memberId", cacheManager = "cacheManager")
     public List<PostPhotoDto> findPostByMemberId(Long memberId){
         Member member = memberReadService.getMember(memberId);
-        List<Post> findPosts = postReadService.getPostByMember(member);
-        List<PostPhotoDto> result = PostPhotoDto.from(findPosts);
+        List<Post> posts = postReadService.getPostByMember(member);
+        List<PostPhotoDto> result = posts.stream().map(PostPhotoDto::of).collect(Collectors.toList());
         return result;
     }
 
@@ -65,15 +66,15 @@ public class TimeLineUseCase {
     public List<PostPhotoDto> findPostByMemberId(Long memberId, Member myMember){
         Member member = memberReadService.getMember(memberId);
         memberBlockReadService.ifIBlock(myMember,member);
-        List<Post> findPosts = postReadService.getPostByMember(member, myMember);
-        List<PostPhotoDto> result = PostPhotoDto.from(findPosts);
+        List<Post> posts = postReadService.getPostByMember(member, myMember);
+        List<PostPhotoDto> result = posts.stream().map(PostPhotoDto::of).collect(Collectors.toList());
         return result;
     }
     @Cacheable(cacheNames = "postPage1", key = "#memberId + #pageable.pageNumber", cacheManager = "cacheManager")
     public Page<PostPhotoDto> findPostByMemberIdPage(Long memberId, Pageable pageable) {
         Member member = memberReadService.getMember(memberId);
-        List<Post> findPosts = postReadService.getPostByMemberIdPage(member, pageable);
-        List<PostPhotoDto> postPhotoDtos = PostPhotoDto.from(findPosts);
+        List<Post> posts = postReadService.getPostByMemberIdPage(member, pageable);
+        List<PostPhotoDto> postPhotoDtos = posts.stream().map(PostPhotoDto::of).collect(Collectors.toList());
         Long count = postReadService.getPostCountPage(memberId);
         return new PageImpl<>(postPhotoDtos,pageable,count);
     }
@@ -81,8 +82,8 @@ public class TimeLineUseCase {
     public Page<PostPhotoDto> findPostByMemberIdPage(Long memberId, Member myMember, Pageable pageable) {
         Member member = memberReadService.getMember(memberId);
         memberBlockReadService.ifIBlock(myMember,member);
-        List<Post> findPosts = postReadService.getPostByMemberIdPage(member, myMember, pageable);
-        List<PostPhotoDto> postPhotoDtos = PostPhotoDto.from(findPosts);
+        List<Post> posts = postReadService.getPostByMemberIdPage(member, myMember, pageable);
+        List<PostPhotoDto> postPhotoDtos = posts.stream().map(PostPhotoDto::of).collect(Collectors.toList());
         Long count = postReadService.getPostCountPage(memberId, myMember.getId());
         return new PageImpl<>(postPhotoDtos,pageable,count);
     }
@@ -91,8 +92,8 @@ public class TimeLineUseCase {
             , cacheManager = "cacheManager")
     public ScrollResponse<PostPhotoDto> findPostByMemberIdCursor(Long memberId, ScrollRequest scrollRequest) {
         Member member = memberReadService.getMember(memberId);
-        List<Post> findPosts = postReadService.getPostByMemberIdCursor(member, scrollRequest);
-        List<PostPhotoDto> postPhotoDtos = PostPhotoDto.from(findPosts);
+        List<Post> posts = postReadService.getPostByMemberIdCursor(member, scrollRequest);
+        List<PostPhotoDto> postPhotoDtos = posts.stream().map(PostPhotoDto::of).collect(Collectors.toList());
         long nextKey = postReadService.getNextKey(postPhotoDtos);
         return new ScrollResponse<>(scrollRequest.next(nextKey) ,postPhotoDtos);
     }
@@ -102,18 +103,18 @@ public class TimeLineUseCase {
     public ScrollResponse<PostPhotoDto> findPostByMemberIdCursor(Long memberId, Member myMember, ScrollRequest scrollRequest) {
         Member member = memberReadService.getMember(memberId);
         memberBlockReadService.ifIBlock(myMember,member);
-        List<Post> findPosts = postReadService.getPostByMemberIdCursor(member, myMember, scrollRequest);
-        List<PostPhotoDto> postPhotoDtos = PostPhotoDto.from(findPosts);
+        List<Post> posts = postReadService.getPostByMemberIdCursor(member, myMember, scrollRequest);
+        List<PostPhotoDto> postPhotoDtos = posts.stream().map(PostPhotoDto::of).collect(Collectors.toList());
         long nextKey = postReadService.getNextKey(postPhotoDtos);
         return new ScrollResponse<>(scrollRequest.next(nextKey) ,postPhotoDtos);
     }
 
     @Cacheable(cacheNames = "timeLineCache", key = "#memberId.toString() + '_' + ( #scrollRequest.key() != null ? #scrollRequest.key() : '' )")
     public ScrollResponse<PostPhotoDto> getTimeLine(Member member, ScrollRequest scrollRequest) {
-        List<Post> findPostIdByCoveringIndex = timeLineReadService.getTimeLine(member, scrollRequest);
+        List<Post> posts = timeLineReadService.getTimeLine(member, scrollRequest);
         List<Long> key = timeLineReadService.getTimeLineNextKey(scrollRequest, member);
         Long nextKey = timeLineReadService.getNextKey(scrollRequest, key);
-        List<PostPhotoDto> postPhotoDtos = PostPhotoDto.from(findPostIdByCoveringIndex);
+        List<PostPhotoDto> postPhotoDtos = posts.stream().map(PostPhotoDto::of).collect(Collectors.toList());
         return new ScrollResponse<>(scrollRequest.next(nextKey),postPhotoDtos);
     }
 

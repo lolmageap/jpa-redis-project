@@ -1,9 +1,8 @@
 package cherhy.soloProject.application.usecase;
 
-import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
+import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.domain.member.entity.Member;
-import cherhy.soloProject.domain.member.service.MemberReadService;
 import cherhy.soloProject.domain.post.entity.Post;
 import cherhy.soloProject.domain.post.service.PostReadService;
 import cherhy.soloProject.domain.postBlock.dto.response.PostBlockResponseDto;
@@ -18,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -40,15 +40,16 @@ public class PostBlockUseCase {
     @Cacheable(cacheNames = "blockPost", key = "#memberId", cacheManager = "cacheManager")
     public List<PostBlockResponseDto> getBlockPost(Member member) {
         List<PostBlock> postBlocks = postBlockReadService.getPostBlocks(member);
-        return PostBlockResponseDto.from(postBlocks);
+        return postBlocks.stream().map(PostBlockResponseDto::of).collect(Collectors.toList());
     }
     @Cacheable(cacheNames = "blockPostCursor", key = "#memberId.toString() + '_' + ( #scrollRequest.key() != null ? #scrollRequest.key() : '' )"
             , cacheManager = "cacheManager")
     public ScrollResponse getBlockPost(Member member, ScrollRequest scrollRequest) {
         List<PostBlock> postBlocks = postBlockReadService.getPostBlocks(member, scrollRequest);
-        List<PostBlockResponseDto> postBlockResponseDtos = PostBlockResponseDto.from(postBlocks);
-        long nextKey = postBlockReadService.getNextKey(postBlockResponseDtos);
-        return new ScrollResponse<>(scrollRequest.next(nextKey), postBlockResponseDtos);
+        List<PostBlockResponseDto> postBlock =
+                postBlocks.stream().map(PostBlockResponseDto::of).collect(Collectors.toList());
+        long nextKey = postBlockReadService.getNextKey(postBlock);
+        return new ScrollResponse<>(scrollRequest.next(nextKey), postBlock);
     }
 
 }
