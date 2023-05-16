@@ -3,7 +3,7 @@ package cherhy.soloProject.application.controller;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.application.usecase.MemberBlockUseCase;
-import cherhy.soloProject.application.utilService.SessionReadService;
+import cherhy.soloProject.application.utilService.LoginService;
 import cherhy.soloProject.domain.member.entity.Member;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,20 +18,20 @@ import java.security.Principal;
 @RequiredArgsConstructor
 @RequestMapping("/memberBlock")
 public class MemberBlockController {
-    private final SessionReadService sessionReadService;
+    private final LoginService loginService;
     private final MemberBlockUseCase memberBlockUseCase;
 
     @Operation(summary = "회원 차단하기")
     @PostMapping("/{blockMemberId}")
     public ResponseEntity blockMember(@PathVariable Long blockMemberId, Principal principal){
-        Member member = sessionReadService.getUserData(principal);
+        Member member = loginService.getUserData(principal);
         return memberBlockUseCase.blockMember(member, blockMemberId);
     }
 
     @Operation(summary = "차단한 회원 보기")
     @GetMapping
     public ScrollResponse getBlockMember(ScrollRequest scrollRequest, Principal principal){
-        Member member = sessionReadService.getUserData(principal);
+        Member member = loginService.getUserData(principal);
         return memberBlockUseCase.getBlockMember(member,scrollRequest);
     }
 

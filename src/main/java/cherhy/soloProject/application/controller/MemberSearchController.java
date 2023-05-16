@@ -1,7 +1,7 @@
 package cherhy.soloProject.application.controller;
 
 import cherhy.soloProject.application.usecase.SearchUseCase;
-import cherhy.soloProject.application.utilService.SessionReadService;
+import cherhy.soloProject.application.utilService.LoginService;
 import cherhy.soloProject.domain.member.dto.response.MemberSearchResponse;
 import cherhy.soloProject.domain.member.entity.Member;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,19 +24,19 @@ import java.util.Set;
 @RequestMapping("/memberSearch")
 public class MemberSearchController {
     private final SearchUseCase memberSearchUsecase;
-    private final SessionReadService sessionReadService;
+    private final LoginService loginService;
 
     @Operation(summary = "회원 검색")
     @GetMapping("/{name}")
     public List<MemberSearchResponse> modifyMember(@PathVariable @Valid @NotBlank(message = "검색어를 입력해주세요") String name, Principal principal) {
-        Member member = sessionReadService.getUserData(principal);
+        Member member = loginService.getUserData(principal);
         return memberSearchUsecase.getSearchMember(name, member);
     }
 
     @Operation(summary = "회원 검색 기록")
     @GetMapping("/log")
     public Set<String> memberHistoryLog(Principal principal) {
-        Member member = sessionReadService.getUserData(principal);
+        Member member = loginService.getUserData(principal);
         return memberSearchUsecase.getSearchHistoryLog(member);
     }
 

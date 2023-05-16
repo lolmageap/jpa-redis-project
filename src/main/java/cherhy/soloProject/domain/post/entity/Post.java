@@ -13,7 +13,6 @@ import java.util.List;
 
 @Getter
 @Entity
-@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post extends BaseEntity {
 
@@ -25,7 +24,7 @@ public class Post extends BaseEntity {
     private Member member;
     private String title;
     private String content;
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Photo> photos = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
@@ -61,7 +60,7 @@ public class Post extends BaseEntity {
     }
 
     public void addPhoto(String photoName){
-        Photo photo = Photo.of(this, photoName);
+        Photo photo = Photo.of(photoName);
         this.photos.add(photo);
     }
 

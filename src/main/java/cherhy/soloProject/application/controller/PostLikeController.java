@@ -3,7 +3,7 @@ package cherhy.soloProject.application.controller;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.application.usecase.PostLikeUseCase;
-import cherhy.soloProject.application.utilService.SessionReadService;
+import cherhy.soloProject.application.utilService.LoginService;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.postLike.dto.request.PostLikeRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,7 +21,7 @@ import java.security.Principal;
 @RequestMapping("/postLike")
 public class PostLikeController {
     private final PostLikeUseCase memberPostPostLikeUseCase;
-    private final SessionReadService sessionReadService;
+    private final LoginService loginService;
 
     @Operation(summary = "좋아요, 취소")
     @PostMapping
@@ -32,7 +32,7 @@ public class PostLikeController {
     @Operation(summary = "좋아요 누른 게시물 확인")
     @GetMapping
     public ScrollResponse getPostLike(ScrollRequest scrollRequest, Principal principal){
-        Member member = sessionReadService.getUserData(principal);
+        Member member = loginService.getUserData(principal);
         return memberPostPostLikeUseCase.getPostLike(member, scrollRequest);
     }
 

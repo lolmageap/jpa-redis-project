@@ -13,7 +13,7 @@ import java.security.Principal;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class SessionReadService {
+public class LoginService {
 
     private final MemberRepository memberRepository;
 

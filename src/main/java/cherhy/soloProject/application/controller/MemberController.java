@@ -1,6 +1,6 @@
 package cherhy.soloProject.application.controller;
 
-import cherhy.soloProject.application.utilService.SessionReadService;
+import cherhy.soloProject.application.utilService.LoginService;
 import cherhy.soloProject.domain.member.dto.request.MemberRequest;
 import cherhy.soloProject.domain.member.dto.request.SignInRequest;
 import cherhy.soloProject.domain.member.entity.Member;
@@ -31,7 +31,7 @@ import java.security.Principal;
 public class MemberController {
     private final MemberReadService memberReadService;
     private final MemberWriteService memberWriteService;
-    private final SessionReadService sessionReadService;
+    private final LoginService loginService;
 
     @Operation(summary = "이메일 체크")
     @GetMapping("/check/email")
@@ -70,7 +70,7 @@ public class MemberController {
     @Operation(summary = "회원정보 수정")
     @PutMapping
     public String modifyMember(@Valid MemberRequest memberRequestDto, Principal principal) {
-        Member member = sessionReadService.getUserData(principal);
+        Member member = loginService.getUserData(principal);
         return memberWriteService.modifyMember(memberRequestDto, member);
     }
 

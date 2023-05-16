@@ -3,7 +3,7 @@ package cherhy.soloProject.application.controller;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.application.usecase.ReplyUseCase;
-import cherhy.soloProject.application.utilService.SessionReadService;
+import cherhy.soloProject.application.utilService.LoginService;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.reply.dto.RequestReplyDto;
 import cherhy.soloProject.domain.reply.dto.response.ResponseReplyDto;
@@ -23,12 +23,12 @@ import java.util.List;
 @RequestMapping("/reply")
 public class ReplyController {
     private final ReplyUseCase memberPostReplyUseCase;
-    private final SessionReadService sessionReadService;
+    private final LoginService loginService;
 
     @PostMapping
     @Operation(summary = "댓글 등록")
     public ResponseEntity setReply(@RequestBody @Valid RequestReplyDto reply, Principal principal){
-        Member member = sessionReadService.getUserData(principal);
+        Member member = loginService.getUserData(principal);
         return memberPostReplyUseCase.createReply(reply, member);
     }
 

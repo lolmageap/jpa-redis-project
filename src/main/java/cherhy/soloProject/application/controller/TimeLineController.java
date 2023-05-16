@@ -3,7 +3,7 @@ package cherhy.soloProject.application.controller;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.application.usecase.TimeLineUseCase;
-import cherhy.soloProject.application.utilService.SessionReadService;
+import cherhy.soloProject.application.utilService.LoginService;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.post.dto.PostPhotoDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,13 +20,13 @@ import java.security.Principal;
 @RequiredArgsConstructor
 @RequestMapping("/timeLine")
 public class TimeLineController {
-    private final SessionReadService sessionReadService;
+    private final LoginService loginService;
     private final TimeLineUseCase memberPostTimeLineUseCase;
 
     @Operation(summary = "타임라인 조회 // only RDBMS")
     @GetMapping
     public ScrollResponse<PostPhotoDto> getTimeLine(ScrollRequest scrollRequest, Principal principal){
-        Member member = sessionReadService.getUserData(principal);
+        Member member = loginService.getUserData(principal);
         return memberPostTimeLineUseCase.getTimeLine(member, scrollRequest);
     }
 
