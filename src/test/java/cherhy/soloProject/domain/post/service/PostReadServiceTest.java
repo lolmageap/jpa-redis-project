@@ -1,13 +1,12 @@
 package cherhy.soloProject.domain.post.service;
 
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
-import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.member.service.MemberReadService;
 import cherhy.soloProject.domain.member.service.MemberWriteService;
 import cherhy.soloProject.domain.member.service.MemberWriteServiceTest;
-import cherhy.soloProject.domain.post.dto.PostPhotoDto;
-import cherhy.soloProject.domain.post.dto.request.PostRequestDto;
+import cherhy.soloProject.domain.post.dto.response.PostPhotoResponse;
+import cherhy.soloProject.domain.post.dto.request.PostRequest;
 import cherhy.soloProject.domain.post.entity.Post;
 import cherhy.soloProject.exception.PostNotFoundException;
 import org.assertj.core.api.Assertions;
@@ -45,22 +44,22 @@ class PostReadServiceTest {
         Member member = memberReadService.getMember(1L);
 
         List<String> photos1 = List.of("one", "two", "three", "four", "five");
-        PostRequestDto request1 = new PostRequestDto("첫번째 게시물입니다", "첫번째 게시물의 내용입니다.", photos1);
+        PostRequest request1 = new PostRequest("첫번째 게시물입니다", "첫번째 게시물의 내용입니다.", photos1);
         Post post1 = Post.of(request1, member);
         postWriteService.save(post1);
 
         List<String> photos2 = new ArrayList<>();
-        PostRequestDto request2 = new PostRequestDto("두번째 게시물입니다", "두번째 게시물의 내용입니다.", photos2);
+        PostRequest request2 = new PostRequest("두번째 게시물입니다", "두번째 게시물의 내용입니다.", photos2);
         Post post2 = Post.of(request2, member);
         postWriteService.save(post2);
 
         List<String> photos3 = List.of("1", "2");
-        PostRequestDto request3 = new PostRequestDto("세번째 게시물입니다", "세번째 게시물의 내용입니다.", photos3);
+        PostRequest request3 = new PostRequest("세번째 게시물입니다", "세번째 게시물의 내용입니다.", photos3);
         Post post3 = Post.of(request3, member);
         postWriteService.save(post3);
 
         List<String> photos4 = List.of("3", "4", "5");
-        PostRequestDto request4 = new PostRequestDto("네번째 게시물입니다", "네번째 게시물의 내용입니다.", photos4);
+        PostRequest request4 = new PostRequest("네번째 게시물입니다", "네번째 게시물의 내용입니다.", photos4);
         Post post4 = Post.of(request4, member);
         postWriteService.save(post4);
     }
@@ -102,7 +101,7 @@ class PostReadServiceTest {
 
         //when
         List<Post> posts = postReadService.getPostByMemberIdCursor(me, scrollRequest);
-        List<PostPhotoDto> postPhotoDto = posts.stream().map(PostPhotoDto::of).collect(Collectors.toList());
+        List<PostPhotoResponse> postPhotoDto = posts.stream().map(PostPhotoResponse::of).collect(Collectors.toList());
         long nextKey = postReadService.getNextKey(postPhotoDto);
 
         // then
@@ -120,7 +119,7 @@ class PostReadServiceTest {
 
         //when
         List<Post> posts = postReadService.getPostByMemberIdCursor(me, you, scrollRequest);
-        List<PostPhotoDto> postPhotoDto = posts.stream().map(PostPhotoDto::of).collect(Collectors.toList());
+        List<PostPhotoResponse> postPhotoDto = posts.stream().map(PostPhotoResponse::of).collect(Collectors.toList());
         long nextKey = postReadService.getNextKey(postPhotoDto);
 
         // then

@@ -16,5 +16,4 @@ public record MemberRequest(
         String email,
         @Size(min = 5, message = "비밀번호는 5글자 이상입니다.")
         @NotBlank(message = "비밀번호를 입력해주세요") String password
-//       , LocalDate birthday
 ) {}

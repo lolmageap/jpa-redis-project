@@ -2,7 +2,7 @@ package cherhy.soloProject.exception.controller;
 
 import cherhy.soloProject.exception.MemberNotFoundException;
 import cherhy.soloProject.exception.SnsException;
-import cherhy.soloProject.exception.dto.ExceptionDto;
+import cherhy.soloProject.exception.dto.ExceptionResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -16,10 +16,10 @@ import java.util.Map;
 public class ExceptionController {
 
     @ExceptionHandler(MemberNotFoundException.class)
-    public ResponseEntity<ExceptionDto> memberNotFoundException(MemberNotFoundException e) {
+    public ResponseEntity<ExceptionResponse> memberNotFoundException(MemberNotFoundException e) {
         int statusCode = e.getStatusCode();
 
-        ExceptionDto response = ExceptionDto.builder()
+        ExceptionResponse response = ExceptionResponse.builder()
                 .code(String.valueOf(statusCode))
                 .message(e.getMessage())
                 .validation(e.getValidation())
@@ -29,10 +29,10 @@ public class ExceptionController {
     }
 
     @ExceptionHandler(SnsException.class)
-    public ResponseEntity<ExceptionDto> blogException(SnsException e) {
+    public ResponseEntity<ExceptionResponse> blogException(SnsException e) {
         int statusCode = e.getStatusCode();
 
-        ExceptionDto response = ExceptionDto.builder()
+        ExceptionResponse response = ExceptionResponse.builder()
                 .code(String.valueOf(statusCode))
                 .message(e.getMessage())
                 .validation(e.getValidation())

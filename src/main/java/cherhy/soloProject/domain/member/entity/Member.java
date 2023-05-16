@@ -1,7 +1,9 @@
 package cherhy.soloProject.domain.member.entity;
 
 import cherhy.soloProject.Util.BaseTimeEntity;
+import cherhy.soloProject.Util.embedded.Address;
 import cherhy.soloProject.domain.follow.entity.Follow;
+import cherhy.soloProject.domain.member.Enum.MemberType;
 import cherhy.soloProject.domain.memberBlock.entity.MemberBlock;
 import cherhy.soloProject.domain.post.entity.Post;
 import cherhy.soloProject.domain.postBlock.entity.PostBlock;
@@ -26,12 +28,22 @@ public class Member extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long id;
+
     @Column(unique = true, name = "user_id")
     private String userId;
+
     @Column(unique = true)
     private String email;
+
+    @Enumerated(EnumType.STRING)
+    private MemberType type;
+
     private String name;
+
     private String password;
+
+    @Embedded
+    private Address address;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Post> posts = new ArrayList<>();
@@ -49,11 +61,13 @@ public class Member extends BaseTimeEntity {
     private List<MemberBlock> memberBlocks = new ArrayList<>();
 
     @Builder //회원가입
-    private Member(String userId, String name, String email, String password) {
+    private Member(String userId, String name, String email, String password, Address address) {
         this.userId = requireNonNull(userId);
         this.name = requireNonNull(name);
         this.password = requireNonNull(password);
         this.email = requireNonNull(email);
+        this.address = address;
+        this.type = MemberType.NORMAL;
     }
 
     public void changeName(String changeName) {

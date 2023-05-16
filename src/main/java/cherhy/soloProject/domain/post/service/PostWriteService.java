@@ -2,7 +2,7 @@ package cherhy.soloProject.domain.post.service;
 
 
 import cherhy.soloProject.domain.photo.entity.Photo;
-import cherhy.soloProject.domain.post.dto.request.PostRequestDto;
+import cherhy.soloProject.domain.post.dto.request.PostRequest;
 import cherhy.soloProject.domain.post.entity.Post;
 import cherhy.soloProject.domain.post.repository.jpa.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class PostWriteService {
         return postRepository.save(post);
     }
 
-    public Post update(PostRequestDto postRequestDto, Post post) {
+    public Post update(PostRequest postRequestDto, Post post) {
         List<Photo> photos = new ArrayList<>(post.getPhotos());
         photos.clear();
         Post updatePost = post.of(postRequestDto, post.getMember());

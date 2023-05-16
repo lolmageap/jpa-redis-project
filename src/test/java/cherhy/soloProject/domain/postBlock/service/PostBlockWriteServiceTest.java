@@ -39,8 +39,20 @@ class PostBlockWriteServiceTest {
     public void testPostBlock(){
         // given
         List<String> photos = List.of("one", "two", "three", "four", "five");
-        Member member = new Member("abcdef", "정철희", "ekxk1234@gmail.com", "1234");
-        Post post = new Post(member, "첫번째 게시물", " 첫번째 내용", photos, 0);
+
+        Member member = Member.builder()
+                .userId("abcdef")
+                .name("정철희")
+                .email("ekxk1234@gmail.com")
+                .password("1234")
+                .build();
+
+        Post post = Post.builder()
+                .member(member)
+                .title("첫번째 게시물")
+                .content("첫번째 내용")
+                .photos(photos)
+                .build();
 
         memberRepository.save(member);
 

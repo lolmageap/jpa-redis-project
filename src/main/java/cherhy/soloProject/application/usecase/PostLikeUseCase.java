@@ -4,7 +4,7 @@ import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.member.service.MemberReadService;
-import cherhy.soloProject.domain.post.dto.PostPhotoDto;
+import cherhy.soloProject.domain.post.dto.response.PostPhotoResponse;
 import cherhy.soloProject.domain.post.entity.Post;
 import cherhy.soloProject.domain.post.service.PostReadService;
 import cherhy.soloProject.domain.postLike.dto.request.PostLikeRequest;
@@ -58,7 +58,7 @@ public class PostLikeUseCase {
         List<PostLikeResponse> findPosts = postLikeReadService.getPostLike(member, scrollRequest);
         long nextKey = postLikeReadService.getNextKey(findPosts);
         List<Post> posts = postLikeReadService.changePost(findPosts);
-        List<PostPhotoDto> postPhotoDtos = posts.stream().map(PostPhotoDto::of).collect(Collectors.toList());
+        List<PostPhotoResponse> postPhotoDtos = posts.stream().map(PostPhotoResponse::of).collect(Collectors.toList());
 
         return new ScrollResponse<>(scrollRequest.next(nextKey),postPhotoDtos);
     }

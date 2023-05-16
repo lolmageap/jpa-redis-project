@@ -1,7 +1,7 @@
 package cherhy.soloProject.domain.follow.service;
 
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
-import cherhy.soloProject.domain.follow.dto.response.ResponseFollowMemberDto;
+import cherhy.soloProject.domain.follow.dto.response.FollowMemberResponse;
 import cherhy.soloProject.domain.follow.entity.Follow;
 import cherhy.soloProject.domain.follow.repository.jpa.FollowRepository;
 import cherhy.soloProject.domain.member.entity.Member;
@@ -21,12 +21,12 @@ public class FollowReadService {
     private final FollowRepository followRepository;
 
     // TODO : 무한스크롤 팔로잉 정보 조회
-    public List<ResponseFollowMemberDto> getFollowing(ScrollRequest scrollRequest, Member member) {
+    public List<FollowMemberResponse> getFollowing(ScrollRequest scrollRequest, Member member) {
         return followRepository.findAllByFollowing(member, scrollRequest);
     }
 
     // TODO : 무한스크롤 팔로워 정보 조회
-    public List<ResponseFollowMemberDto> getFollower(ScrollRequest scrollRequest, Member member) {
+    public List<FollowMemberResponse> getFollower(ScrollRequest scrollRequest, Member member) {
         return followRepository.findAllByFollower(member, scrollRequest);
     }
 
@@ -36,7 +36,7 @@ public class FollowReadService {
     }
 
     // TODO : 무한스크롤 팔로우 다음 키 체크
-    public long getNextKey(ScrollRequest scrollRequest, List<ResponseFollowMemberDto> resMemberDto) {
+    public long getNextKey(ScrollRequest scrollRequest, List<FollowMemberResponse> resMemberDto) {
         return resMemberDto.stream().mapToLong(m -> m.followId()).min().orElse(scrollRequest.NONE_KEY);
     }
 

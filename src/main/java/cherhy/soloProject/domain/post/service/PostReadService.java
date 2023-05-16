@@ -2,7 +2,7 @@ package cherhy.soloProject.domain.post.service;
 
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.domain.member.entity.Member;
-import cherhy.soloProject.domain.post.dto.PostPhotoDto;
+import cherhy.soloProject.domain.post.dto.response.PostPhotoResponse;
 import cherhy.soloProject.domain.post.entity.Post;
 import cherhy.soloProject.domain.post.repository.jpa.PostRepository;
 import cherhy.soloProject.exception.PostNotFoundException;
@@ -73,7 +73,7 @@ public class PostReadService {
     }
 
     // TODO : 무한스크롤 다음 키 가져오기
-    public long getNextKey(List<PostPhotoDto> findPosts) {
+    public long getNextKey(List<PostPhotoResponse> findPosts) {
         return findPosts.stream().mapToLong(v -> v.getId())
                 .min().orElse(ScrollRequest.NONE_KEY);
     }

@@ -3,7 +3,7 @@ package cherhy.soloProject.domain.memberBlock.repository.repositoryImpl;
 
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.domain.member.entity.Member;
-import cherhy.soloProject.domain.memberBlock.dto.response.MemberBlockResponseDto;
+import cherhy.soloProject.domain.memberBlock.dto.response.MemberBlockResponse;
 import cherhy.soloProject.domain.memberBlock.repository.querydsl.MemberBlockRepositoryCustom;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -23,8 +23,8 @@ public class MemberBlockRepositoryImpl implements MemberBlockRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Optional<List<MemberBlockResponseDto>> getBlockMemberScroll(Member requestMember, ScrollRequest scrollRequest) {
-        List<MemberBlockResponseDto> result = queryFactory.select(Projections.constructor(MemberBlockResponseDto.class,
+    public Optional<List<MemberBlockResponse>> getBlockMemberScroll(Member requestMember, ScrollRequest scrollRequest) {
+        List<MemberBlockResponse> result = queryFactory.select(Projections.constructor(MemberBlockResponse.class,
                          memberBlock.id, memberBlock.blockMember.id, memberBlock.blockMember.name, memberBlock.blockMember.email))
                 .from(memberBlock)
                 .innerJoin(memberBlock.member,member)

@@ -4,7 +4,7 @@ import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.application.usecase.FollowUseCase;
 import cherhy.soloProject.application.utilService.LoginService;
-import cherhy.soloProject.domain.follow.dto.response.ResponseFollowMemberDto;
+import cherhy.soloProject.domain.follow.dto.response.FollowMemberResponse;
 import cherhy.soloProject.domain.member.entity.Member;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,26 +31,26 @@ public class FollowController {
 
     @Operation(summary = "내 팔로우")
     @GetMapping("/following")
-    public ScrollResponse<ResponseFollowMemberDto> myFollowList(ScrollRequest scrollRequest, Principal principal){
+    public ScrollResponse<FollowMemberResponse> myFollowList(ScrollRequest scrollRequest, Principal principal){
         Member member = loginService.getUserData(principal);
         return memberFollowUseCase.getFollows(member.getId(), scrollRequest);
     }
 
     @Operation(summary = "내 팔로워")
     @GetMapping("/follower")
-    public ScrollResponse<ResponseFollowMemberDto> myFollowerList(ScrollRequest scrollRequest, Principal principal){
+    public ScrollResponse<FollowMemberResponse> myFollowerList(ScrollRequest scrollRequest, Principal principal){
         Member member = loginService.getUserData(principal);
         return memberFollowUseCase.getFollowers(member.getId(), scrollRequest);
     }
     @Operation(summary = "상대의 팔로우")
     @GetMapping("/following/{memberId}")
-    public ScrollResponse<ResponseFollowMemberDto> followList(@PathVariable("memberId") Long memberId, ScrollRequest scrollRequest){
+    public ScrollResponse<FollowMemberResponse> followList(@PathVariable("memberId") Long memberId, ScrollRequest scrollRequest){
         return memberFollowUseCase.getFollows(memberId, scrollRequest);
     }
 
     @Operation(summary = "상대의 팔로워")
     @GetMapping("/follower/{memberId}")
-    public ScrollResponse<ResponseFollowMemberDto> followerList(@PathVariable("memberId") Long memberId, ScrollRequest scrollRequest){
+    public ScrollResponse<FollowMemberResponse> followerList(@PathVariable("memberId") Long memberId, ScrollRequest scrollRequest){
         return memberFollowUseCase.getFollowers(memberId, scrollRequest);
     }
 

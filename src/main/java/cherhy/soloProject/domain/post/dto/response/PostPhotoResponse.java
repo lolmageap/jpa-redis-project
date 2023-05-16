@@ -1,4 +1,4 @@
-package cherhy.soloProject.domain.post.dto;
+package cherhy.soloProject.domain.post.dto.response;
 
 
 import cherhy.soloProject.domain.photo.entity.Photo;
@@ -12,7 +12,7 @@ import java.util.List;
 
 
 @Data
-public class PostPhotoDto implements Serializable {
+public class PostPhotoResponse implements Serializable {
     private Long id;
     private Long memberId;
     private String title;
@@ -20,12 +20,12 @@ public class PostPhotoDto implements Serializable {
     private Integer likeCount;
     private List<String> photos = new ArrayList<>();
 
-    public static PostPhotoDto of(Post post) {
-        return new PostPhotoDto(post);
+    public static PostPhotoResponse of(Post post) {
+        return new PostPhotoResponse(post);
     }
 
     @QueryProjection
-    public PostPhotoDto(Long id, Long memberId, String title, String content, Integer likeCount, List<Photo> photos) {
+    public PostPhotoResponse(Long id, Long memberId, String title, String content, Integer likeCount, List<Photo> photos) {
         this.id = id;
         this.memberId = memberId;
         this.title = title;
@@ -36,7 +36,7 @@ public class PostPhotoDto implements Serializable {
         }
     }
 
-    private PostPhotoDto(Post post) {
+    private PostPhotoResponse(Post post) {
         this.id = post.getId();
         this.memberId = post.getMember().getId();
         this.title = post.getTitle();

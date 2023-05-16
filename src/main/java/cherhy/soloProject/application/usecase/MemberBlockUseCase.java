@@ -4,7 +4,7 @@ import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.domain.follow.service.FollowReadService;
 import cherhy.soloProject.domain.follow.service.FollowWriteService;
-import cherhy.soloProject.domain.memberBlock.dto.response.MemberBlockResponseDto;
+import cherhy.soloProject.domain.memberBlock.dto.response.MemberBlockResponse;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.member.service.MemberReadService;
 import cherhy.soloProject.domain.memberBlock.entity.MemberBlock;
@@ -49,7 +49,7 @@ public class MemberBlockUseCase {
     @Cacheable(cacheNames = "memberBlock", key = "#memberId.toString() + '_' + ( #scrollRequest.key() != null ? #scrollRequest.key() : '' )"
             , cacheManager = "cacheManager")
     public ScrollResponse getBlockMember(Member member, ScrollRequest scrollRequest) {
-        List<MemberBlockResponseDto> memberBlocks = memberBlockReadService.getMemberBlocks(member, scrollRequest);
+        List<MemberBlockResponse> memberBlocks = memberBlockReadService.getMemberBlocks(member, scrollRequest);
         long nextKey = memberBlockReadService.getNextKey(memberBlocks);
         return new ScrollResponse(scrollRequest.next(nextKey),memberBlocks);
     }

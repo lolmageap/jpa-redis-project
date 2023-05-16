@@ -2,7 +2,7 @@ package cherhy.soloProject.domain.postBlock.service;
 
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.domain.member.entity.Member;
-import cherhy.soloProject.domain.postBlock.dto.response.PostBlockResponseDto;
+import cherhy.soloProject.domain.postBlock.dto.response.PostBlockResponse;
 import cherhy.soloProject.domain.postBlock.entity.PostBlock;
 import cherhy.soloProject.domain.postBlock.repository.jpa.PostBlockRepository;
 import cherhy.soloProject.exception.PostBlockNotFoundException;
@@ -35,7 +35,7 @@ public class PostBlockReadService {
     }
 
     // TODO : 무한스크롤 다음 키 조회
-    public long getNextKey(List<PostBlockResponseDto> postBlockResponseDtos) {
+    public long getNextKey(List<PostBlockResponse> postBlockResponseDtos) {
         return postBlockResponseDtos.stream().mapToLong(v -> v.post().getId())
                 .max().orElse(ScrollRequest.NONE_KEY);
     }

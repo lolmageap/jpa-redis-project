@@ -3,7 +3,7 @@ package cherhy.soloProject.domain.post.entity;
 import cherhy.soloProject.Util.BaseEntity;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.photo.entity.Photo;
-import cherhy.soloProject.domain.post.dto.request.PostRequestDto;
+import cherhy.soloProject.domain.post.dto.request.PostRequest;
 import cherhy.soloProject.domain.reply.entity.Reply;
 import lombok.*;
 
@@ -19,7 +19,8 @@ public class Post extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "member_id")
     private Member member;
     private String title;
@@ -35,7 +36,7 @@ public class Post extends BaseEntity {
 //    @Version //낙관적 락
 //    private Long version;
 
-    public static Post of(PostRequestDto postRequestDto, Member member){
+    public static Post of(PostRequest postRequestDto, Member member){
         return Post.builder()
                 .member(member)
                 .title(postRequestDto.title())

@@ -2,7 +2,7 @@ package cherhy.soloProject.domain.memberBlock.service;
 
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.domain.member.entity.Member;
-import cherhy.soloProject.domain.memberBlock.dto.response.MemberBlockResponseDto;
+import cherhy.soloProject.domain.memberBlock.dto.response.MemberBlockResponse;
 import cherhy.soloProject.domain.memberBlock.entity.MemberBlock;
 import cherhy.soloProject.exception.MemberBlockException;
 import org.assertj.core.api.Assertions;
@@ -38,8 +38,19 @@ class MemberBlockServiceTest {
     @DisplayName("차단")
     void testBlock(){
         // given
-        Member me = new Member("test", "정철희", "ekxk1234@naver.com", "1234");
-        Member you = new Member("testtest", "유재석", "pzkxjher@naver.com", "4321");
+        Member me = Member.builder()
+                .userId("abcdef")
+                .name("정철희")
+                .email("ekxk1234@gmail.com")
+                .password("1234")
+                .build();
+
+        Member you = Member.builder()
+                .userId("test1234")
+                .name("유재석")
+                .email("ekxk1234@naver.com")
+                .password("4321")
+                .build();
 
         // when
         MemberBlock memberToBlock = MemberBlock.of(me, you);
@@ -57,8 +68,19 @@ class MemberBlockServiceTest {
     @DisplayName("차단 조회 Error")
     void testGetBlockError(){
         // given
-        Member me = new Member("test", "정철희", "ekxk1234@naver.com", "1234");
-        Member you = new Member("testtest", "유재석", "pzkxjher@naver.com", "4321");
+        Member me = Member.builder()
+                .userId("abcdef")
+                .name("정철희")
+                .email("ekxk1234@gmail.com")
+                .password("1234")
+                .build();
+
+        Member you = Member.builder()
+                .userId("test1234")
+                .name("유재석")
+                .email("ekxk1234@naver.com")
+                .password("4321")
+                .build();
 
         // then
         assertThatThrownBy(() -> memberBlockReadService.getBlockMember(me, you))
@@ -70,8 +92,19 @@ class MemberBlockServiceTest {
     @DisplayName("내가 차단 당했는지 확인")
     void testIfBlocked(){
         // given
-        Member me = new Member("test", "정철희", "ekxk1234@naver.com", "1234");
-        Member you = new Member("testtest", "유재석", "pzkxjher@naver.com", "4321");
+        Member me = Member.builder()
+                .userId("abcdef")
+                .name("정철희")
+                .email("ekxk1234@gmail.com")
+                .password("1234")
+                .build();
+
+        Member you = Member.builder()
+                .userId("test1234")
+                .name("유재석")
+                .email("ekxk1234@naver.com")
+                .password("4321")
+                .build();
 
         // when
         MemberBlock memberToBlock = MemberBlock.of(me, you);
@@ -88,8 +121,19 @@ class MemberBlockServiceTest {
     @DisplayName("내가 차단 당했는지 확인 Error")
     void testIfBlockedError(){
         // given
-        Member me = new Member("test", "정철희", "ekxk1234@naver.com", "1234");
-        Member you = new Member("testtest", "유재석", "pzkxjher@naver.com", "4321");
+        Member me = Member.builder()
+                .userId("abcdef")
+                .name("정철희")
+                .email("ekxk1234@gmail.com")
+                .password("1234")
+                .build();
+
+        Member you = Member.builder()
+                .userId("test1234")
+                .name("유재석")
+                .email("ekxk1234@naver.com")
+                .password("4321")
+                .build();
 
         // then
         assertThatThrownBy(() -> memberBlockReadService.ifIBlock(me, you))
@@ -100,8 +144,19 @@ class MemberBlockServiceTest {
     @DisplayName("차단풀기")
     void testUnblock(){
         // given
-        Member me = new Member("test", "정철희", "ekxk1234@naver.com", "1234");
-        Member you = new Member("testtest", "유재석", "pzkxjher@naver.com", "4321");
+        Member me = Member.builder()
+                .userId("abcdef")
+                .name("정철희")
+                .email("ekxk1234@gmail.com")
+                .password("1234")
+                .build();
+
+        Member you = Member.builder()
+                .userId("test1234")
+                .name("유재석")
+                .email("ekxk1234@naver.com")
+                .password("4321")
+                .build();
 
         // when
         MemberBlock blockMember = MemberBlock.of(me, you);
@@ -120,11 +175,41 @@ class MemberBlockServiceTest {
     @DisplayName("차단한 사람들 조회")
     void testGetMemberBlocks(){
         // given
-        Member me = new Member("abcdef", "정철희", "ekxk1234@gmail.com", "1234");
-        Member you = new Member("qwerty", "홍길동", "abcd234@naver.com", "12345");
-        Member you2 = new Member("zxcvbn", "유재석", "zxcvbn@gmail.com", "1111");
-        Member you3 = new Member("hihihi", "고양이", "noise@naver.com", "111111111");
-        Member you4 = new Member("testtest", "유재석", "jzcxhvljk@gmail.com", "4444sdfwe");
+        Member me = Member.builder()
+                .userId("abcdef")
+                .name("정철희")
+                .email("ekxk1234@gmail.com")
+                .password("1234")
+                .build();
+
+        Member you = Member.builder()
+                .userId("test1234")
+                .name("유재석")
+                .email("ekxk1234@naver.com")
+                .password("4321")
+                .build();
+
+        Member you2 = Member.builder()
+                .userId("qwerty")
+                .name("홍길동")
+                .email("abcd234@naver.com")
+                .password("12345")
+                .build();
+
+        Member you3 = Member.builder()
+                .userId("hihihi")
+                .name("고양이")
+                .email("noise@naver.com")
+                .password("111111111")
+                .build();
+
+        Member you4 = Member.builder()
+                .userId("testtest")
+                .name("유재석")
+                .email("jzcxhvljk@naver.com")
+                .password("4444sdfwe")
+                .build();
+
         ScrollRequest scrollRequest = new ScrollRequest(null);
 
         // when
@@ -141,7 +226,7 @@ class MemberBlockServiceTest {
         memberBlockWriteService.block(memberToBlock4);
 
         // Order By Id Desc
-        List<MemberBlockResponseDto> memberBlocks = memberBlockReadService.getMemberBlocks(me, scrollRequest);
+        List<MemberBlockResponse> memberBlocks = memberBlockReadService.getMemberBlocks(me, scrollRequest);
         long nextKey = memberBlockReadService.getNextKey(memberBlocks);
 
         //then

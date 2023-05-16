@@ -5,7 +5,7 @@ import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.application.usecase.TimeLineUseCase;
 import cherhy.soloProject.application.utilService.LoginService;
 import cherhy.soloProject.domain.member.entity.Member;
-import cherhy.soloProject.domain.post.dto.PostPhotoDto;
+import cherhy.soloProject.domain.post.dto.response.PostPhotoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class TimeLineController {
 
     @Operation(summary = "타임라인 조회 // only RDBMS")
     @GetMapping
-    public ScrollResponse<PostPhotoDto> getTimeLine(ScrollRequest scrollRequest, Principal principal){
+    public ScrollResponse<PostPhotoResponse> getTimeLine(ScrollRequest scrollRequest, Principal principal){
         Member member = loginService.getUserData(principal);
         return memberPostTimeLineUseCase.getTimeLine(member, scrollRequest);
     }

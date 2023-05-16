@@ -6,7 +6,7 @@ import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.application.usecase.PostBlockUseCase;
 import cherhy.soloProject.application.utilService.LoginService;
 import cherhy.soloProject.domain.member.entity.Member;
-import cherhy.soloProject.domain.postBlock.dto.response.PostBlockResponseDto;
+import cherhy.soloProject.domain.postBlock.dto.response.PostBlockResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ public class PostBlockController {
 
     @Operation(summary = "차단한 게시물 보기")
     @GetMapping
-    public List<PostBlockResponseDto> getPostBlock(Principal principal){
+    public List<PostBlockResponse> getPostBlock(Principal principal){
         Member member = loginService.getUserData(principal);
         return memberPostPostBlockUseCase.getBlockPost(member);
     }

@@ -5,10 +5,10 @@ import lombok.Builder;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public record ExceptionDto(String code, String message, Map<String, String> validation) {
+public record ExceptionResponse(String code, String message, Map<String, String> validation) {
 
     @Builder
-    public ExceptionDto(String code, String message, Map<String, String> validation) {
+    public ExceptionResponse(String code, String message, Map<String, String> validation) {
         this.code = code;
         this.message = message;
         this.validation = validation != null ? validation : new ConcurrentHashMap<>();

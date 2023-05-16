@@ -29,6 +29,8 @@ import java.util.Set;
 
 import static cherhy.soloProject.application.key.RedisKey.SEARCH_LOG;
 import static cherhy.soloProject.application.key.RedisKey.SEARCH_RANK;
+import static cherhy.soloProject.exception.enums.ExceptionKey.EMAIL;
+import static cherhy.soloProject.exception.enums.ExceptionKey.ID;
 
 
 @Service
@@ -51,7 +53,7 @@ public class MemberReadService implements UserDetailsService {
     // TODO : 이메일 체크
     public ResponseEntity emailCheck(String email){
         memberRepository.findByEmail(email).ifPresent(m -> {
-            throw new ExistException(ExceptionKey.EMAIL);
+            throw new ExistException(EMAIL);
         });
         return ResponseEntity.ok("이메일이 사용 가능합니다");
     }
@@ -59,7 +61,7 @@ public class MemberReadService implements UserDetailsService {
     // TODO : 아이디 체크
     public ResponseEntity idCheck(String userId){
         memberRepository.findByUserId(userId).ifPresent(m -> {
-            throw new ExistException(ExceptionKey.ID);
+            throw new ExistException(ID);
         });
         return ResponseEntity.ok("아이디가 사용 가능합니다");
     }

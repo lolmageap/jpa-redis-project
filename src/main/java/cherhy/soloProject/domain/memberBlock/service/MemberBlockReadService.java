@@ -2,7 +2,7 @@ package cherhy.soloProject.domain.memberBlock.service;
 
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
 import cherhy.soloProject.exception.MemberBlockException;
-import cherhy.soloProject.domain.memberBlock.dto.response.MemberBlockResponseDto;
+import cherhy.soloProject.domain.memberBlock.dto.response.MemberBlockResponse;
 import cherhy.soloProject.domain.member.entity.Member;
 import cherhy.soloProject.domain.memberBlock.entity.MemberBlock;
 import cherhy.soloProject.domain.memberBlock.repository.jpa.MemberBlockRepository;
@@ -33,12 +33,12 @@ public class MemberBlockReadService {
     }
 
     // TODO : 무한스크롤 차단 목록 조회
-    public List<MemberBlockResponseDto> getMemberBlocks(Member member, ScrollRequest scrollRequest) {
+    public List<MemberBlockResponse> getMemberBlocks(Member member, ScrollRequest scrollRequest) {
         return memberBlockRepository.getBlockMemberScroll(member,scrollRequest).orElseThrow(MemberNotFoundException::new);
     }
 
     // TODO : 무한스크롤 다음 키 조회
-    public long getNextKey(List<MemberBlockResponseDto> memberBlockResponseDtos) {
+    public long getNextKey(List<MemberBlockResponse> memberBlockResponseDtos) {
         return memberBlockResponseDtos.stream().mapToLong(v -> v.MemberBlockId())
                 .min().orElse(ScrollRequest.NONE_KEY);
     }

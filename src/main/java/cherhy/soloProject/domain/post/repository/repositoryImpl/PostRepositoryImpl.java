@@ -73,7 +73,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     private List<Post> getPosts(Long memberId, Pageable pageable) {
         return queryFactory.select(post).distinct()
                 .from(post)
-                .leftJoin(photo1).on(photo1.post.eq(post))
+//                .leftJoin(photo1).on(photo1.post.eq(post))
                 .fetchJoin()
                 .where(post.member.id.eq(memberId))
                 .offset(pageable.getOffset())
@@ -85,7 +85,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     private List<Post> getPosts(Long memberId,Long memberSessionId, Pageable pageable) {
         return queryFactory.select(post).distinct()
                 .from(post)
-                .leftJoin(photo1).on(photo1.post.eq(post))
+//                .leftJoin(photo1).on(photo1.post.eq(post))
                 .fetchJoin()
                 .leftJoin(postBlock).on(postBlock.post.id.eq(post.id)
                         .and(postBlock.member.id.eq(memberSessionId)))
@@ -100,7 +100,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     private List<Post> getPostsCursor(Long memberId, ScrollRequest scrollRequest) {
         return queryFactory.select(post).distinct()
                 .from(post)
-                .leftJoin(photo1).on(photo1.post.eq(post))
+//                .leftJoin(photo1).on(photo1.post.eq(post))
                 .fetchJoin()
                 .where(post.member.id.eq(memberId),
                         keyCheck(scrollRequest))
@@ -111,7 +111,7 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     private List<Post> getPostsCursor(Long memberId, Long memberSessionId, ScrollRequest scrollRequest) {
         return queryFactory.select(post).distinct()
                 .from(post)
-                .leftJoin(photo1).on(photo1.post.eq(post))
+//                .leftJoin(photo1).on(photo1.post.eq(post))
                 .fetchJoin()
                 .leftJoin(postBlock).on(postBlock.post.id.eq(post.id)
                         .and(postBlock.member.id.eq(memberSessionId)))

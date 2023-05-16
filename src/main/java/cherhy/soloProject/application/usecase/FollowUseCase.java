@@ -2,7 +2,7 @@ package cherhy.soloProject.application.usecase;
 
 import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
-import cherhy.soloProject.domain.follow.dto.response.ResponseFollowMemberDto;
+import cherhy.soloProject.domain.follow.dto.response.FollowMemberResponse;
 import cherhy.soloProject.domain.follow.entity.Follow;
 import cherhy.soloProject.domain.follow.service.FollowReadService;
 import cherhy.soloProject.domain.follow.service.FollowWriteService;
@@ -47,17 +47,17 @@ public class FollowUseCase {
     }
     @Cacheable(cacheNames = "followList", key = "#memberId.toString() + '_' + ( #scrollRequest.key() != null ? #scrollRequest.key() : '' )"
             , cacheManager = "cacheManager")
-    public ScrollResponse<ResponseFollowMemberDto> getFollows(Long memberId, ScrollRequest scrollRequest) {
+    public ScrollResponse<FollowMemberResponse> getFollows(Long memberId, ScrollRequest scrollRequest) {
         Member member = memberReadService.getMember(memberId);
-        List<ResponseFollowMemberDto> follow = followReadService.getFollowing(scrollRequest, member);
+        List<FollowMemberResponse> follow = followReadService.getFollowing(scrollRequest, member);
         long nextKey = followReadService.getNextKey(scrollRequest, follow);
         return new ScrollResponse<>(scrollRequest.next(nextKey), follow);
     }
     @Cacheable(cacheNames = "followerList", key = "#memberId.toString() + '_' + ( #scrollRequest.key() != null ? #scrollRequest.key() : '' )"
             , cacheManager = "cacheManager")
-    public ScrollResponse<ResponseFollowMemberDto> getFollowers(Long memberId, ScrollRequest scrollRequest) {
+    public ScrollResponse<FollowMemberResponse> getFollowers(Long memberId, ScrollRequest scrollRequest) {
         Member member = memberReadService.getMember(memberId);
-        List<ResponseFollowMemberDto> follow = followReadService.getFollower(scrollRequest, member);
+        List<FollowMemberResponse> follow = followReadService.getFollower(scrollRequest, member);
         long nextKey = followReadService.getNextKey(scrollRequest, follow);
         return new ScrollResponse<>(scrollRequest.next(nextKey), follow);
     }

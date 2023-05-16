@@ -1,7 +1,7 @@
 package cherhy.soloProject.domain.follow.repository.repositoryImpl;
 
 import cherhy.soloProject.Util.scrollDto.ScrollRequest;
-import cherhy.soloProject.domain.follow.dto.response.ResponseFollowMemberDto;
+import cherhy.soloProject.domain.follow.dto.response.FollowMemberResponse;
 import cherhy.soloProject.domain.follow.repository.querydsl.FollowRepositoryCustom;
 import cherhy.soloProject.domain.member.entity.Member;
 import com.querydsl.core.types.Projections;
@@ -25,18 +25,18 @@ public class FollowRepositoryImpl implements FollowRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<ResponseFollowMemberDto> findAllByFollowing(Member requestMember, ScrollRequest scrollRequest) {
+    public List<FollowMemberResponse> findAllByFollowing(Member requestMember, ScrollRequest scrollRequest) {
         return findFollowing(requestMember, scrollRequest);
     }
 
     @Override
-    public List<ResponseFollowMemberDto> findAllByFollower(Member requestMember, ScrollRequest scrollRequest) {
+    public List<FollowMemberResponse> findAllByFollower(Member requestMember, ScrollRequest scrollRequest) {
         return findFollower(requestMember, scrollRequest);
     }
 
-    private List<ResponseFollowMemberDto> findFollowing(Member requestMember, ScrollRequest scrollRequest) {
+    private List<FollowMemberResponse> findFollowing(Member requestMember, ScrollRequest scrollRequest) {
         return queryFactory
-                .select(Projections.constructor(ResponseFollowMemberDto.class,
+                .select(Projections.constructor(FollowMemberResponse.class,
                                 member.id, follow.id, member.name, member.email))
                 .from(follow)
                 .innerJoin(follow.following, member)
@@ -46,9 +46,9 @@ public class FollowRepositoryImpl implements FollowRepositoryCustom {
                 .fetch();
     }
 
-    private List<ResponseFollowMemberDto> findFollower(Member requestMember, ScrollRequest scrollRequest) {
+    private List<FollowMemberResponse> findFollower(Member requestMember, ScrollRequest scrollRequest) {
         return queryFactory
-                .select(Projections.constructor(ResponseFollowMemberDto.class,
+                .select(Projections.constructor(FollowMemberResponse.class,
                         member.id, follow.id, member.name, member.email))
                 .from(follow)
                 .innerJoin(follow.follower, member)

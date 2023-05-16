@@ -5,8 +5,8 @@ import cherhy.soloProject.Util.scrollDto.ScrollResponse;
 import cherhy.soloProject.application.usecase.TimeLineUseCase;
 import cherhy.soloProject.application.utilService.LoginService;
 import cherhy.soloProject.domain.member.entity.Member;
-import cherhy.soloProject.domain.post.dto.PostPhotoDto;
-import cherhy.soloProject.domain.post.dto.request.PostRequestDto;
+import cherhy.soloProject.domain.post.dto.response.PostPhotoResponse;
+import cherhy.soloProject.domain.post.dto.request.PostRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -29,14 +29,14 @@ public class PostController {
 
     @Operation(summary = "게시물 생성 // Push Model")
     @PostMapping
-    public ResponseEntity createPost(@RequestBody @Valid PostRequestDto postRequestDto, Principal principal){
+    public ResponseEntity createPost(@RequestBody @Valid PostRequest postRequestDto, Principal principal){
         Member member = loginService.getUserData(principal);
         return memberPostUseCase.createPost(postRequestDto, member);
     }
 
     @Operation(summary = "게시물 수정")
     @PutMapping("/{postId}")
-    public ResponseEntity modifyPost(@RequestBody @Valid PostRequestDto postRequestDto,
+    public ResponseEntity modifyPost(@RequestBody @Valid PostRequest postRequestDto,
                                      @PathVariable Long postId, Principal principal){
         Member member = loginService.getUserData(principal);
         return memberPostUseCase.modifyPost(postRequestDto, member, postId);
@@ -44,7 +44,7 @@ public class PostController {
 
     @Operation(summary = "사용자의 게시물 불러오기, 전체 // 로그인 했으면 차단된 게시물 제외")
     @GetMapping("/{memberId}")
-    public List<PostPhotoDto> getPost(@PathVariable("memberId") Long memberId, Principal principal){
+    public List<PostPhotoResponse> getPost(@PathVariable("memberId") Long memberId, Principal principal){
         Member member = loginService.getUserDataNoThrow(principal);
         if (member == null){
             return memberPostUseCase.findPostByMemberId(memberId);
@@ -54,7 +54,7 @@ public class PostController {
 
     @Operation(summary = "사용자의 게시물 불러오기, 페이징 // 로그인 했으면 차단된 게시물 제외")
     @GetMapping("/{memberId}/page")
-    public Page<PostPhotoDto> getPostPage(@PathVariable Long memberId, Pageable pageable, Principal principal){
+    public Page<PostPhotoResponse> getPostPage(@PathVariable Long memberId, Pageable pageable, Principal principal){
         Member member = loginService.getUserDataNoThrow(principal);
         if (member == null){
             return memberPostUseCase.findPostByMemberIdPage(memberId, pageable);
@@ -65,7 +65,7 @@ public class PostController {
 
     @Operation(summary = "사용자의 게시물 불러오기 , 무한 스크롤 // 로그인 했으면 차단된 게시물 제외")
     @GetMapping("/{memberId}/scroll")
-    public ScrollResponse<PostPhotoDto> getPostScroll(@PathVariable Long memberId, ScrollRequest scrollRequest, Principal principal){
+    public ScrollResponse<PostPhotoResponse> getPostScroll(@PathVariable Long memberId, ScrollRequest scrollRequest, Principal principal){
         Member member = loginService.getUserDataNoThrow(principal);
         if (member == null){
             return memberPostUseCase.findPostByMemberIdCursor(memberId, scrollRequest);
