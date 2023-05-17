@@ -38,19 +38,9 @@ class MemberBlockServiceTest {
     @DisplayName("차단")
     void testBlock(){
         // given
-        Member me = Member.builder()
-                .userId("abcdef")
-                .name("정철희")
-                .email("ekxk1234@gmail.com")
-                .password("1234")
-                .build();
+        Member me = getMember("abcdef","정철희","ekxk1234@gmail.com", "1234");
 
-        Member you = Member.builder()
-                .userId("test1234")
-                .name("유재석")
-                .email("ekxk1234@naver.com")
-                .password("4321")
-                .build();
+        Member you = getMember("test1234","유재석","ekxk1234@naver.com", "4321");
 
         // when
         MemberBlock memberToBlock = MemberBlock.of(me, you);
@@ -68,19 +58,9 @@ class MemberBlockServiceTest {
     @DisplayName("차단 조회 Error")
     void testGetBlockError(){
         // given
-        Member me = Member.builder()
-                .userId("abcdef")
-                .name("정철희")
-                .email("ekxk1234@gmail.com")
-                .password("1234")
-                .build();
+        Member me = getMember("abcdef","정철희","ekxk1234@gmail.com", "1234");
 
-        Member you = Member.builder()
-                .userId("test1234")
-                .name("유재석")
-                .email("ekxk1234@naver.com")
-                .password("4321")
-                .build();
+        Member you = getMember("test1234","유재석","ekxk1234@naver.com", "4321");
 
         // then
         assertThatThrownBy(() -> memberBlockReadService.getBlockMember(me, you))
@@ -92,19 +72,9 @@ class MemberBlockServiceTest {
     @DisplayName("내가 차단 당했는지 확인")
     void testIfBlocked(){
         // given
-        Member me = Member.builder()
-                .userId("abcdef")
-                .name("정철희")
-                .email("ekxk1234@gmail.com")
-                .password("1234")
-                .build();
+        Member me = getMember("abcdef","정철희","ekxk1234@gmail.com", "1234");
 
-        Member you = Member.builder()
-                .userId("test1234")
-                .name("유재석")
-                .email("ekxk1234@naver.com")
-                .password("4321")
-                .build();
+        Member you = getMember("test1234","유재석","ekxk1234@naver.com", "4321");
 
         // when
         MemberBlock memberToBlock = MemberBlock.of(me, you);
@@ -121,19 +91,9 @@ class MemberBlockServiceTest {
     @DisplayName("내가 차단 당했는지 확인 Error")
     void testIfBlockedError(){
         // given
-        Member me = Member.builder()
-                .userId("abcdef")
-                .name("정철희")
-                .email("ekxk1234@gmail.com")
-                .password("1234")
-                .build();
+        Member me = getMember("abcdef","정철희","ekxk1234@gmail.com", "1234");
 
-        Member you = Member.builder()
-                .userId("test1234")
-                .name("유재석")
-                .email("ekxk1234@naver.com")
-                .password("4321")
-                .build();
+        Member you = getMember("test1234","유재석","ekxk1234@naver.com", "4321");
 
         // then
         assertThatThrownBy(() -> memberBlockReadService.ifIBlock(me, you))
@@ -144,19 +104,9 @@ class MemberBlockServiceTest {
     @DisplayName("차단풀기")
     void testUnblock(){
         // given
-        Member me = Member.builder()
-                .userId("abcdef")
-                .name("정철희")
-                .email("ekxk1234@gmail.com")
-                .password("1234")
-                .build();
+        Member me = getMember("abcdef","정철희","ekxk1234@gmail.com", "1234");
 
-        Member you = Member.builder()
-                .userId("test1234")
-                .name("유재석")
-                .email("ekxk1234@naver.com")
-                .password("4321")
-                .build();
+        Member you = getMember("test1234","유재석","ekxk1234@naver.com", "4321");
 
         // when
         MemberBlock blockMember = MemberBlock.of(me, you);
@@ -175,40 +125,12 @@ class MemberBlockServiceTest {
     @DisplayName("차단한 사람들 조회")
     void testGetMemberBlocks(){
         // given
-        Member me = Member.builder()
-                .userId("abcdef")
-                .name("정철희")
-                .email("ekxk1234@gmail.com")
-                .password("1234")
-                .build();
+        Member me = getMember("abcdef","정철희","ekxk1234@gmail.com", "1234");
 
-        Member you = Member.builder()
-                .userId("test1234")
-                .name("유재석")
-                .email("ekxk1234@naver.com")
-                .password("4321")
-                .build();
-
-        Member you2 = Member.builder()
-                .userId("qwerty")
-                .name("홍길동")
-                .email("abcd234@naver.com")
-                .password("12345")
-                .build();
-
-        Member you3 = Member.builder()
-                .userId("hihihi")
-                .name("고양이")
-                .email("noise@naver.com")
-                .password("111111111")
-                .build();
-
-        Member you4 = Member.builder()
-                .userId("testtest")
-                .name("유재석")
-                .email("jzcxhvljk@naver.com")
-                .password("4444sdfwe")
-                .build();
+        Member you = getMember("test1234","유재석","ekxk1234@naver.com", "4321");
+        Member you2 = getMember("qwerty","홍길동","abcd234@naver.com", "12345");
+        Member you3 = getMember("hihihi","고양이","noise@naver.com", "111111111");
+        Member you4 = getMember("testtest","유재석","jzcxhvljk@naver.com", "4444sdfwe");
 
         ScrollRequest scrollRequest = new ScrollRequest(null);
 
@@ -232,6 +154,15 @@ class MemberBlockServiceTest {
         //then
         Assertions.assertThat(memberBlocks.size()).isEqualTo(3);
         Assertions.assertThat(nextKey).isEqualTo(2);
+    }
+
+    private Member getMember(String userId, String name, String email, String password) {
+        return Member.builder()
+                .userId(userId)
+                .name(name)
+                .email(email)
+                .password(password)
+                .build();
     }
 
 }

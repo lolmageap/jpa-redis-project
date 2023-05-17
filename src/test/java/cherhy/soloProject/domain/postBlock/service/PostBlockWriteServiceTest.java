@@ -40,12 +40,7 @@ class PostBlockWriteServiceTest {
         // given
         List<String> photos = List.of("one", "two", "three", "four", "five");
 
-        Member member = Member.builder()
-                .userId("abcdef")
-                .name("정철희")
-                .email("ekxk1234@gmail.com")
-                .password("1234")
-                .build();
+        Member member = getMember("abcdef","정철희","ekxk1234@gmail.com", "1234");
 
         Post post = Post.builder()
                 .member(member)
@@ -67,6 +62,15 @@ class PostBlockWriteServiceTest {
         // then
         PostBlock find = postBlockRepository.findById(1L).get();
         assertThat(find.getMember().getName()).isEqualTo(member.getName());
+    }
+
+    private Member getMember(String userId, String name, String email, String password) {
+        return Member.builder()
+                .userId(userId)
+                .name(name)
+                .email(email)
+                .password(password)
+                .build();
     }
 
 }

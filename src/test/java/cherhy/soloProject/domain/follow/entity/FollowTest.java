@@ -12,19 +12,9 @@ class FollowTest {
     @DisplayName("팔로우, 팔로워 확인합니다.")
     void test(){
         //given
-        Member me = Member.builder()
-                .userId("abcdef")
-                .name("정철희")
-                .email("ekxk1234@gmail.com")
-                .password("1234")
-                .build();
+        Member me = getMember("abcdef","정철희","ekxk1234@gmail.com", "1234");
 
-        Member you = Member.builder()
-                .userId("test1234")
-                .name("유재석")
-                .email("ekxk1234@naver.com")
-                .password("4321")
-                .build();
+        Member you = getMember("test1234","유재석","ekxk1234@naver.com", "4321");
 
         //when
         Follow follow = Follow.of(me, you);
@@ -32,6 +22,15 @@ class FollowTest {
         //then
         Assertions.assertThat(follow.getFollower()).isSameAs(me);
         Assertions.assertThat(follow.getFollowing()).isSameAs(you);
+    }
+
+    private Member getMember(String userId, String name, String email, String password) {
+        return Member.builder()
+                .userId(userId)
+                .name(name)
+                .email(email)
+                .password(password)
+                .build();
     }
 
 }

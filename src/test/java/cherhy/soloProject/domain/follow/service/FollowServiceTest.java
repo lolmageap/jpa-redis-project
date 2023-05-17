@@ -34,19 +34,8 @@ class FollowServiceTest {
     @DisplayName("내가 팔로우하기")
     void followYourself() {
         // given
-        Member me = Member.builder()
-                .userId("abcdef")
-                .name("정철희")
-                .email("ekxk1234@gmail.com")
-                .password("1234")
-                .build();
-
-        Member you = Member.builder()
-                .userId("test1234")
-                .name("유재석")
-                .email("ekxk1234@naver.com")
-                .password("4321")
-                .build();
+        Member me = getMember("abcdef","정철희","ekxk1234@gmail.com", "1234");
+        Member you = getMember("test1234","유재석","ekxk1234@naver.com", "4321");
 
         // when
         Follow follow = Follow.of(me, you);
@@ -60,26 +49,9 @@ class FollowServiceTest {
     @DisplayName("나를 팔로우하기")
     void followMyself() {
         // given
-        Member me = Member.builder()
-                .userId("abcdef")
-                .name("정철희")
-                .email("ekxk1234@gmail.com")
-                .password("1234")
-                .build();
-
-        Member you = Member.builder()
-                .userId("test1234")
-                .name("유재석")
-                .email("ekxk1234@naver.com")
-                .password("4321")
-                .build();
-
-        Member you2 = Member.builder()
-                .userId("testtesttest")
-                .name("강호동")
-                .email("mmmmmm@naver.com")
-                .password("2222")
-                .build();
+        Member me = getMember("abcdef","정철희","ekxk1234@gmail.com", "1234");
+        Member you = getMember("test1234","유재석","ekxk1234@naver.com", "4321");
+        Member you2 = getMember("testtesttest","강호동","mmmmmm@naver.com", "2222");
 
         //when
         Follow follow1 = Follow.of(you, me);
@@ -96,20 +68,8 @@ class FollowServiceTest {
     @DisplayName("내가 팔로우하는 유저 불러오기")
     void getFollowing(){
         // given
-        Member me = Member.builder()
-                .userId("abcdef")
-                .name("정철희")
-                .email("ekxk1234@gmail.com")
-                .password("1234")
-                .build();
-
-        Member you = Member.builder()
-                .userId("test1234")
-                .name("유재석")
-                .email("ekxk1234@naver.com")
-                .password("4321")
-                .build();
-
+        Member me = getMember("abcdef","정철희","ekxk1234@gmail.com", "1234");
+        Member you = getMember("test1234","유재석","ekxk1234@naver.com", "4321");
         ScrollRequest scrollRequest = new ScrollRequest(null);
 
         Follow follow = Follow.of(me, you);
@@ -126,27 +86,10 @@ class FollowServiceTest {
     @DisplayName("나를 팔로잉하는 유저 불러오기")
     void getFollower(){
         // given
-        Member me = Member.builder()
-                .userId("abcdef")
-                .name("정철희")
-                .email("ekxk1234@gmail.com")
-                .password("1234")
-                .build();
-
-        Member you = Member.builder()
-                .userId("test1234")
-                .name("유재석")
-                .email("ekxk1234@naver.com")
-                .password("4321")
-                .build();
-
-        Member you2 = Member.builder()
-                .userId("testtesttest")
-                .name("강호동")
-                .email("mmmmmm@naver.com")
-                .password("2222")
-                .build();
-
+        Member me = getMember("abcdef","정철희","ekxk1234@gmail.com", "1234");
+        Member you = getMember("test1234","유재석","ekxk1234@naver.com", "4321");
+        Member you2 = getMember("testtesttest","강호동","mmmmmm@naver.com", "2222");
+        
         ScrollRequest scrollRequest = new ScrollRequest(null);
 
         // when
@@ -166,19 +109,8 @@ class FollowServiceTest {
     @DisplayName("내가 상대방을 팔로우 하는지 체크")
     void followCheck(){
         // given
-        Member me = Member.builder()
-                .userId("abcdef")
-                .name("정철희")
-                .email("ekxk1234@gmail.com")
-                .password("1234")
-                .build();
-
-        Member you = Member.builder()
-                .userId("test1234")
-                .name("유재석")
-                .email("ekxk1234@naver.com")
-                .password("4321")
-                .build();
+        Member me = getMember("abcdef","정철희","ekxk1234@gmail.com", "1234");
+        Member you = getMember("test1234","유재석","ekxk1234@naver.com", "4321");
 
         // when
         Follow follow = Follow.of(me, you);
@@ -193,19 +125,8 @@ class FollowServiceTest {
     @DisplayName("내가 상대방을 팔로우 하는지 체크 Error")
     void followCheckError(){
         // given
-        Member me = Member.builder()
-                .userId("abcdef")
-                .name("정철희")
-                .email("ekxk1234@gmail.com")
-                .password("1234")
-                .build();
-
-        Member you = Member.builder()
-                .userId("test1234")
-                .name("유재석")
-                .email("ekxk1234@naver.com")
-                .password("4321")
-                .build();
+        Member me = getMember("abcdef","정철희","ekxk1234@gmail.com", "1234");
+        Member you = getMember("test1234","유재석","ekxk1234@naver.com", "4321");
 
         // then
         assertThatThrownBy(() -> followReadService.getFollowExist(me, you).get())
@@ -216,19 +137,8 @@ class FollowServiceTest {
     @DisplayName("언팔로우")
     void unfollow() {
         // given
-        Member me = Member.builder()
-                .userId("abcdef")
-                .name("정철희")
-                .email("ekxk1234@gmail.com")
-                .password("1234")
-                .build();
-
-        Member you = Member.builder()
-                .userId("test1234")
-                .name("유재석")
-                .email("ekxk1234@naver.com")
-                .password("4321")
-                .build();
+        Member me = getMember("abcdef","정철희","ekxk1234@gmail.com", "1234");
+        Member you = getMember("test1234","유재석","ekxk1234@naver.com", "4321");
 
         // when
         Follow follow = Follow.of(me, you);
@@ -242,6 +152,15 @@ class FollowServiceTest {
             );
         });
 
+    }
+
+    private Member getMember(String userId, String name, String email, String password) {
+        return Member.builder()
+                .userId(userId)
+                .name(name)
+                .email(email)
+                .password(password)
+                .build();
     }
 
 }

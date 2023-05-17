@@ -31,17 +31,11 @@ class PostReadServiceTest {
     PostWriteService postWriteService;
     @Autowired
     PostReadService postReadService;
-    @Autowired
-    MemberWriteService memberWriteService;
-    @Autowired
-    MemberReadService memberReadService;
 
     @BeforeEach
     @DisplayName("회원, 게시물 추가")
     void addMember(){
-        MemberWriteServiceTest memberWriteServiceTest = new MemberWriteServiceTest(memberReadService, memberWriteService);
-        memberWriteServiceTest.addMember();
-        Member member = memberReadService.getMember(1L);
+        Member member = getMember("abcdef","정철희","ekxk1234@gmail.com", "1234");
 
         List<String> photos1 = List.of("one", "two", "three", "four", "five");
         PostRequest request1 = new PostRequest("첫번째 게시물입니다", "첫번째 게시물의 내용입니다.", photos1);
@@ -78,8 +72,8 @@ class PostReadServiceTest {
     @DisplayName("로그인 후 게시물 조회")
     void testGetPostToLogin(){
         // given
-        Member me = memberReadService.getMember(1L);
-        Member you = memberReadService.getMember(2L);
+        Member me = getMember("abcdef","정철희","ekxk1234@gmail.com", "1234");
+        Member you = getMember("test1234","유재석","ekxk1234@naver.com", "4321");
 
         //when
         Post myPost = postReadService.getMyPost(1L, me);
@@ -95,12 +89,11 @@ class PostReadServiceTest {
     @DisplayName("로그인 전 상대방 게시물 조회, 무한 스크롤")
     void testGetScroll(){
         // given
-        Member me = memberReadService.getMember(1L);
-        Member you = memberReadService.getMember(2L);
+        Member you = getMember("test1234","유재석","ekxk1234@naver.com", "4321");
         ScrollRequest scrollRequest = new ScrollRequest(null);
 
         //when
-        List<Post> posts = postReadService.getPostByMemberIdCursor(me, scrollRequest);
+        List<Post> posts = postReadService.getPostByMemberIdCursor(you, scrollRequest);
         List<PostPhotoResponse> postPhotoDto = posts.stream().map(PostPhotoResponse::of).collect(Collectors.toList());
         long nextKey = postReadService.getNextKey(postPhotoDto);
 
@@ -113,8 +106,9 @@ class PostReadServiceTest {
     @DisplayName("로그인 후 상대방 게시물 조회, 무한 스크롤")
     void testGetScrollToLogin(){
         // given
-        Member me = memberReadService.getMember(1L);
-        Member you = memberReadService.getMember(2L);
+        Member me = getMember("abcdef","정철희","ekxk1234@gmail.com", "1234");
+
+        Member you = getMember("test1234","유재석","ekxk1234@naver.com", "4321");
         ScrollRequest scrollRequest = new ScrollRequest(null);
 
         //when
@@ -128,5 +122,13 @@ class PostReadServiceTest {
 
     }
 
+    private Member getMember(String userId, String name, String email, String password) {
+        return Member.builder()
+                .userId(userId)
+                .name(name)
+                .email(email)
+                .password(password)
+                .build();
+    }
 
 }
